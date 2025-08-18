@@ -179,7 +179,7 @@
                 try {
                     // Realiza la petición POST a tu API de login
                     // ¡IMPORTANTE!: Cambia 'http://localhost:3001' por la URL de tu backend real
-                    const response = await fetch('http://localhost:3000/api/login', {
+                    const response = await fetch('/api/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -197,7 +197,7 @@
                             // Aquí puedes redirigir al usuario según su rol o a la página principal
                             if (result.user && result.user.rol) {
                                 if (result.user.rol === 'Administrador') {
-                                    window.location.href = 'http://localhost:3000/home'; // Redirigir al dashboard de administrador
+                                    window.location.href = '/home'; // Redirigir al dashboard de administrador
                                 } else if (result.user.rol === 'Tutor') {
                                     window.location.href = '/tutor-dashboard'; // Redirigir al dashboard del tutor
                                 } else if (result.user.rol === 'Estudiante') {
