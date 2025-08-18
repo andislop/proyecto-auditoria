@@ -1,16 +1,38 @@
 {
-    "version": 2,
-    "builds": [
-        {
-            "src" : "index.js",
-            "use": "@vercel/node"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/"
-        }
-    ]
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.js", 
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
 
+    {
+      "src": "/api/(.*)",
+      "dest": "index.js" 
+    },
+
+    {
+      "src": "/",
+      "dest": "public/views/index.html" 
+    },
+    {
+      "src": "/home",
+      "dest": "public/views/home.html"
+    },
+    {
+      "src": "/servicio-comunitario",
+      "dest": "public/views/servicio-comunitario.html"
+    },
+    {
+      "src": "/registro",
+      "dest": "public/views/registro.html"
+    },
+
+    {
+      "src": "/(.*\\.(css|js|html|png|jpg|jpeg|gif|svg|ico|json))",
+      "dest": "public/$1"
+    }
+  ]
 }
