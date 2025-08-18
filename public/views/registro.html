@@ -6,8 +6,79 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<link rel="stylesheet" href="../css/main.css">
     <!-- Aseguramos que el archivo bootstrap-icons.css se cargue -->
-    <!-- ESTE ES EL CSS QUE DABA PROBLEMAS DE MIME TYPE, ASEGÚRATE DE LA RUTA Y DE SERVIRLO CON UN SERVIDOR WEB -->
     <link rel="stylesheet" href="../css/bootstrap-icons.css">
+    <style>
+        /* Estilos para la ventana modal personalizada (copia de ind.txt) */
+        .custom-modal-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 1000; /* Asegura que esté por encima de todo */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            border-radius: 8px;
+            text-align: center;
+            color: #333;
+        }
+
+        .custom-modal-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .custom-modal-body {
+            padding: 10px 0;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .custom-modal-footer {
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+
+        .custom-modal-footer button {
+            background-color: #2a3e61; /* Azul oscuro */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal-footer button:hover {
+            background-color: #1a2a44; /* Azul más oscuro al pasar el ratón */
+        }
+
+        /* Animación de entrada */
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+    </style>
 </head>
 <body class="cover" style="background-image: url(../assets/img/loginFont.jpg);">
 	<form id="registerForm" method="" autocomplete="off" class="full-box logInForm">
@@ -31,21 +102,63 @@
 			<p><a href="http://localhost:3000">¿Ya tienes cuenta? Inicia sesión</a></p>
 		</div>
 	</form>
+
+    <!-- Ventana modal personalizada (copia de ind.txt) -->
+    <div id="customAlertModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <span id="customAlertTitle"></span>
+            </div>
+            <div class="custom-modal-body">
+                <p id="customAlertMessage"></p>
+            </div>
+            <div class="custom-modal-footer">
+                <button id="customAlertOkBtn">Ok</button>
+            </div>
+        </div>
+    </div>
+
 	<!--====== Scripts -->
 	<script src="../js/jquery-3.1.1.min.js"></script>
 	<script src="../js/bootstrap.min.js"></script>
 	<script src="../js/material.min.js"></script>
 	<script src="../js/ripples.min.js"></script>
-	<script src="../js/sweetalert2.min.js"></script> <!-- AHORA SweetAlert2 ESTÁ BIEN POSICIONADO -->
+	<!-- <script src="../js/sweetalert2.min.js"></script>  Ya no se necesita SweetAlert2 -->
 	<script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="../js/main.js"></script>
 	<script>
-        // Envuelve todo el JavaScript personalizado dentro de $(document).ready()
-        // Esto asegura que el DOM y todas las librerías (incluyendo SweetAlert2) estén cargados
-        // antes de que tu código intente interactuar con ellas.
-		$(document).ready(function() {
-            // Inicializa los componentes de Material Design
+        $(document).ready(function() {
             $.material.init();
+
+            // Referencias a los elementos de la modal personalizada
+            const customAlertModal = document.getElementById('customAlertModal');
+            const customAlertTitle = document.getElementById('customAlertTitle');
+            const customAlertMessage = document.getElementById('customAlertMessage');
+            const customAlertOkBtn = document.getElementById('customAlertOkBtn');
+
+            // Función para mostrar la modal personalizada (copia de ind.txt)
+            function showCustomAlert(title, message, options = {}) {
+                customAlertTitle.textContent = title;
+                customAlertMessage.textContent = message;
+                customAlertModal.style.display = 'flex'; // Usamos flex para centrar
+
+                // Manejo de la promesa para simular .then() de Swal.fire
+                return new Promise(resolve => {
+                    const clickHandler = function() {
+                        customAlertModal.style.display = 'none';
+                        customAlertOkBtn.removeEventListener('click', clickHandler); // Limpiar listener
+                        resolve(true); // Resuelve la promesa
+                    };
+                    customAlertOkBtn.addEventListener('click', clickHandler);
+                });
+            }
+
+            // Para cerrar la modal si se hace clic fuera de ella
+            window.onclick = function(event) {
+                if (event.target == customAlertModal) {
+                    customAlertModal.style.display = 'none';
+                }
+            };
 
             // Función para manejar el registro de usuario
             async function handleRegister(event) {
@@ -56,7 +169,7 @@
 
                 // Validación básica de campos
                 if (!correoInput || !contraseñaInput) {
-                    showCustomAlert("Por favor, completa todos los campos.");
+                    await showCustomAlert("Alerta", "Por favor, completa todos los campos.");
                     return;
                 }
 
@@ -66,7 +179,7 @@
 
                 try {
                     // Realiza la petición POST a tu API de registro
-                    // ¡IMPORTANTE!: Cambia 'http://localhost:3001' por la URL de tu backend real
+                    // ¡IMPORTANTE!: Asegúrate de que la URL sea relativa para Vercel
                     const response = await fetch('/api/register', {
                         method: 'POST',
                         headers: {
@@ -78,32 +191,18 @@
                     const result = await response.json();
 
                     if (response.ok) { // Si la respuesta HTTP es 200 OK (o 201 Created)
-                        Swal.fire({
-                            title: "¡Éxito!",
-                            text: result.message || "Usuario registrado exitosamente.",
-                            icon: "success",
-                            confirmButtonText: "Ok"
-                        }).then(() => {
+                        await showCustomAlert("¡Éxito!", result.message || "Usuario registrado exitosamente.")
+                        .then(() => {
                             // Opcional: Redirigir al usuario a la página de login después de un registro exitoso
-                            window.location.href = 'index.html'; 
+                            window.location.href = '/'; 
                         });
                     } else {
                         // Error en el registro (ej. correo ya existe, error del servidor)
-                        Swal.fire({
-                            title: "Error",
-                            text: result.error || "Error al registrar usuario. Inténtalo de nuevo.",
-                            icon: "error",
-                            confirmButtonText: "Ok"
-                        });
+                        await showCustomAlert("Error", result.error || "Error al registrar usuario. Inténtalo de nuevo.");
                     }
                 } catch (error) {
                     console.error('Error al conectar con el servidor de registro:', error);
-                    Swal.fire({
-                        title: "Error de conexión",
-                        text: "No se pudo conectar con el servidor. Por favor, inténtalo más tarde.",
-                        icon: "error",
-                        confirmButtonText: "Ok"
-                    });
+                    await showCustomAlert("Error de conexión", "No se pudo conectar con el servidor. Por favor, inténtalo más tarde.");
                 }
             }
 
@@ -111,16 +210,6 @@
             const registerForm = document.getElementById('registerForm');
             if (registerForm) {
                 registerForm.addEventListener('submit', handleRegister);
-            }
-
-            // Función de alerta personalizada que usa SweetAlert2
-            function showCustomAlert(message) {
-                Swal.fire({
-                    title: "Alerta",
-                    text: message,
-                    icon: "warning",
-                    confirmButtonText: "Ok"
-                });
             }
         }); // Cierre de $(document).ready()
 	</script>
