@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<title>LogIn</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" href="../css/main.css">
+    <!-- Aseguramos que el archivo bootstrap-icons.css se cargue -->
+    <link rel="stylesheet" href="../css/bootstrap-icons.css">
+    <style>
+        /* Estilos para la ventana modal personalizada */
+        .custom-modal-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 1000; /* Asegura que esté por encima de todo */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            border-radius: 8px;
+            text-align: center;
+            color: #333;
+        }
+
+        .custom-modal-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .custom-modal-body {
+            padding: 10px 0;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .custom-modal-footer {
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+
+        .custom-modal-footer button {
+            background-color: #2a3e61; /* Azul oscuro */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal-footer button:hover {
+            background-color: #1a2a44; /* Azul más oscuro al pasar el ratón */
+        }
+
+        /* Animación de entrada */
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+    </style>
+</head>
+<body class="cover" style="background-image: url(../assets/img/loginFont.jpg);">
+	<form action="http://localhost:3000/home" id="loginForm" method="" autocomplete="off" class="full-box logInForm">
+		<!-- Icono de usuario de Bootstrap Icons -->
+		<p class="text-center text-muted"><i class="bi bi-person-circle bi-5x"></i></p>
+		<p class="text-center text-muted text-uppercase">Inicia sesión con tu cuenta</p>
+	<div class="form-group label-floating">
+		  <label class="control-label" for="correo">Correo</label>
+		  <input class="form-control" id="correo" type="email">
+		  <p class="help-block">Escribe tú Correo</p>
+		</div>
+		<div class="form-group label-floating">
+		  <label class="control-label" for="contraseña">Contraseña</label>
+		  <input class="form-control" id="contraseña" type="password"> <!-- Cambiado a type="password" para seguridad -->
+		  <p class="help-block">Escribe tú contraseña</p>
+		</div>
+		<div class="form-group text-center">
+			<input type="submit" value="Iniciar sesión" class="btn btn-raised btn-login"> <!-- Clase cambiada a btn-login -->
+		</div>
+		<div>
+			<p><a href="/registro">¿No tienes cuenta? Regístrate</a></p>
+		</div>
+	</form>
+
+    <!-- Ventana modal personalizada -->
+    <div id="customAlertModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <span id="customAlertTitle"></span>
+            </div>
+            <div class="custom-modal-body">
+                <p id="customAlertMessage"></p>
+            </div>
+            <div class="custom-modal-footer">
+                <button id="customAlertOkBtn">Ok</button>
+            </div>
+        </div>
+    </div>
+
+	<!--====== Scripts -->
+	<script src="../js/jquery-3.1.1.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/material.min.js"></script>
+	<script src="../js/ripples.min.js"></script>
+	<!-- <script src="../js/sweetalert2.min.js"></script> Eliminado SweetAlert2 -->
+	<script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="../js/main.js"></script>
+	<script>
+        // Envuelve todo el JavaScript personalizado dentro de $(document).ready()
+        // Esto asegura que el DOM y todas las librerías (excepto SweetAlert2, que ya no está) estén cargados
+        // antes de que tu código intente interactuar con ellas.
+		$(document).ready(function() {
+            // Inicializa los componentes de Material Design
+            $.material.init();
+
+            // Referencias a los elementos de la modal personalizada
+            const customAlertModal = document.getElementById('customAlertModal');
+            const customAlertTitle = document.getElementById('customAlertTitle');
+            const customAlertMessage = document.getElementById('customAlertMessage');
+            const customAlertOkBtn = document.getElementById('customAlertOkBtn');
+
+            // Función para mostrar la modal personalizada
+            function showCustomAlert(title, message) {
+                customAlertTitle.textContent = title;
+                customAlertMessage.textContent = message;
+                customAlertModal.style.display = 'flex'; // Usamos flex para centrar
+            }
+
+            // Función para ocultar la modal personalizada
+            customAlertOkBtn.onclick = function() {
+                customAlertModal.style.display = 'none';
+            };
+
+            // Para cerrar la modal si se hace clic fuera de ella
+            window.onclick = function(event) {
+                if (event.target == customAlertModal) {
+                    customAlertModal.style.display = 'none';
+                }
+            };
+
+
+            // Función para manejar el inicio de sesión
+            async function handleLogin(event) {
+                event.preventDefault(); // Prevenir el envío del formulario por defecto
+
+                const correoInput = document.getElementById('correo').value;
+                const contraseñaInput = document.getElementById('contraseña').value;
+
+                // Validación básica de campos
+                if (!correoInput || !contraseñaInput) {
+                    showCustomAlert("Alerta", "Por favor, completa todos los campos.");
+                    return;
+                }
+
+                const correo = correoInput.trim();
+                const contraseña = contraseñaInput.trim();
+
+                try {
+                    // Realiza la petición POST a tu API de login
+                    // ¡IMPORTANTE!: Cambia 'http://localhost:3001' por la URL de tu backend real
+                    const response = await fetch('http://localhost:3000/api/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ correo, contraseña })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) { // Si la respuesta HTTP es 200 OK
+                        // Inicio de sesión exitoso
+                        showCustomAlert("¡Éxito!", result.message || "Inicio de sesión exitoso.");
+                        // Usamos un pequeño retardo para que el usuario vea la alerta antes de redirigir
+                        setTimeout(() => {
+                            // Aquí puedes redirigir al usuario según su rol o a la página principal
+                            if (result.user && result.user.rol) {
+                                if (result.user.rol === 'Administrador') {
+                                    window.location.href = 'http://localhost:3000/home'; // Redirigir al dashboard de administrador
+                                } else if (result.user.rol === 'Tutor') {
+                                    window.location.href = '/tutor-dashboard'; // Redirigir al dashboard del tutor
+                                } else if (result.user.rol === 'Estudiante') {
+                                    window.location.href = '/student-dashboard'; // Redirigir al dashboard del estudiante
+                                } else {
+                                    window.location.href = '/default-dashboard'; // Redirigir a un dashboard por defecto si el rol no coincide
+                                }
+                            } else {
+                                window.location.href = '/home'; // Redirigir por defecto si no hay rol o usuario en la respuesta
+                            }
+                        }, 1500); // Redirige después de 1.5 segundos
+                    } else {
+                        // Error en el inicio de sesión (ej. credenciales inválidas, error del servidor)
+                        showCustomAlert("Error", result.error || "Error al iniciar sesión. Inténtalo de nuevo.");
+                    }
+                } catch (error) {
+                    console.error('Error al conectar con el servidor de login:', error);
+                    showCustomAlert("Error de conexión", "No se pudo conectar con el servidor. Por favor, inténtalo más tarde.");
+                }
+            }
+
+            // Asigna el manejador de eventos al formulario de login
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+            }
+        }); // Cierre de $(document).ready()
+	</script>
+</body>
+</html>

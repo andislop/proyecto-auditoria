@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<title>Servicio Comunitario</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+	<!-- SideBar -->
+	<section class="full-box cover dashboard-sideBar">
+		<div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
+		<div class="full-box dashboard-sideBar-ct">
+			<!--SideBar Title -->
+			<div class="full-box text-uppercase text-center text-titles dashboard-sideBar-title">
+				UNEFA <i class="zmdi zmdi-close btn-menu-dashboard visible-xs"></i>
+			</div>
+			<!-- SideBar User info -->
+			<div class="full-box dashboard-sideBar-UserInfo">
+				<figure class="full-box">
+					<img src="../assets/img/foto.jpg" alt="UserIcon">
+					<figcaption class="text-center text-titles">juancito007</figcaption>
+				</figure>
+				<ul class="full-box list-unstyled text-center">
+					<li>
+						<a href="#!">
+							<i class="zmdi zmdi-settings"></i>
+						</a>
+					</li>
+					<li>
+						<a href="/" class="btn-exit-system">
+							<i class="zmdi zmdi-power"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<!-- SideBar Menu -->
+			<ul class="list-unstyled full-box dashboard-sideBar-Menu">
+				<li>
+					<a href="/home">
+						<i class="zmdi zmdi-view-dashboard zmdi-hc-fw"></i> Dashboard
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-case zmdi-hc-fw"></i> Administration <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="/servicio-comunitario"><i class="zmdi zmdi-timer zmdi-hc-fw"></i> Period</a>
+						</li>
+						<li>
+							<a href="subject.html"><i class="zmdi zmdi-book zmdi-hc-fw"></i> Subject</a>
+						</li>
+						<li>
+							<a href="section.html"><i class="zmdi zmdi-graduation-cap zmdi-hc-fw"></i> Section</a>
+						</li>
+						<li>
+							<a href="salon.html"><i class="zmdi zmdi-font zmdi-hc-fw"></i> Salon</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Users <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="admin.html"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
+						</li>
+						<li>
+							<a href="teacher.html"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Teacher</a>
+						</li>
+						<li>
+							<a href="student.html"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Student</a>
+						</li>
+						<li>
+							<a href="representative.html"><i class="zmdi zmdi-male-female zmdi-hc-fw"></i> Representative</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-card zmdi-hc-fw"></i> Payments <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="registration.html"><i class="zmdi zmdi-money-box zmdi-hc-fw"></i> Registration</a>
+						</li>
+						<li>
+							<a href="payments.html"><i class="zmdi zmdi-money zmdi-hc-fw"></i> Payments</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-shield-security zmdi-hc-fw"></i> Settings School <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="school.html"><i class="zmdi zmdi-balance zmdi-hc-fw"></i> School Data</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</section>
+
+	<!-- Content page-->
+	<section class="full-box dashboard-contentPage">
+		<!-- NavBar -->
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li class="pull-left">
+					<a href="#!" class="btn-menu-dashboard"><i class="zmdi zmdi-more-vert"></i></a>
+				</li>
+				<li>
+					<a href="#!" class="btn-Notifications-area">
+						<i class="zmdi zmdi-notifications-none"></i>
+						<span class="badge">7</span>
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-search">
+						<i class="zmdi zmdi-search"></i>
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<!-- Content page -->
+		<div class="container-fluid">
+			<div class="page-header" style="text-align: center;">
+			  <h1 class="text-titles" style="display: inline-block;"></i> Servicio Comunitario</h1>
+			</div>
+			<p class="lead">Bienvenido a la sección de administración de proyectos. Aquí puedes gestionar todos los proyectos.</p>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<div id="myTabContent" class="tab-content">
+					  	<div class="tab-pane fade active in" id="list">
+                            <div class="container-fluid">
+                                <div class="row" style="margin-bottom: 15px;">
+                                    <div class="col-xs-12 col-sm-6">
+                                        <button class="btn btn-info btn-raised" data-toggle="modal" data-target="#addProjectModal">
+                                            <i class="zmdi zmdi-plus"></i> Agregar nuevo proyecto
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        <div class="form-group label-floating">
+                                            <label class="control-label" for="searchProject">Buscar Proyecto</label>
+                                            <input class="form-control" type="text" id="searchProject" onkeyup="filterTable()">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="table-responsive">
+								<table class="table table-hover text-center table-projects" id="projectsTable">
+									<thead>
+										<tr>
+											<th class="text-center">N°</th>
+											<th class="text-center">Periodo</th>
+											<th class="text-center">Nombre del Proyecto</th>
+											<th class="text-center">Integrantes</th>
+                                            <th class="text-center">Carrera</th>
+											<th class="text-center">Tutor</th>
+											<th class="text-center">Fecha Inicio</th>
+											<th class="text-center">Fecha Final</th>
+                                            <th class="text-center">Estado</th>
+											<th class="text-center">Acciones</th>
+										</tr>
+									</thead>
+									<tbody>
+										<!-- Datos de ejemplo, puedes reemplazarlos con tus datos reales -->
+										<tr>
+											<td data-label="N°">1</td>
+											<td data-label="Periodo">2024-1</td>
+											<td data-label="Nombre del Proyecto">Desarrollo de App Móvil</td>
+											<td data-label="Integrantes">12345678-Juan Pérez</td>
+                                            <td data-label="Carrera">Ing. Informática</td>
+											<td data-label="Tutor">Dr. Carlos Rodríguez</td>
+											<td data-label="Fecha Inicio">01/03/2024</td>
+											<td data-label="Fecha Final">30/07/2024</td>
+                                            <td data-label="Estado">Aprobado</td>
+											<td data-label="Acciones">
+												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
+												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
+											</td>
+										</tr>
+										<tr>
+											<td data-label="N°">2</td>
+											<td data-label="Periodo">2024-1</td>
+											<td data-label="Nombre del Proyecto">Sistema de Gestión de Biblioteca</td>
+											<td data-label="Integrantes">98765432-María López</td>
+                                            <td data-label="Carrera">Lic. Educación</td>
+											<td data-label="Tutor">Lic. Sofía Hernández</td>
+											<td data-label="Fecha Inicio">15/03/2024</td>
+											<td data-label="Fecha Final">15/08/2024</td>
+                                            <td data-label="Estado">Reprobado</td>
+											<td data-label="Acciones">
+												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
+												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
+											</td>
+										</tr>
+										<tr>
+											<td data-label="N°">3</td>
+											<td data-label="Periodo">2024-2</td>
+											<td data-label="Nombre del Proyecto">Plataforma de E-learning</td>
+											<td data-label="Integrantes">11223344-Ana García</td>
+                                            <td data-label="Carrera">Ing. Telecomunicaciones</td>
+											<td data-label="Tutor">Ing. Roberto Soto</td>
+											<td data-label="Fecha Inicio">01/09/2024</td>
+											<td data-label="Fecha Final">28/02/2025</td>
+                                            <td data-label="Estado">Aprobado</td>
+											<td data-label="Acciones">
+												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
+												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
+											</td>
+										</tr>
+                                        <tr>
+											<td data-label="N°">4</td>
+											<td data-label="Periodo">2024-2</td>
+											<td data-label="Nombre del Proyecto">Aplicación de Gestión de Inventario</td>
+											<td data-label="Integrantes">55667788-Pedro Martínez</td>
+                                            <td data-label="Carrera">Administración</td>
+											<td data-label="Tutor">Dra. Ana Bolívar</td>
+											<td data-label="Fecha Inicio">10/09/2024</td>
+											<td data-label="Fecha Final">05/03/2025</td>
+                                            <td data-label="Estado">Pendiente</td>
+											<td data-label="Acciones">
+												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
+												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
+											</td>
+										</tr>
+                                        <tr>
+											<td data-label="N°">5</td>
+											<td data-label="Periodo">2025-1</td>
+											<td data-label="Nombre del Proyecto">Análisis de Datos con IA</td>
+											<td data-label="Integrantes">99001122-Luis Ramos</td>
+                                            <td data-label="Carrera">Ciencias de Datos</td>
+											<td data-label="Tutor">Dr. Miguel Herrera</td>
+											<td data-label="Fecha Inicio">01/02/2025</td>
+											<td data-label="Fecha Final">30/06/2025</td>
+                                            <td data-label="Estado">Aprobado</td>
+											<td data-label="Acciones">
+												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
+												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
+											</td>
+										</tr>
+                                        <tr>
+											<td data-label="N°">6</td>
+											<td data-label="Periodo">2025-1</td>
+											<td data-label="Nombre del Proyecto">Robótica Educativa</td>
+											<td data-label="Integrantes">33445566-Carolina Díaz</td>
+                                            <td data-label="Carrera">Ing. Mecatrónica</td>
+											<td data-label="Tutor">Ing. Elena Bravo</td>
+											<td data-label="Fecha Inicio">10/02/2025</td>
+											<td data-label="Fecha Final">10/07/2025</td>
+                                            <td data-label="Estado">Pendiente</td>
+											<td data-label="Acciones">
+												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
+												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<ul class="pagination pagination-sm" id="pagination">
+								</ul>
+							</div>
+					  	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Notifications area -->
+	<section class="full-box Notifications-area">
+		<div class="full-box Notifications-bg btn-Notifications-area"></div>
+		<div class="full-box Notifications-body">
+			<div class="Notifications-body-title text-titles text-center">
+				Notifications <i class="zmdi zmdi-close btn-Notifications-area"></i>
+			</div>
+			<div class="list-group">
+			  	<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-alert-triangle"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">17m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p>
+				    </div>
+			  	</div>
+			  	<div class="list-group-separator"></div>
+			  	<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-alert-octagon"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">15m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p>
+				    </div>
+			  	</div>
+			  	<div class="list-group-separator"></div>
+				<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-help"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">10m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
+				    </div>
+				</div>
+			  	<div class="list-group-separator"></div>
+			  	<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-info"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">8m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
+				    </div>
+			  	</div>
+			</div>
+
+		</div>
+	</section>
+
+	<!-- Modal para agregar nuevo proyecto -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="addProjectModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Agregar Nuevo Proyecto</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addProjectForm">
+                        <div class="form-group label-floating">
+                            <label class="control-label">Periodo</label>
+                            <input class="form-control" type="text" id="projectPeriod">
+                        </div>
+                        <div class="form-group label-floating">
+                            <label class="control-label">Nombre del Proyecto</label>
+                            <input class="form-control" type="text" id="projectName">
+                        </div>
+                        <!-- Campos dinámicos para Cédula y Nombre Completo -->
+                        <div id="membersContainer">
+                            <div class="row member-input-group">
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label">Cédula del Integrante</label>
+                                        <input class="form-control" type="text" class="projectMemberId">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label">Nombre Completo del Integrante</label>
+                                        <input class="form-control" type="text" class="projectMemberName">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-info btn-raised" onclick="addMemberField()">
+                            <i class="zmdi zmdi-plus"></i> Añadir Integrante
+                        </button>
+
+                        <div class="form-group label-floating">
+                            <label class="control-label">Carrera</label>
+                            <input class="form-control" type="text" id="projectCareer">
+                        </div>
+                        <div class="form-group label-floating">
+                            <label class="control-label">Tutor</label>
+                            <input class="form-control" type="text" id="projectTutor">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Fecha Inicio</label>
+                            <input class="form-control" type="date" id="projectStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Fecha Final</label>
+                            <input class="form-control" type="date" id="projectEndDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Estado</label>
+                            <select class="form-control" id="projectStatus">
+                                <option>Aprobado</option>
+                                <option>Reprobado</option>
+                                <option>Pendiente</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-info btn-raised" onclick="addNewProject()">Guardar Proyecto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+	<!-- Dialog help -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="Dialog-Help">
+	  	<div class="modal-dialog" role="document">
+		    <div class="modal-content">
+			    <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			    	<h4 class="modal-title">Help</h4>
+			    </div>
+			    <div class="modal-body">
+			        <p>
+			        	Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt beatae esse velit ipsa sunt incidunt aut voluptas, nihil reiciendis maiores eaque hic vitae saepe voluptatibus. Ratione veritatis a unde autem!
+			        </p>
+			    </div>
+		      	<div class="modal-footer">
+		        	<button type="button" class="btn btn-primary btn-raised" data-dismiss="modal"><i class="zmdi zmdi-thumb-up"></i> Ok</button>
+		      	</div>
+		    </div>
+	  	</div>
+	</div>
+	<!--====== Scripts -->
+	<script src="./js/jquery-3.1.1.min.js"></script>
+	<script src="./js/sweetalert2.min.js"></script>
+	<script src="./js/bootstrap.min.js"></script>
+	<script src="./js/material.min.js"></script>
+	<script src="./js/ripples.min.js"></script>
+	<script src="./js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="./js/main.js"></script>
+<script>
+        const rowsPerPageDesktop = 5;
+        const rowsPerPageMobile = 3;
+        let currentPage = 1;
+        let currentRowsPerPage;
+
+        // Global array to store all project data as objects, including a reference to the DOM element and filter visibility
+        let allProjectsData = [];
+
+        // Function to initialize data from existing table rows on page load
+        function initializeProjectsData() {
+            const tableBody = document.getElementById('projectsTable').getElementsByTagName('tbody')[0];
+            allProjectsData = []; // Clear previous data
+            for (let i = 0; i < tableBody.rows.length; i++) {
+                const row = tableBody.rows[i];
+                const cells = row.getElementsByTagName('td');
+                allProjectsData.push({
+                    element: row,
+                    originalN: parseInt(cells[0].textContent),
+                    searchableText: Array.from(cells)
+                                        .filter((td, index) => index !== 0 && index !== cells.length - 1) // Exclude N° and Acciones
+                                        .map(td => td.textContent || td.innerText)
+                                        .join(' ').toLowerCase(),
+                    isVisibleByFilter: true // Initially all rows are visible by filter
+                });
+            }
+        }
+
+        // Function to determine rows per page based on screen width
+        function getRowsPerPage() {
+            return window.innerWidth <= 767 ? rowsPerPageMobile : rowsPerPageDesktop;
+        }
+
+        // Function to apply pagination visibility
+        function displayRows() {
+            // Get projects currently visible after filtering
+            const filteredProjects = allProjectsData.filter(project => project.isVisibleByFilter);
+
+            // Hide all rows first to re-apply pagination
+            allProjectsData.forEach(project => {
+                project.element.style.display = 'none';
+            });
+
+            const startIndex = (currentPage - 1) * currentRowsPerPage;
+            const endIndex = Math.min(startIndex + currentRowsPerPage, filteredProjects.length);
+
+            // Display only the paginated subset of the filtered rows
+            for (let i = startIndex; i < endIndex; i++) {
+                if (filteredProjects[i]) {
+                    filteredProjects[i].element.style.display = '';
+                }
+            }
+        }
+
+        // Function to set up pagination links
+        function setupPagination() {
+            // Get currently visible rows (those not hidden by filterTable)
+            const visibleRowsForPagination = allProjectsData.filter(project => project.isVisibleByFilter);
+
+            const pageCount = Math.ceil(visibleRowsForPagination.length / currentRowsPerPage);
+            const paginationUl = document.getElementById('pagination');
+            paginationUl.innerHTML = ''; // Clear existing pagination
+
+            // Adjust currentPage if it's out of bounds after a filter or resize
+            if (currentPage > pageCount && pageCount > 0) {
+                currentPage = pageCount;
+            } else if (pageCount === 0 && visibleRowsForPagination.length > 0) {
+                currentPage = 1;
+            } else if (visibleRowsForPagination.length === 0) {
+                currentPage = 1;
+            }
+
+            // Hide pagination if there's only one page or no items
+            if (pageCount <= 1) {
+                paginationUl.style.display = 'none';
+            } else {
+                paginationUl.style.display = '';
+            }
+
+            // If no visible rows, no need to create pagination links
+            if (visibleRowsForPagination.length === 0) {
+                return;
+            }
+
+            // Previous button
+            let prevLi = document.createElement('li');
+            let prevLink = document.createElement('a');
+            prevLink.href = '#!';
+            prevLink.innerHTML = '«';
+            prevLink.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateTableAndPagination();
+                }
+            };
+            prevLi.appendChild(prevLink);
+            paginationUl.appendChild(prevLi);
+
+            // Page numbers
+            for (let i = 1; i <= pageCount; i++) {
+                let li = document.createElement('li');
+                let link = document.createElement('a');
+                link.href = '#!';
+                link.textContent = i;
+                link.onclick = (function(pageNumber) {
+                    return function() {
+                        currentPage = pageNumber;
+                        updateTableAndPagination();
+                    };
+                })(i);
+                li.appendChild(link);
+                paginationUl.appendChild(li);
+            }
+
+            // Next button
+            let nextLi = document.createElement('li');
+            let nextLink = document.createElement('a');
+            nextLink.href = '#!';
+            nextLink.innerHTML = '»';
+            nextLink.onclick = () => {
+                if (currentPage < pageCount) {
+                    currentPage++;
+                    updateTableAndPagination();
+                }
+            };
+            nextLi.appendChild(nextLink);
+            paginationUl.appendChild(nextLi);
+
+            // Update disabled/active states for pagination buttons
+            if (currentPage === 1) {
+                prevLi.classList.add('disabled');
+            } else {
+                prevLi.classList.remove('disabled');
+            }
+            if (currentPage >= pageCount || pageCount === 0) {
+                nextLi.classList.add('disabled');
+            } else {
+                nextLi.classList.remove('disabled');
+            }
+
+            // Set active class on current page number
+            Array.from(paginationUl.children).forEach(li => {
+                if (li.textContent == currentPage && li.textContent !== '«' && li.textContent !== '»') {
+                    li.classList.add('active');
+                } else {
+                    li.classList.remove('active');
+                }
+            });
+        }
+
+        // Function to update table and pagination
+        function updateTableAndPagination() {
+            currentRowsPerPage = getRowsPerPage();
+            displayRows();
+            setupPagination();
+        }
+
+        // Function to filter the table
+        function filterTable() {
+            const input = document.getElementById('searchProject');
+            const filter = input.value.toLowerCase();
+            let currentFilteredN = 1; // For re-indexing N° when filtered
+
+            allProjectsData.forEach(project => {
+                if (project.searchableText.includes(filter)) {
+                    project.isVisibleByFilter = true; // Mark as visible by filter
+                    // Update N° for filtered results if a filter is active
+                    if (filter !== '') {
+                        project.element.getElementsByTagName('td')[0].textContent = currentFilteredN++;
+                    }
+                } else {
+                    project.isVisibleByFilter = false; // Mark as hidden by filter
+                }
+            });
+
+            // Restore original N°s if filter is empty
+            if (filter === '') {
+                allProjectsData.forEach((project) => {
+                    project.element.getElementsByTagName('td')[0].textContent = project.originalN;
+                });
+            }
+
+            currentPage = 1; // Reset to first page after filtering or clearing filter
+            updateTableAndPagination(); // Update pagination based on filtered results
+        }
+
+        // Function to add a new set of Cédula and Nombre Completo fields
+        function addMemberField() {
+            const membersContainer = document.getElementById('membersContainer');
+            const newMemberGroup = document.createElement('div');
+            newMemberGroup.classList.add('row', 'member-input-group');
+            newMemberGroup.innerHTML = `
+                <div class="col-xs-12 col-sm-6">
+                    <div class="form-group label-floating">
+                        <label class="control-label">Cédula del Integrante</label>
+                        <input class="form-control" type="text" class="projectMemberId">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="form-group label-floating">
+                        <label class="control-label">Nombre Completo del Integrante</label>
+                        <input class="form-control" type="text" class="projectMemberName">
+                    </div>
+                </div>
+            `;
+            membersContainer.appendChild(newMemberGroup);
+            $.material.init(); // Re-initialize Material Design styles for new elements
+        }
+
+        // Function to add a new project to the table
+        function addNewProject() {
+            const period = document.getElementById('projectPeriod').value;
+            const name = document.getElementById('projectName').value;
+            const career = document.getElementById('projectCareer').value;
+            const tutor = document.getElementById('projectTutor').value;
+            const startDate = document.getElementById('projectStartDate').value;
+            const endDate = document.getElementById('projectEndDate').value;
+            const status = document.getElementById('projectStatus').value;
+
+            // Get all member IDs and Names
+            const memberIds = Array.from(document.querySelectorAll('.projectMemberId')).map(input => input.value);
+            const memberNames = Array.from(document.querySelectorAll('.projectMemberName')).map(input => input.value);
+
+            let allMembersValid = true;
+            let combinedMembers = [];
+            for (let i = 0; i < memberIds.length; i++) {
+                if (memberIds[i].trim() === '' || memberNames[i].trim() === '') {
+                    allMembersValid = false;
+                    break;
+                }
+                combinedMembers.push(`${memberIds[i].trim()}-${memberNames[i].trim()}`);
+            }
+
+            if (!period || !name || !career || !tutor || !startDate || !endDate || !status || !allMembersValid || combinedMembers.length === 0) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Por favor, completa todos los campos, incluyendo al menos un integrante con cédula y nombre.",
+                    icon: "error",
+                    confirmButtonText: "Ok"
+                });
+                return;
+            }
+
+            const membersString = combinedMembers.join(', '); // Join multiple members with a comma and space
+
+            const tableBody = document.getElementById('projectsTable').getElementsByTagName('tbody')[0];
+            const newRow = tableBody.insertRow();
+            const newOriginalN = allProjectsData.length + 1;
+
+            newRow.innerHTML = `
+                <td data-label="N°">${newOriginalN}</td>
+                <td data-label="Periodo">${period}</td>
+                <td data-label="Nombre del Proyecto">${name}</td>
+                <td data-label="Integrantes">${membersString}</td>
+                <td data-label="Carrera">${career}</td>
+                <td data-label="Tutor">${tutor}</td>
+                <td data-label="Fecha Inicio">${startDate}</td>
+                <td data-label="Fecha Final">${endDate}</td>
+                <td data-label="Estado">${status}</td>
+                <td data-label="Acciones">
+                    <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
+                    <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
+                </td>
+            `;
+
+            // Add new project to our data array
+            const newProjectData = {
+                element: newRow,
+                originalN: newOriginalN,
+                searchableText: Array.from(newRow.getElementsByTagName('td'))
+                                    .filter((td, index, array) => index !== 0 && index !== array.length - 1)
+                                    .map(td => td.textContent || td.innerText)
+                                    .join(' ').toLowerCase(),
+                isVisibleByFilter: true // New projects are initially visible
+            };
+            allProjectsData.push(newProjectData);
+
+            // Clear form and close modal
+            document.getElementById('addProjectForm').reset();
+            // Clear dynamically added member fields and restore the first one
+            const membersContainer = document.getElementById('membersContainer');
+            membersContainer.innerHTML = `
+                <div class="row member-input-group">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group label-floating">
+                            <label class="control-label">Cédula del Integrante</label>
+                            <input class="form-control" type="text" class="projectMemberId">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group label-floating">
+                            <label class="control-label">Nombre Completo del Integrante</label>
+                            <input class="form-control" type="text" class="projectMemberName">
+                        </div>
+                    </div>
+                </div>
+            `;
+            $.material.init(); // Re-initialize Material Design styles for cleared fields
+            $('#addProjectModal').modal('hide');
+
+            Swal.fire({
+                title: "¡Éxito!",
+                text: "El proyecto ha sido agregado correctamente.",
+                icon: "success",
+                confirmButtonText: "Ok"
+            });
+
+            // Re-apply filter if active, otherwise just update pagination
+            const currentFilter = document.getElementById('searchProject').value.toLowerCase();
+            if (currentFilter !== '') {
+                filterTable(); // This will reset page to 1 and update pagination
+            } else {
+                currentPage = Math.ceil(allProjectsData.length / currentRowsPerPage); // Go to last page
+                updateTableAndPagination(); // This will update pagination
+            }
+        }
+
+        // Initial call to populate allProjectsData and display table on load
+        $(document).ready(function() {
+            initializeProjectsData(); // Populate data from existing HTML
+            filterTable(); // Run filterTable (with empty filter) to set initial visibility and N°s
+            $.material.init(); // Apply Material Design styling after content is ready
+
+            window.addEventListener('resize', updateTableAndPagination);
+        });
+	</script>
+</body>
+</html>

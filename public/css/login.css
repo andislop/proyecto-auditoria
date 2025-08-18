@@ -1,0 +1,246 @@
+/*========= Importando hojas de estilo necesarias =========*/
+/* Bootstrap Icons 1.11.3 - Asegúrate de que esta ruta sea correcta y el archivo exista */
+@import url('./bootstrap-icons.css');
+/* Importa los estilos de Bootstrap y Material Design para que los componentes del formulario funcionen */
+@import url('./bootstrap.min.css');
+@import url('./bootstrap-material-design.min.css');
+@import url('./ripples.min.css');
+@import url('./sweetalert2.css');
+@import url('./jquery.mCustomScrollbar.css');
+
+
+/*============ Fonts - Asegúrate de que las rutas a las fuentes sean correctas si las necesitas en el login */
+@font-face {
+    font-family: 'RobotoCondensedLight';
+    src: url('../fonts/robotocondensed-light.eot');
+    src: url('../fonts/robotocondensed-light.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/robotocondensed-light.woff2') format('woff2'),
+         url('../fonts/robotocondensed-light.woff') format('woff'),
+         url('../fonts/robotocondensed-light.ttf') format('truetype'),
+         url('../fonts/robotocondensed-light.svg#roboto_condensedlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'RobotoCondensed';
+    src: url('../fonts/robotocondensed-regular.eot');
+    src: url('../fonts/robotocondensed-regular.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/robotocondensed-regular.woff2') format('woff2'),
+         url('../fonts/robotocondensed-regular.woff') format('woff'),
+         url('../fonts/robotocondensed-regular.ttf') format('truetype'),
+         url('../fonts/robotocondensed-regular.svg#roboto_condensedregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*============ Estilos generales y de fondo para el login */
+body, html{
+    /* Fondo degradado azul, con !important para forzar su aplicación */
+    background: linear-gradient(135deg, #1a2a44 0%, #2a3e61 100%) !important;
+    background-image: none !important; /* Asegura que no haya imagen de fondo */
+    display: flex !important; /* Usa flexbox para centrar el contenido */
+    justify-content: center !important; /* Centrado horizontal */
+    align-items: center !important; /* Centrado vertical */
+    height: 100vh !important; /* Ocupa el 100% de la altura del viewport */
+    width: 100% !important; /* Ocupa el 100% del ancho */
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    font-size: 16px;
+    font-family: 'RobotoCondensed', sans-serif;
+    overflow: hidden !important; /* Evita el scroll */
+}
+
+.full-box{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+/* La clase .cover no es necesaria en el body para este diseño de fondo */
+.cover{
+    background-image: none !important;
+}
+.text-titles{
+	font-family: 'RobotoCondensedLight';
+	color: #222;
+}
+
+/* Contenedor principal para la 'tarjeta blanca' del login */
+.login-main-container {
+    background-color: #ffffff;
+    border-radius: 15px; /* Bordes redondeados */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2); /* Sombra suave */
+    max-width: 450px; /* Ancho máximo para la tarjeta, ajustado */
+    width: 90%; /* Ancho responsivo */
+    height: auto;
+    display: flex;
+    flex-direction: column; /* Contenido apilado */
+    justify-content: center;
+    align-items: center;
+    padding: 40px; /* Padding interno */
+    box-sizing: border-box;
+    position: relative; /* Para el posicionamiento del avatar */
+}
+
+/* Estilo para el avatar/icono de usuario encima del formulario */
+.login-avatar {
+    position: absolute;
+    top: -50px; /* Mueve el avatar hacia arriba para que sobresalga */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 100px; /* Tamaño del icono */
+    color: #1a2a44; /* Azul oscuro del dashboard */
+    background-color: #ffffff; /* Fondo blanco para el círculo */
+    border-radius: 50%; /* Círculo perfecto */
+    padding: 10px; /* Espacio alrededor del icono */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Sombra para el avatar */
+    z-index: 10; /* Asegura que esté por encima */
+}
+
+/*============ LogIn Formulario específico */
+.logInForm{
+	position: relative;
+	color: #333;
+	transform: none;
+	width: 100%;
+	max-width: 380px; /* Ancho máximo del formulario dentro de la tarjeta */
+	padding: 0;
+    text-align: center;
+    margin-top: 50px; /* Ajusta el margen superior para el espacio del avatar */
+}
+
+/* Título "Inicia sesión con tu cuenta" */
+.login-title {
+    font-size: 1.8em; /* Tamaño del título principal */
+    font-family: 'RobotoCondensedLight', sans-serif;
+    color: #1a2a44; /* Azul oscuro */
+    margin-bottom: 30px; /* Espacio debajo del título */
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Ocultar los help-block que contienen los textos "Escribe tu correo/contraseña" */
+.form-group .help-block {
+    display: none !important;
+}
+
+/* Estilo para los campos de formulario con iconos */
+.form-group {
+    position: relative; /* Necesario para posicionar el icono dentro */
+    margin-bottom: 25px;
+    text-align: left; /* Alinea el contenido del grupo a la izquierda */
+}
+.form-group .control-label { /* Labels flotantes */
+    color: #888 !important;
+    font-size: 0.95em;
+    position: absolute;
+    pointer-events: none;
+    left: 30px; /* Posición inicial de la label para el icono */
+    top: 10px; /* Ajusta la posición inicial de la label */
+    transition: all 0.2s ease-out;
+    transform-origin: left top;
+    z-index: 1;
+}
+.form-group.label-floating.is-focused .control-label,
+.form-group.label-floating.is-dirty .control-label {
+    top: -15px; /* Mueve la label arriba cuando está enfocada o tiene valor */
+    font-size: 0.8em;
+    color: #1a2a44 !important; /* Azul oscuro al flotar */
+}
+
+.form-group .form-control { /* Input fields */
+    border: none;
+    border-bottom: 2px solid #ddd; /* Borde inferior sutil */
+    padding: 10px 0; /* Espaciado interno */
+    padding-left: 30px; /* Espacio para el icono */
+    box-shadow: none;
+    background-image: none;
+    color: #333;
+    font-size: 1.1em;
+    width: 100%;
+    box-sizing: border-box;
+}
+.form-group .form-control:focus {
+    border-color: #64b5f6; /* Azul más claro al enfocar */
+    box-shadow: none;
+}
+
+/* Iconos dentro de los campos de formulario */
+.form-group .bi { /* Iconos para los inputs */
+    position: absolute;
+    left: 0;
+    top: 10px; /* Ajusta la posición vertical del icono */
+    font-size: 1.4em; /* Iconos un poco más grandes */
+    color: #666; /* Color de icono */
+    z-index: 2;
+}
+/* Al enfocar, cambia el color del icono */
+.form-group.is-focused .bi {
+    color: #1a2a44;
+}
+
+
+/* Estilo para el botón de login */
+.btn-login {
+    background-color: #1a2a44;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 14px 40px;
+    font-size: 1.2em;
+    transition: all .3s ease-in-out;
+    margin-top: 30px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer; /* Asegura el cursor de puntero */
+}
+.btn-login:hover,
+.btn-login:focus {
+    background-color: #2a3e61;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+    transform: translateY(-3px);
+}
+
+/* Media Queries para responsividad del login */
+@media (max-width: 480px) {
+    .login-main-container {
+        padding: 30px 20px;
+        border-radius: 10px;
+        max-width: 95%;
+    }
+    .login-avatar {
+        font-size: 80px;
+        top: -40px;
+        padding: 8px;
+    }
+    .logInForm {
+        margin-top: 40px;
+    }
+    .login-title {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group .control-label {
+        font-size: 0.9em;
+    }
+    .form-group .form-control {
+        font-size: 1em;
+        padding-left: 25px;
+    }
+    .form-group .bi {
+        font-size: 1.1em;
+        top: 8px;
+        left: 0;
+    }
+    .btn-login {
+        padding: 12px 25px;
+        font-size: 1em;
+        margin-top: 20px;
+    }
+}

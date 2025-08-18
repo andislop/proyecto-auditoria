@@ -1,0 +1,809 @@
+/*========= Importando hojas de estilo =========*/
+/* Bootstrap 3.3.7 */
+@import url('./bootstrap.min.css');
+/* Material desing for Bootstrap */
+@import url('./bootstrap-material-design.min.css');
+@import url('./ripples.min.css');
+/* Sweet Alert 2 */
+@import url('./sweetalert2.css');
+/* Malihu jQuery custom content scroller 3.1.5 */
+@import url('./jquery.mCustomScrollbar.css');
+/* Material Design Iconic Font 2.2.0 */
+@import url('./material-design-iconic-font.min.css');
+/*============ Fonts */
+@font-face {
+    font-family: 'RobotoCondensedLight';
+    src: url('../fonts/robotocondensed-light.eot');
+    src: url('../fonts/robotocondensed-light.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/robotocondensed-light.woff2') format('woff2'),
+         url('../fonts/robotocondensed-light.woff') format('woff'),
+         url('../fonts/robotocondensed-light.ttf') format('truetype'),
+         url('../fonts/robotocondensed-light.svg#roboto_condensedlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'RobotoCondensed';
+    src: url('../fonts/robotocondensed-regular.eot');
+    src: url('../fonts/robotocondensed-regular.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/robotocondensed-regular.woff2') format('woff2'),
+         url('../fonts/robotocondensed-regular.woff') format('woff'),
+         url('../fonts/robotocondensed-regular.ttf') format('truetype'),
+         url('../fonts/robotocondensed-regular.svg#roboto_condensedregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+/*============ Estilos generales*/
+body, html{
+	background-color: #f5f5f5; /* Un fondo más claro para contrastar mejor */
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	font-size: 16px;
+	font-family: 'RobotoCondensed', sans-serif; /* Aseguramos una fuente de respaldo */
+	overflow-x: hidden; /* Evitar scroll horizontal */
+}
+.full-box{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+.cover{
+	background: 50% 50% no-repeat;
+	background-size: cover;
+}
+.text-titles{
+	font-family: 'RobotoCondensedLight';
+	color: #222; /* Un color más oscuro para los títulos generales */
+	justify-content: center;
+}
+/*============ LogIn*/
+.logInForm{
+	position: absolute;
+	color: #fff;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 90%;
+	max-width: 300px;
+	padding: 15px;
+	box-shadow: 0 0 3px rgba(0,0,0,.7);
+	border-radius: 0 0 2px 2px;
+	background-color: rgba(0, 0, 0, .7);
+}
+.logInForm p,
+.logInForm label{
+	color: #FFF;
+}
+/*============ Partes del dashboard*/
+.dashboard-sideBar,
+.dashboard-contentPage{
+	position: absolute;
+	top: 0;
+	height: 100%;
+	transition: all .3s ease-in-out;
+}
+/*sideBar*/
+.dashboard-sideBar,
+.dashboard-sideBar-ct{
+	width: 270px;
+}
+.dashboard-sideBar{
+    /* Eliminamos la imagen de fondo y cambiamos el color de fondo a un azul oscuro */
+	left: 0;
+	z-index: 2;
+	background-image: none;
+	background-color: #1a2a44; /* Azul oscuro */
+	border-right: 1px solid rgba(255, 255, 255, .1);
+	overflow: hidden;
+}
+.dashboard-sideBar-ct{
+	position: relative;
+	height: 100%;
+	background-color: rgba(0, 0, 0, .3); /* Fondo semitransparente para un efecto de profundidad */
+	padding: 0 10px;
+	padding-bottom: 30px;
+}
+.dashboard-sideBar-title,
+.dashboard-sideBar-title > i{
+	height: 50px;
+	line-height: 50px;
+	color: #fff;
+	font-size: 20px;
+}
+.dashboard-sideBar-title{
+	position: relative;
+}
+.dashboard-sideBar-title > i{
+	position: absolute;
+	top: 0;
+	left: 0;
+	cursor: pointer;
+	width: 40px;
+}
+.dashboard-sideBar-UserInfo{
+	border-top: 1px solid rgba(255, 255, 255, .1);
+	border-bottom: 1px solid rgba(255, 255, 255, .1);
+	color: #fff; /* Color general para el UserInfo, incluyendo el nombre */
+	font-size: 14px;
+	padding: 20px 0;
+}
+.dashboard-sideBar-UserInfo figure img{
+	width: 100px;
+	height: 100px;
+	border-radius: 100%;
+	display: block;
+	margin: 0 auto;
+}
+.dashboard-sideBar-UserInfo figcaption.text-center.text-titles {
+    color: #fff; /* Explicitamente blanco para el nombre de usuario */
+    font-weight: bold; /* Hacer el nombre más intenso */
+}
+.dashboard-sideBar-UserInfo ul{
+	margin-top: 15px;
+}
+.dashboard-sideBar-UserInfo ul > li,
+.dashboard-sideBar-UserInfo ul > li > a{
+	display: inline-block;
+	color: #fff;
+}
+.dashboard-sideBar-UserInfo ul > li > a{
+	outline: none;
+	font-size: 20px;
+	padding: 7px;
+	transition: all .3s ease-in-out;
+}
+.dashboard-sideBar-UserInfo ul > li > a:hover{
+	color: #64b5f6; /* Azul claro para hover de iconos de usuario */
+}
+.dashboard-sideBar-Menu{
+	padding-top: 15px;
+}
+.dashboard-sideBar-Menu > li,
+.dashboard-sideBar-Menu > li > a,
+.dashboard-sideBar-Menu > li > ul > li,
+.dashboard-sideBar-Menu > li > ul > li > a{
+	line-height: 50px;
+	font-family: "RobotoCondensed"; /* Usar la fuente regular para el menú */
+	display: block;
+	color: #d0d0d0; /* Color de texto general para los elementos del menú, un poco más claro */
+	text-decoration: none;
+	border-radius: 4px;
+	transition: all .3s ease-in-out;
+	position: relative;
+}
+.dashboard-sideBar-Menu > li > a > i.zmdi-caret-down{
+	line-height: 50px;
+	transition: all .3s ease-in-out;
+}
+.dashboard-sideBar-Menu > li > a{
+	padding: 0 15px;
+	box-sizing: border-box;
+	height: 50px;
+	outline: none;
+}
+.dashboard-sideBar-Menu > li > a:hover{
+	background-color: rgba(100, 181, 246, .2); /* Fondo de hover azul más sutil */
+	color: #ffffff;
+}
+.dashboard-sideBar-Menu > li > ul{
+	position: relative;
+	padding-top: 7px;
+	height: 0;
+	overflow: hidden;
+}
+.show-sideBar-SubMenu{
+	height: auto !important;
+	overflow: auto !important;
+}
+.dashboard-sideBar-Menu > li > ul > li,
+.dashboard-sideBar-Menu > li > ul > li > a{
+	height: 40px;
+	line-height: 40px;
+	border-radius: 0;
+    color: #d0d0d0; /* Un gris más claro para que se vea bien en el fondo oscuro */
+}
+.dashboard-sideBar-Menu > li > ul > li{
+	padding-left: 27px; /* Indentación de los submenús */
+}
+.dashboard-sideBar-Menu > li > ul > li > a{
+	border-left: 3px solid transparent;
+	outline: none;
+}
+.dashboard-sideBar-Menu > li > ul > li > a:hover{
+	border-left: 3px solid #64b5f6; /* Borde izquierdo azul en hover, para resaltar */
+	color: #ffffff; /* Texto blanco en hover para contraste */
+}
+/*contentPage*/
+.dashboard-contentPage{
+	right: 0;
+	z-index: 1;
+	padding-left: 270px;
+}
+.dashboard-Navbar,
+.dashboard-Navbar > ul,
+.dashboard-Navbar > ul >li,
+.dashboard-Navbar > ul > li > a{
+	height: 50px;
+	line-height: 50px;
+}
+.dashboard-Navbar > ul > li > a{
+	outline: none;
+}
+.dashboard-Navbar{
+	background-color: #2a3e61; /* Color de la barra superior, un azul más vibrante */
+	overflow: hidden;
+}
+.dashboard-Navbar > ul >li,
+.dashboard-Navbar > ul > li > a{
+	display: inline-block;
+	width: 50px;
+	text-align: center;
+	color: #fff;
+	margin: 0;
+	padding: 0;
+	font-size: 20px;
+	transition: all .3s ease-in-out;
+	position: relative;
+}
+.dashboard-Navbar > ul > li > a:hover{
+	background-color: rgba(100, 181, 246, .2); /* Fondo de hover azul para la barra superior */
+	color: #64b5f6; /* Azul claro para hover de iconos de la barra superior */
+}
+.dashboard-Navbar > ul > li > a > span.badge{
+	position: absolute;
+	top: 7px;
+	right: 6px;
+	background-color: #64b5f6; /* Azul claro para la insignia */
+	transition: all .3s ease-in-out;
+}
+.dashboard-Navbar > ul > li > a:hover span.badge{
+	background-color: #FFF;
+	color: #333;
+}
+/*============ Area de notificaciones*/
+.Notifications-area{
+	height: 100%;
+	position: fixed;
+	z-index: 99;
+	transition: all .3s ease-in-out;
+	overflow: hidden;
+	opacity: 0;
+	pointer-events: none;
+}
+.Notifications-bg,
+.Notifications-body{
+	height: 100%;
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+.Notifications-bg{
+	z-index: 1;
+	background-color: rgba(0, 0, 0, .7);
+}
+.Notifications-body{
+	z-index: 2;
+	background-color: #FFF;
+	width: 100%;
+	max-width: 300px;
+	transform: translateX(300px);
+	transition: all .3s ease-in-out;
+}
+.Notifications-body-title,
+.Notifications-body-title > i{
+	height: 50px;
+	line-height: 50px;
+	font-size: 20px;
+}
+.Notifications-body-title{
+	background-color: #64b5f6; /* Azul claro para la barra de título de notificaciones */
+	color: #fff;
+	position: relative;
+}
+.Notifications-body-title > i{
+	position: absolute;
+	top: 0;
+	left: 0;
+	cursor: pointer;
+	width: 50px;
+}
+.show-Notification-area{
+	opacity: 1 !important;
+	pointer-events: auto !important;
+}
+.show-Notification-area > .Notifications-body{
+	transform: translateX(0) !important;
+}
+/*============ Estilos home (modificados para la cuadrícula)*/
+.full-box.text-center {
+    padding: 0; /* Elimina el padding extra si lo tienes aquí para que la cuadrícula lo maneje */
+}
+
+/* Contenedor para la cuadrícula de tiles */
+.tiles-container {
+    display: flex;
+    flex-wrap: wrap; /* **Crucial:** Permite que las tarjetas salten a la siguiente línea */
+    justify-content: center; /* Centra las tarjetas horizontalmente dentro del contenedor */
+    gap: 20px; /* Espacio entre las tarjetas */
+    padding: 10px;
+}
+
+.tile {
+    /* **Cambio importante:** Define el ancho de cada tarjeta para que quepan dos por fila */
+    /* calc(50% - 10px) es para que cada tarjeta ocupe la mitad del ancho del contenedor,
+       y se reste la mitad del espacio (gap) para que quepan bien. */
+    flex-basis: calc(50% - 10px);
+
+    /* O puedes usar un ancho fijo si prefieres */
+    /* width: 400px; */
+
+    max-width: 50%; /* Esto es una medida de seguridad, pero flex-basis es lo que manda */
+
+    height: 190px;
+    background-color: #e3f2fd;
+    color: #212121;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
+    border-radius: 12px;
+    transition: all .3s ease-in-out;
+    padding: 15px;
+    text-align: center;
+}
+.tile:hover {
+    /* Efecto de elevación o cambio de color en hover para toda la card */
+    transform: translateY(-8px); /* Efecto de elevación más pronunciado */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Sombra más intensa en hover */
+}
+.tile:hover > .tile-icon i,
+.tile:hover > .tile-number{
+	color: #1976d2; /* Azul más oscuro para iconos y números en hover */
+}
+.tile-title{
+	height: auto; /* Altura automática para el título */
+	line-height: 1.4; /* Espaciado de línea mejorado */
+	font-size: 1.15em; /* Título ligeramente más pequeño */
+	background-color: #90caf9; /* Un azul medio para el fondo del título */
+	color: #1a2a44; /* Texto del título muy oscuro */
+	top: unset; /* Reinicia top */
+	left: unset; /* Reinicia left */
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	border-bottom-left-radius: 8px; /* Aplica bordes redondeados a todo el título */
+	border-bottom-right-radius: 8px;
+	width: 100%;
+	margin-bottom: 10px;
+	font-weight: bold;
+	padding: 8px 15px;
+}
+.tile-icon{
+	bottom: unset;
+	left: unset;
+	height: auto;
+	width: 100%;
+	flex-grow: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.tile-icon > i{
+	line-height: 1;
+	font-size: 75px;
+	color: #333;
+	transition: all .3s ease-in-out;
+}
+.tile-icon > i,
+.tile-number{
+	color: #333;
+	transition: all .3s ease-in-out;
+}
+.tile-number{
+	right: unset;
+	height: auto;
+	width: 100%;
+	margin-top: 10px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+.tile-number > p{
+	font-size: 2.2em;
+	margin: 0;
+	line-height: 1;
+}
+.tile-number > small{
+	font-size: 0.85em;
+	display: block;
+	margin-top: 5px;
+	color: #444;
+}
+/*TimeLine*/
+.cd-container {
+  width: 90%;
+  max-width: 1170px;
+  margin: 0 auto;
+}
+.cd-container::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+#cd-timeline {
+  position: relative;
+  padding: 2em 0;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+#cd-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 18px;
+  height: 100%;
+  width: 4px;
+  background: #d7e4ed;
+}
+.cd-timeline-block {
+  position: relative;
+  margin: 2em 0;
+}
+.cd-timeline-block::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.cd-timeline-block:first-child {
+  margin-top: 0;
+}
+.cd-timeline-block:last-child {
+  margin-bottom: 0;
+}
+.cd-timeline-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(0,0,0,.09);
+}
+.cd-timeline-img img {
+  display: block;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  border-radius: 50%;
+}
+.cd-timeline-content {
+  position: relative;
+  margin-left: 60px;
+  border-radius: 0.25em;
+  padding: 1em;
+  background-color: #01579B;
+  color: #fff;
+}
+.cd-timeline-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.cd-timeline-content .cd-date {
+  display: inline-block;
+}
+.cd-timeline-content p {
+  margin: 1em 0;
+  line-height: 1.6;
+}
+.cd-timeline-content .cd-date {
+  float: left;
+  padding: .8em 0;
+}
+.cd-timeline-content::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: 100%;
+  height: 0;
+  width: 0;
+  border: 7px solid transparent;
+  border-right: 7px solid #01579B;
+}
+@media (min-width: 1200px) {
+    #cd-timeline {
+        margin-top: 3em;
+        margin-bottom: 3em;
+    }
+    #cd-timeline::before {
+        left: 50%;
+        margin-left: -2px;
+    }
+    .cd-timeline-block {
+        margin: 4em 0;
+    }
+    .cd-timeline-block:first-child {
+        margin-top: 0;
+    }
+    .cd-timeline-block:last-child {
+        margin-bottom: 0;
+    }
+    .cd-timeline-img {
+        width: 60px;
+        height: 60px;
+        left: 50%;
+        margin-left: -30px;
+        -webkit-transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+    }
+    .cd-timeline-img img{
+        width: 60px;
+        height: 60px;
+    }
+    .cd-timeline-content .cd-date {
+        color: #01579B;
+    }
+    .cd-timeline-content {
+        margin-left: 0;
+        width: 45%;
+    }
+  .cd-timeline-content::before {
+    top: 24px;
+    left: 100%;
+    border-color: transparent;
+    border-left-color: #01579B;
+  }
+  .cd-timeline-content .cd-date {
+    position: absolute;
+    width: 100%;
+    left: 122%;
+    top: 6px;
+    font-size: 16px;
+    font-size: 1rem;
+  }
+  .cd-timeline-block:nth-child(even) .cd-timeline-content {
+    float: right;
+  }
+  .cd-timeline-block:nth-child(even) .cd-timeline-content::before {
+    top: 24px;
+    left: auto;
+    right: 100%;
+    border-color: transparent;
+    border-right-color: #01579B;
+  }
+  .cd-timeline-block:nth-child(even) .cd-timeline-content .cd-date {
+    left: auto;
+    right: 122%;
+    text-align: right;
+  }
+}
+
+/* Custom styles for the new table */
+.table-projects {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
+    border-radius: 8px;
+    overflow: hidden; /* Ensures rounded corners are applied to table content */
+}
+
+.table-projects thead {
+    background-color: #2a3e61; /* Darker blue for the header */
+    color: #fff;
+}
+
+.table-projects th,
+.table-projects td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-projects tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light grey for even rows */
+}
+
+.table-projects tbody tr:hover {
+    background-color: #e0f2f7; /* Lighter blue on hover */
+}
+
+/* Styles for blue buttons - now a darker blue */
+.btn-info.btn-raised,
+.btn-primary.btn-raised { /* Applied to both for consistency */
+    background-color: #2a3e61; /* Darker blue, matching the sidebar/header */
+}
+
+/* Red for danger buttons (delete) */
+.btn-danger.btn-raised {
+    background-color: #f44336; /* Red for delete button */
+}
+
+/* Styles for form labels to be a darker blue */
+.form-group .control-label {
+    color: #2a3e61; /* Darker blue for default label color */
+}
+/* For focused state, ensure it remains the darker blue */
+.form-group.is-focused .control-label {
+    color: #2a3e61 !important; /* Keep darker blue when focused */
+}
+
+/* Darker blue for input bottom line when focused */
+.form-group.is-focused .form-control {
+    border-color: #2a3e61; /* Darker blue for the border/line */
+    box-shadow: inset 0 -1px 0 #2a3e61; /* Optional: for a subtle line effect */
+}
+
+
+/*======= MEDIA QUERIES*/
+@media (max-width: 767px){
+	.dashboard-sideBar{
+		width: 100%;
+		z-index: 99;
+		background-image: none;
+		background-color: transparent;
+		border-right: none;
+		/* Aseguramos que el sidebar completo esté oculto y no sea interactivo inicialmente */
+		opacity: 0;
+		pointer-events: none;
+		overflow: hidden;
+	}
+	.dashboard-sideBar-ct{
+		position: absolute; /* Aseguramos posicionamiento absoluto */
+		top: 0;
+		left: 0;
+		background-color: #1a2a44; /* Fondo azul oscuro del sidebar en móvil */
+		border-right: 1px solid rgba(255, 255, 255, .1);
+		z-index: 3; /* Aseguramos que el contenido del sidebar esté por encima del fondo opaco */
+		max-width: 270px;
+		width: 100%;
+		transition: all .3s ease-in-out;
+		transform: translateX(-270px); /* Oculto a la izquierda */
+	}
+	.dashboard-sideBar-bg{
+		position: absolute; /* Aseguramos posicionamiento absoluto */
+		top: 0;
+		left: 0;
+		height: 100%;
+        width: 100%; /* Aseguramos que cubra todo el ancho del contenedor padre */
+        /* Reducimos la opacidad para que no sea "todo opaco" */
+		background-color: rgba(0, 0, 0, .6); /* Volvemos a una opacidad más suave */
+		z-index: 2; /* Fondo opaco detrás del contenido del sidebar */
+	}
+	.dashboard-contentPage{
+		padding-left: 0;
+	}
+	.show-sidebar{
+		pointer-events: auto !important;
+		opacity: 1 !important;
+	}
+	.show-sidebar > .dashboard-sideBar-ct{
+		transform: translateX(0) !important; /* Desplaza el contenido del sidebar a la vista */
+	}
+
+    /* Media Queries para responsividad de los tiles */
+   .tiles-container {
+        /* No es necesario cambiar la propiedad grid aquí */
+        padding: 15px;
+    }
+    .tile {
+        /* **Este es el cambio clave** para que se apilen */
+        flex-basis: 100%;
+        max-width: 100%;
+
+        height: 170px; /* Ajuste de altura para móviles */
+    }
+    .tile-icon > i {
+        font-size: 65px; /* Icono más pequeño en móvil */
+    }
+
+    /* Table Responsiveness for small screens */
+    .table-responsive {
+        border: none; /* Remove border from table-responsive to let table handle it */
+    }
+    .table-projects thead {
+        display: none; /* Hide table header on small screens */
+    }
+    .table-projects tbody, .table-projects tr, .table-projects td {
+        display: block; /* Make table rows and cells behave like blocks */
+        width: 100%;
+    }
+    .table-projects tr {
+        margin-bottom: 15px; /* Increased spacing between cards */
+        background-color: #ffffff; /* White background for each card */
+        border: 1px solid #e0e0e0; /* Softer border */
+        border-radius: 12px; /* More rounded corners for cards */
+        box-shadow: 0 6px 20px rgba(0,0,0,0.08); /* Slightly more prominent shadow */
+        transition: all 0.3s ease-in-out;
+    }
+    .table-projects tr:hover {
+        transform: translateY(-3px); /* Subtle lift on hover */
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .table-projects td {
+        padding: 10px 15px !important; /* Adjusted padding for content inside cells */
+        text-align: right !important;
+        padding-left: 45% !important; /* Adjusted padding-left for label space */
+        position: relative;
+        border: none; /* Remove individual cell borders */
+    }
+    .table-projects td::before {
+        content: attr(data-label); /* Use data-label for content */
+        position: absolute;
+        left: 15px; /* Adjusted left position for label */
+        width: calc(45% - 30px); /* Adjusted width for label */
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600; /* Make label bolder */
+        color: #555; /* Slightly softer color for label */
+    }
+    .table-projects td:first-child {
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+    .table-projects td:last-child {
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+    /* Ensure action buttons are well-aligned */
+    .table-projects td[data-label="Acciones"] {
+        padding-top: 15px !important;
+        text-align: center !important;
+        padding-left: 15px !important; /* Reset padding-left for actions column */
+    }
+    .table-projects td[data-label="Acciones"]::before {
+        display: none; /* Hide label for actions column */
+    }
+}
+@media (min-width: 768px) and (max-width: 991px){
+	.hide-sidebar{
+		pointer-events: none;
+		opacity: 0;
+		border-right: none;
+		transform: translateX(-270px);
+	}
+	.no-paddin-left{
+		padding-left: 0;
+	}
+
+    /* Media Queries para responsividad de los tiles */
+    .tiles-container {
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas en tablets */
+    }
+}
+@media (min-width: 992px) and (max-width: 1199px){
+	.hide-sidebar{
+		pointer-events: none;
+		opacity: 0;
+		border-right: none;
+		transform: translateX(-270px);
+	}
+	.no-paddin-left{
+		padding-left: 0;
+	}
+    /* Media Queries para responsividad de los tiles */
+    .tiles-container {
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas en pantallas medianas */
+    }
+}
+@media (min-width: 1200px){
+	.hide-sidebar{
+		pointer-events: none;
+		opacity: 0;
+		border-right: none;
+		transform: translateX(-270px);
+	}
+	.no-paddin-left{
+		padding-left: 0;
+	}
+    /* Media Queries para responsividad de los tiles */
+    .tiles-container {
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas en pantallas grandes por defecto */
+    }
+}
