@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<title>Trabajo de Grado</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" href="../css/main.css">
+    <!-- Aseguramos que el archivo bootstrap-icons.css se cargue si no lo tienes en main.css -->
+    <link rel="stylesheet" href="../css/bootstrap-icons.css">
+    <style>
+        /* Estilos para la ventana modal personalizada */
+        .custom-modal-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 9999; /* FIX: Asegura que esté por encima de TODO */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            border-radius: 8px;
+            text-align: center;
+            color: #333;
+        }
+
+        .custom-modal-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .custom-modal-body {
+            padding: 10px 0;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para el campo de mensaje en la alerta personalizada */
+        .custom-modal-body textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical; /* Permite redimensionar verticalmente */
+        }
+
+        .custom-modal-footer {
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+
+        .custom-modal-footer button {
+            background-color: #2a3e61; /* Azul oscuro */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal-footer button:hover {
+            background-color: #1a2a44; /* Azul más oscuro al pasar el ratón */
+        }
+
+        /* Animación de entrada */
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        /* Responsive Table Styles for mobile */
+        @media (max-width: 767px) {
+            .table-responsive {
+                border: none;
+            }
+            .table-projects thead {
+                display: none;
+            }
+            .table-projects, .table-projects tbody, .table-projects tr, .table-projects td {
+                display: block;
+                width: 100%;
+            }
+            .table-projects tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 10px;
+                background-color: #fff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .table-projects td {
+                text-align: right;
+                padding-left: 50% !important;
+                position: relative;
+                border: none;
+            }
+            .table-projects td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #555;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .table-projects td[data-label="Acciones"] {
+                padding-top: 10px !important;
+                text-align: center !important;
+                padding-left: 15px !important; 
+            }
+            .table-projects td[data-label="Acciones"]::before {
+                display: none;
+            }
+            /* Estilo para que el contenido de Estudiante no se recorte en móvil */
+            .table-projects td[data-label="Estudiante"] { /* Cambiado de "Integrantes" a "Estudiante" */
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+            }
+            .table-projects td[data-label="Estudiante"]::before { /* Cambiado de "Integrantes" a "Estudiante" */
+                top: 10px;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilos específicos para la gestión de estudiante (similar a integrantes, pero es uno solo) */
+        .student-input-group { 
+            display: flex;
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+            align-items: center;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 8px 12px;
+            margin-bottom: 15px; /* Ajustado para dar más espacio */
+            border-radius: 5px;
+            position: relative; /* Para posicionar el botón de remover */
+        }
+        .student-input-group .form-group {
+            flex-grow: 1;
+            margin-bottom: 0; 
+            padding-right: 10px; 
+        }
+        .student-input-group .col-xs-12 {
+            width: 100%; 
+        }
+        .student-input-group .col-sm-6 {
+            width: 50%; 
+        }
+
+        /* Estilos para la celda de Estudiante en la tabla principal */
+        .table-projects td[data-label="Estudiante"] {
+            text-align: left; /* Asegura alineación a la izquierda */
+            white-space: normal; /* Permite el ajuste de línea */
+            word-break: break-word; /* Permite romper palabras largas */
+            min-width: 180px; /* Aumentado el ancho mínimo para que se vea mejor */
+        }
+        /* Ajustes para la visualización del tutor en el modal */
+        .tutor-input-group .form-group {
+            margin-bottom: 0;
+            padding-right: 10px;
+        }
+        .tutor-input-group .col-xs-12, .tutor-input-group .col-sm-6 {
+            margin-bottom: 15px; /* Restaurar margen inferior para los campos del tutor */
+        }
+    </style>
+</head>
+<body>
+	<!-- SideBar -->
+	<section class="full-box cover dashboard-sideBar">
+		<div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
+		<div class="full-box dashboard-sideBar-ct">
+			<!--SideBar Title -->
+			<div class="full-box text-uppercase text-center text-titles dashboard-sideBar-title">
+				UNEFA <i class="zmdi zmdi-close btn-menu-dashboard visible-xs"></i>
+			</div>
+			<!-- SideBar User info -->
+			<div class="full-box dashboard-sideBar-UserInfo">
+				<figure class="full-box">
+					<img src="../assets/img/foto.jpg" alt="UserIcon">
+					<figcaption class="text-center text-titles">juancito007</figcaption>
+				</figure>
+				<ul class="full-box list-unstyled text-center">
+					<li>
+						<a href="#!">
+							<i class="zmdi zmdi-settings"></i>
+						</a>
+					</li>
+					<li>
+						<a href="/" class="btn-exit-system">
+							<i class="zmdi zmdi-power"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<!-- SideBar Menu -->
+			<ul class="list-unstyled full-box dashboard-sideBar-Menu">
+				<li>
+					<a href="/home">
+						<i class="zmdi zmdi-view-dashboard zmdi-hc-fw"></i> Dashboard
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-case zmdi-hc-fw"></i> Administracion <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="/servicio-comunitario"><i class="zmdi zmdi-timer zmdi-hc-fw"></i> Servicio Comunitario</a>
+						</li>
+						<li>
+							<a href="/trabajo-de-grado"><i class="zmdi zmdi-book zmdi-hc-fw"></i> Trabajo de Grado</a>
+						</li>
+						<li>
+							<a href="/proyectos"><i class="zmdi zmdi-graduation-cap zmdi-hc-fw"></i>Proyectos</a>
+						</li>
+						<li>
+							<a href="salon.html"><i class="zmdi zmdi-font zmdi-hc-fw"></i> Pasantias</a>
+						</li>
+                        <li>
+                            <a href="/proyectos-eliminados"><i class="zmdi zmdi-delete zmdi-hc-fw"></i> Proyectos Eliminados</a>
+                        </li>
+					</ul>
+				</li>
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Users <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="admin.html"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
+						</li>
+						<li>
+							<a href="teacher.html"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Teacher</a>
+						</li>
+						<li>
+							<a href="student.html"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Student</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</section>
+
+	<!-- Content page-->
+	<section class="full-box dashboard-contentPage">
+		<!-- NavBar -->
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li class="pull-left">
+					<a href="#!" class="btn-menu-dashboard"><i class="zmdi zmdi-more-vert"></i></a>
+				</li>
+				<li>
+					<a href="#!" class="btn-Notifications-area">
+						<i class="zmdi zmdi-notifications-none"></i>
+						<span class="badge">7</span>
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-search">
+						<i class="zmdi zmdi-search"></i>
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<!-- Content page -->
+		<div class="container-fluid">
+			<div class="page-header" style="text-align: center;">
+			  <h1 class="text-titles" style="display: inline-block;"></i> Trabajo de Grado</h1>
+			</div>
+			<p class="lead">Bienvenido a la sección de administración de trabajos de grado. Aquí puedes gestionar todos los trabajos de grado.</p>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<div id="myTabContent" class="tab-content">
+					  	<div class="tab-pane fade active in" id="list">
+                            <div class="container-fluid">
+                                <div class="row" style="margin-bottom: 15px;">
+                                    <div class="col-xs-12 col-sm-6">
+                                        <button class="btn btn-info btn-raised" data-toggle="modal" data-target="#addDegreeProjectModal" onclick="prepareAddDegreeProjectModal()">
+                                            <i class="zmdi zmdi-plus"></i> Agregar nuevo trabajo de grado
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        <div class="form-group label-floating">
+                                            <label class="control-label" for="searchDegreeProject">Buscar Trabajo de Grado</label>
+                                            <input class="form-control" type="text" id="searchDegreeProject" onkeyup="filterTable()">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="table-responsive">
+								<table class="table table-hover text-center table-projects" id="degreeProjectsTable">
+									<thead>
+										<tr>
+											<th class="text-center">N°</th>
+											<th class="text-center">Periodo</th>
+											<th class="text-center">Nombre del Trabajo</th>
+											<th class="text-center">Estudiante</th>
+                                            <th class="text-center">Carrera</th>
+											<th class="text-center">Tutor</th>
+                                            <th class="text-center">Estado</th>
+                                            <th class="text-center">Fecha</th> 
+											<th class="text-center">Acciones</th>
+										</tr>
+									</thead>
+									<tbody>
+										<!-- Los datos se cargarán dinámicamente aquí -->
+									</tbody>
+								</table>
+								<ul class="pagination pagination-sm" id="pagination">
+								</ul>
+							</div>
+					  	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Notifications area -->
+	<section class="full-box Notifications-area">
+		<div class="full-box Notifications-bg btn-Notifications-area"></div>
+		<div class="full-box Notifications-body">
+			<div class="Notifications-body-title text-titles text-center">
+				Notifications <i class="zmdi zmdi-close btn-Notifications-area"></i>
+			</div>
+			<div class="list-group">
+			  	<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-alert-triangle"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">17m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p>
+				    </div>
+			  	</div>
+			  	<div class="list-group-separator"></div>
+			  	<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-alert-octagon"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">15m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p>
+				    </div>
+			  	</div>
+			  	<div class="list-group-separator"></div>
+				<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-help"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">10m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
+				    </div>
+				</div>
+			  	<div class="list-group-separator"></div>
+			  	<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-info"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">8m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
+				    </div>
+			  	</div>
+			</div>
+
+		</div>
+	</section>
+
+	<!-- Modal para agregar/editar trabajo de grado -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="addDegreeProjectModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="degreeProjectModalTitle">Agregar Nuevo Trabajo de Grado</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addDegreeProjectForm">
+                        <!-- Campo oculto para guardar el ID del trabajo de grado si estamos editando -->
+                        <input type="hidden" id="editDegreeProjectId">
+
+                        <div class="form-group label-floating">
+                            <label class="control-label" for="degreeProjectPeriod">Periodo</label>
+                            <select class="form-control" id="degreeProjectPeriod">
+                                <!-- Opciones cargadas dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="form-group label-floating">
+                            <label class="control-label" for="degreeProjectName">Nombre del Trabajo de Grado</label>
+                            <input class="form-control" type="text" id="degreeProjectName">
+                        </div>
+
+                        <!-- Campos para Estudiante (uno solo para Trabajo de Grado) -->
+                        <div class="student-input-group">
+                            <div class="form-group label-floating col-xs-12">
+                                <label class="control-label" for="degreeProjectStudentCedula">Cédula del Estudiante</label>
+                                <input class="form-control" type="text" id="degreeProjectStudentCedula">
+                            </div>
+                            <div class="form-group label-floating col-xs-12">
+                                <label class="control-label" for="degreeProjectStudentName">Nombre Completo del Estudiante</label>
+                                <input class="form-control" type="text" id="degreeProjectStudentName" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group label-floating">
+                            <label class="control-label" for="degreeProjectCareer">Carrera</label>
+                            <select class="form-control" id="degreeProjectCareer">
+                                <!-- Opciones cargadas dinámicamente -->
+                            </select>
+                        </div>
+                        
+                        <!-- Campos para Tutor -->
+                        <div class="row tutor-input-group">
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="form-group label-floating">
+                                    <label class="control-label" for="degreeProjectTutorCedula">Cédula del Tutor</label>
+                                    <input class="form-control" type="text" id="degreeProjectTutorCedula">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="form-group label-floating">
+                                    <label class="control-label" for="degreeProjectTutorName">Nombre Completo del Tutor</label>
+                                    <input class="form-control" type="text" id="degreeProjectTutorName" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="degreeProjectStatus">Estado</label>
+                            <select class="form-control" id="degreeProjectStatus">
+                                <option>Aprobado</option>
+                                <option>Reprobado</option>
+                                <option>Pendiente</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="degreeProjectDate">Fecha</label>
+                            <input class="form-control" type="date" id="degreeProjectDate">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-info btn-raised" id="saveDegreeProjectBtn" onclick="saveDegreeProject()">Guardar Trabajo de Grado</button>
+                </div>
+            </div>
+        </div>
+    </div>
+	<!-- Dialog help -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="Dialog-Help">
+	  	<div class="modal-dialog" role="document">
+		    <div class="modal-content">
+			    <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			    	<h4 class="modal-title">Help</h4>
+			    </div>
+			    <div class="modal-body">
+			        <p>
+			        	Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt beatae esse velit ipsa sunt incidunt aut voluptas, nihil reiciendis mayores eaque hic vitae saepe voluptatibus. Ratione veritatis a unde autem!
+			        </p>
+			    </div>
+		      	<div class="modal-footer">
+		        	<button type="button" class="btn btn-primary btn-raised" data-dismiss="modal"><i class="zmdi zmdi-thumb-up"></i> Ok</button>
+		      	</div>
+		    </div>
+	  	</div>
+	</div>
+
+    <!-- Ventana modal personalizada (con campo de mensaje para eliminación) -->
+    <div id="customAlertModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <span id="customAlertTitle"></span>
+            </div>
+            <div class="custom-modal-body">
+                <p id="customAlertMessage"></p>
+                <div id="customAlertInputContainer" style="display: none;">
+                    <textarea id="customAlertInput" placeholder="Motivo de la eliminación (opcional)"></textarea>
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button id="customAlertOkBtn">Ok</button>
+                <button id="customAlertCancelBtn" style="display: none; background-color: #f44336; margin-left: 10px;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+	<!--====== Scripts -->
+	<script src="./js/jquery-3.1.1.min.js"></script>
+	<!-- <script src="./js/sweetalert2.min.js"></script>  Ya no se necesita SweetAlert2 -->
+	<script src="./js/bootstrap.min.js"></script>
+	<script src="./js/material.min.js"></script>
+	<script src="./js/ripples.min.js"></script>
+	<script src="./js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="./js/main.js"></script>
+<script>
+        // Referencias a los elementos de la modal personalizada
+        const customAlertModal = document.getElementById('customAlertModal');
+        const customAlertTitle = document.getElementById('customAlertTitle');
+        const customAlertMessage = document.getElementById('customAlertMessage');
+        const customAlertInputContainer = document.getElementById('customAlertInputContainer'); // Contenedor del input
+        const customAlertInput = document.getElementById('customAlertInput'); // El input/textarea
+        const customAlertOkBtn = document.getElementById('customAlertOkBtn');
+        const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); // Botón de cancelar
+
+        // Función para mostrar la modal personalizada
+        function showCustomAlert(title, message, showInput = false) {
+            customAlertTitle.textContent = title;
+            customAlertMessage.textContent = message;
+            
+            // Mostrar u ocultar el input/textarea
+            customAlertInputContainer.style.display = showInput ? 'block' : 'none';
+            customAlertInput.value = ''; // Limpiar el campo cada vez
+            
+            // Mostrar u ocultar el botón de cancelar
+            customAlertCancelBtn.style.display = showInput ? 'inline-block' : 'none';
+
+            customAlertModal.style.display = 'flex'; // Usamos flex para centrar
+
+            // Manejo de la promesa para simular .then() de Swal.fire
+            return new Promise(resolve => {
+                const okClickHandler = function() {
+                    customAlertModal.style.display = 'none';
+                    customAlertOkBtn.removeEventListener('click', okClickHandler);
+                    customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
+                    resolve({ isConfirmed: true, inputValue: customAlertInput.value });
+                };
+
+                const cancelClickHandler = function() {
+                    customAlertModal.style.display = 'none';
+                    customAlertOkBtn.removeEventListener('click', okClickHandler);
+                    customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
+                    resolve({ isConfirmed: false });
+                };
+
+                customAlertOkBtn.addEventListener('click', okClickHandler);
+                customAlertCancelBtn.addEventListener('click', cancelClickHandler);
+            });
+        }
+
+        // Para cerrar la modal si se hace clic fuera de ella
+        window.onclick = function(event) {
+            if (event.target == customAlertModal) {
+                customAlertModal.style.display = 'none';
+                // FIX: Asegurar que los listeners se limpien al cerrar haciendo clic fuera
+                customAlertOkBtn.removeEventListener('click', okClickHandler); 
+                customAlertCancelBtn.removeEventListener('click', cancelClickHandler); 
+            }
+        };
+
+        const rowsPerPageDesktop = 5;
+        const rowsPerPageMobile = 3;
+        let currentPage = 1;
+        let currentRowsPerPage;
+
+        // Global array to store all degree project data as objects
+        let allDegreeProjectsData = [];
+
+        // --- Funciones de Utilidad para Fetching ---
+        // Implementación de retraso exponencial para reintentos de fetch
+        async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        return null; 
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                if (retries > 0) {
+                    console.warn(`Fetch failed, retrying in ${delay}ms... (${retries} retries left)`, error);
+                    await new Promise(res => setTimeout(res, delay));
+                    return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
+                } else {
+                    console.error('Max retries reached. Failed to fetch:', url, error);
+                    throw error;
+                }
+            }
+        }
+
+        // Función para cargar datos de la API y poblar la tabla
+        async function loadDegreeProjectsFromAPI() {
+            try {
+                const degreeProjects = await fetchWithExponentialBackoff('/api/trabajos-de-grado', { method: 'GET' });
+                if (!degreeProjects) {
+                    await showCustomAlert('Error', 'No se pudieron cargar los trabajos de grado. Inténtalo de nuevo más tarde.');
+                    return;
+                }
+
+                const tableBody = document.getElementById('degreeProjectsTable').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = ''; // Limpia los datos existentes
+                allDegreeProjectsData = []; // Limpia el array global
+
+                degreeProjects.forEach((degreeProject, index) => {
+                    const newOriginalN = index + 1;
+                    const newRow = tableBody.insertRow();
+                    newRow.dataset.degreeProjectId = degreeProject.id_trabajo_grado; // Usar el ID corregido
+
+                    // Formatear estudiante y tutor
+                    const estudianteDisplay = degreeProject.estudiante ? `${degreeProject.estudiante.cedula} - ${degreeProject.estudiante.nombre_completo}` : 'N/A';
+                    const tutorDisplay = degreeProject.tutor ? `${degreeProject.tutor.cedula} - ${degreeProject.tutor.nombre_completo}` : 'N/A';
+                    
+                    // Formatear fecha
+                    const fechaDisplay = degreeProject.fecha ? new Date(degreeProject.fecha).toISOString().split('T')[0] : 'N/A'; // Asegurar formato YYYY-MM-DD
+
+                    newRow.innerHTML = `
+                        <td data-label="N°">${newOriginalN}</td>
+                        <td data-label="Periodo">${degreeProject.periodo || 'N/A'}</td>
+                        <td data-label="Nombre del Trabajo">${degreeProject.nombre_proyecto || 'N/A'}</td>
+                        <td data-label="Estudiante">${estudianteDisplay}</td>
+                        <td data-label="Carrera">${degreeProject.carrera || 'N/A'}</td>
+                        <td data-label="Tutor">${tutorDisplay}</td>
+                        <td data-label="Estado">${degreeProject.estado || 'N/A'}</td>
+                        <td data-label="Fecha">${fechaDisplay}</td> <!-- Mostrar la nueva columna -->
+                        <td data-label="Acciones">
+                            <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar" onclick="openEditDegreeProjectModal('${degreeProject.id_trabajo_grado}')"><i class="zmdi zmdi-edit"></i></a>
+                            <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar" onclick="confirmDeleteDegreeProject('${degreeProject.id_trabajo_grado}', '${degreeProject.nombre_proyecto}')"><i class="zmdi zmdi-delete"></i></a>
+                            <a href ="/api/trabajos-de-grado/${degreeProject.id_trabajo_grado}/descargar-pdf" target="_blank" class="btn btn-light btn-raised btn-xs" title="Descargar"><i class="zmdi zmdi-download"></i></a>
+                        </td>
+                    `;
+
+                    allDegreeProjectsData.push({
+                        element: newRow,
+                        originalN: newOriginalN,
+                        id_trabajo_grado: degreeProject.id_trabajo_grado,
+                        degreeProjectData: degreeProject,
+                        searchableText: `${degreeProject.periodo} ${degreeProject.nombre_proyecto} ${estudianteDisplay} ${degreeProject.carrera} ${tutorDisplay} ${degreeProject.estado} ${fechaDisplay}`.toLowerCase(),
+                        isVisibleByFilter: true
+                    });
+                });
+
+                filterTable();
+                $.material.init();
+            } catch (error) {
+                console.error('Error al cargar trabajos de grado:', error);
+                await showCustomAlert('Error', 'Ocurrió un error al cargar los trabajos de grado. Revisa la consola para más detalles.');
+            }
+        }
+
+        // Función para preparar el modal para agregar un nuevo trabajo de grado
+        async function prepareAddDegreeProjectModal() {
+            document.getElementById('degreeProjectModalTitle').textContent = 'Agregar Nuevo Trabajo de Grado';
+            document.getElementById('saveDegreeProjectBtn').textContent = 'Guardar Trabajo de Grado';
+            document.getElementById('editDegreeProjectId').value = '';
+            document.getElementById('addDegreeProjectForm').reset();
+            
+            // Campos de estudiante y tutor
+            document.getElementById('degreeProjectStudentName').readOnly = true;
+            document.getElementById('degreeProjectTutorName').readOnly = true;
+            document.getElementById('degreeProjectStudentName').removeAttribute('data-id');
+            document.getElementById('degreeProjectTutorName').removeAttribute('data-id');
+
+            await loadModalDataSelects();
+            setupCedulaListeners();
+            $.material.init();
+            // Asegurarse de que las etiquetas estén en su lugar correcto si los campos no tienen valores iniciales
+            updateFloatingLabels();
+        }
+
+        // Función para abrir el modal en modo edición
+        async function openEditDegreeProjectModal(degreeProjectId) {
+            document.getElementById('degreeProjectModalTitle').textContent = 'Editar Trabajo de Grado';
+            document.getElementById('saveDegreeProjectBtn').textContent = 'Guardar Cambios';
+            document.getElementById('editDegreeProjectId').value = degreeProjectId;
+            document.getElementById('addDegreeProjectForm').reset();
+            
+            // Campos de estudiante y tutor
+            document.getElementById('degreeProjectStudentName').readOnly = true;
+            document.getElementById('degreeProjectTutorName').readOnly = true;
+
+
+            const degreeProject = allDegreeProjectsData.find(dp => dp.id_trabajo_grado == degreeProjectId)?.degreeProjectData;
+
+            if (!degreeProject) {
+                await showCustomAlert('Error', 'No se encontró el trabajo de grado para editar.');
+                return;
+            }
+
+            // Llenar campos del trabajo de grado
+            document.getElementById('degreeProjectName').value = degreeProject.nombre_proyecto || '';
+            document.getElementById('degreeProjectStatus').value = degreeProject.estado || 'Pendiente';
+            // Formatear la fecha a 'YYYY-MM-DD' antes de asignarla al input type="date"
+            document.getElementById('degreeProjectDate').value = degreeProject.fecha ? new Date(degreeProject.fecha).toISOString().split('T')[0] : '';
+
+            // Llenar estudiante
+            if (degreeProject.estudiante) {
+                document.getElementById('degreeProjectStudentCedula').value = degreeProject.estudiante.cedula || '';
+                document.getElementById('degreeProjectStudentName').value = degreeProject.estudiante.nombre_completo || '';
+                document.getElementById('degreeProjectStudentName').setAttribute('data-id', degreeProject.estudiante.id_estudiante || '');
+                document.getElementById('degreeProjectStudentName').readOnly = true;
+            } else {
+                document.getElementById('degreeProjectStudentCedula').value = '';
+                document.getElementById('degreeProjectStudentName').value = '';
+                document.getElementById('degreeProjectStudentName').removeAttribute('data-id');
+                document.getElementById('degreeProjectStudentName').readOnly = false;
+            }
+
+            // Llenar tutor
+            if (degreeProject.tutor) {
+                document.getElementById('degreeProjectTutorCedula').value = degreeProject.tutor.cedula || '';
+                document.getElementById('degreeProjectTutorName').value = degreeProject.tutor.nombre_completo || '';
+                document.getElementById('degreeProjectTutorName').setAttribute('data-id', degreeProject.tutor.id_tutor || '');
+                document.getElementById('degreeProjectTutorName').readOnly = true;
+            } else {
+                document.getElementById('degreeProjectTutorCedula').value = '';
+                document.getElementById('degreeProjectTutorName').value = '';
+                document.getElementById('degreeProjectTutorName').removeAttribute('data-id');
+                document.getElementById('degreeProjectTutorName').readOnly = false;
+            }
+
+            // Cargar y seleccionar periodos y carreras
+            await loadModalDataSelects(degreeProject.id_periodo, degreeProject.id_carrera);
+            setupCedulaListeners();
+            $.material.init();
+
+            // Llamar a la función para actualizar el estado de las etiquetas flotantes después de rellenar los campos
+            updateFloatingLabels();
+
+            $('#addDegreeProjectModal').modal('show');
+        }
+
+        // Función para poblar los dropdowns al abrir el modal (ahora acepta IDs para selección)
+        async function loadModalDataSelects(selectedPeriodId = null, selectedCareerId = null) {
+            try {
+                // Cargar periodos
+                const periodos = await fetchWithExponentialBackoff('/api/periodos', { method: 'GET' });
+                const periodSelect = document.getElementById('degreeProjectPeriod');
+                periodSelect.innerHTML = '<option value="">Selecciona un Periodo</option>'; // Placeholder
+                if (periodos) {
+                    periodos.forEach(p => {
+                        const option = document.createElement('option');
+                        option.value = p.id_periodo;
+                        option.textContent = p.periodo;
+                        if (selectedPeriodId && p.id_periodo == selectedPeriodId) {
+                            option.selected = true;
+                        }
+                        periodSelect.appendChild(option);
+                    });
+                }
+
+                // Cargar carreras
+                const carreras = await fetchWithExponentialBackoff('/api/carreras', { method: 'GET' });
+                const careerSelect = document.getElementById('degreeProjectCareer');
+                careerSelect.innerHTML = '<option value="">Selecciona una Carrera</option>'; // Placeholder
+                if (carreras) {
+                    carreras.forEach(c => {
+                        const option = document.createElement('option');
+                        option.value = c.id_carrera;
+                        option.textContent = c.carrera;
+                        if (selectedCareerId && c.id_carrera == selectedCareerId) {
+                            option.selected = true;
+                        }
+                        careerSelect.appendChild(option);
+                    });
+                }
+                
+                $.material.init(); // Re-inicializar Material Design para nuevos dropdowns
+            } catch (error) {
+                console.error('Error al cargar datos para los selects del modal:', error);
+                await showCustomAlert('Error', 'Ocurrió un error al cargar los datos de selección.');
+            }
+        }
+
+        // Función para añadir listeners a los campos de cédula de estudiante y tutor
+        function setupCedulaListeners() {
+            // Limpiar listeners existentes para evitar duplicados
+            $('#degreeProjectStudentCedula').off('blur keydown');
+            $('#degreeProjectTutorCedula').off('blur keydown');
+
+            // Estudiante
+            const studentCedulaInput = document.getElementById('degreeProjectStudentCedula');
+            
+            studentCedulaInput.onblur = async (event) => {
+                await checkPersonByCedula(event.target, 'estudiante', 'degreeProjectStudentName', false);
+                $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                updateFloatingLabelsForElement(event.target); // Actualizar solo este campo
+            };
+            studentCedulaInput.onkeydown = async (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    await checkPersonByCedula(event.target, 'estudiante', 'degreeProjectStudentName', false);
+                    $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                    updateFloatingLabelsForElement(event.target); // Actualizar solo este campo
+                }
+            };
+
+            // Tutor
+            const tutorCedulaInput = document.getElementById('degreeProjectTutorCedula');
+            
+            tutorCedulaInput.onblur = async (event) => {
+                await checkPersonByCedula(event.target, 'tutor', 'degreeProjectTutorName', true);
+                $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                updateFloatingLabelsForElement(event.target); // Actualizar solo este campo
+            };
+            tutorCedulaInput.onkeydown = async (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    await checkPersonByCedula(event.target, 'tutor', 'degreeProjectTutorName', true);
+                    $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                    updateFloatingLabelsForElement(event.target); // Actualizar solo este campo
+                }
+            };
+        }
+
+        // Función genérica para verificar persona por cédula (estudiante o tutor)
+        async function checkPersonByCedula(cedulaInput, type, nameClassOrId, isTutor) {
+            const cedula = cedulaInput.value.trim();
+            const nameInput = document.getElementById(nameClassOrId);
+            
+            // Limpiar el campo de nombre y ID al borrar la cédula
+            if (cedula === '') {
+                nameInput.value = '';
+                nameInput.readOnly = isTutor; // Si es tutor, se queda readonly por defecto
+                nameInput.removeAttribute('data-id'); // Limpia el ID
+                $(nameInput).closest('.form-group').removeClass('is-focused is-filled'); // Remover clases de Material Design
+                $.material.init();
+                return;
+            }
+
+            try {
+                const url = `/api/${type}-por-cedula/${cedula}`;
+                const personData = await fetchWithExponentialBackoff(url, { method: 'GET' });
+
+                if (personData) {
+                    nameInput.value = personData.nombre_completo;
+                    nameInput.readOnly = true; // Deshabilita edición
+                    nameInput.setAttribute('data-id', personData[`id_${type}`]); // Guarda el ID
+                    $(nameInput).closest('.form-group').addClass('is-focused is-filled');
+                    
+                } else {
+                    nameInput.value = ''; // Limpia el nombre si no se encontró
+                    nameInput.readOnly = false; // Habilita edición
+                    nameInput.removeAttribute('data-id'); // Asegura que no haya ID
+                    $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
+                }
+                $.material.init();
+                updateFloatingLabelsForElement(nameInput); // Actualizar el estado del label para el campo de nombre
+
+            } catch (error) {
+                console.error(`Error al verificar cédula de ${type}:`, error);
+                nameInput.value = '';
+                nameInput.readOnly = false;
+                nameInput.removeAttribute('data-id');
+                $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
+                await showCustomAlert('Error de Conexión', `No se pudo verificar la cédula de ${type}. Intenta de nuevo.`);
+                updateFloatingLabelsForElement(nameInput); // Actualizar el estado del label para el campo de nombre en caso de error
+            }
+        }
+
+        // Función para actualizar el estado de las etiquetas flotantes de todos los campos del modal
+        function updateFloatingLabels() {
+            $('#addDegreeProjectModal .form-group.label-floating').each(function() {
+                var $this = $(this);
+                var $input = $this.find('input, select, textarea');
+                if ($input.val() !== "" && $input.val() !== null) {
+                    $this.addClass('is-focused is-filled');
+                } else {
+                    $this.removeClass('is-focused is-filled');
+                }
+            });
+        }
+
+        // Función para actualizar el estado de la etiqueta flotante de un elemento específico
+        function updateFloatingLabelsForElement(element) {
+            var $input = $(element);
+            var $formGroup = $input.closest('.form-group.label-floating');
+            if ($input.val() !== "" && $input.val() !== null) {
+                $formGroup.addClass('is-focused is-filled');
+            } else {
+                $formGroup.removeClass('is-focused is-filled');
+            }
+        }
+
+
+        // Function to determine rows per page based on screen width
+        function getRowsPerPage() {
+            return window.innerWidth <= 767 ? rowsPerPageMobile : rowsPerPageDesktop;
+        }
+
+        // Function to apply pagination visibility
+        function displayRows() {
+            const filteredDegreeProjects = allDegreeProjectsData.filter(dp => dp.isVisibleByFilter);
+
+            allDegreeProjectsData.forEach(dp => {
+                dp.element.style.display = 'none';
+            });
+
+            const startIndex = (currentPage - 1) * currentRowsPerPage;
+            const endIndex = Math.min(startIndex + currentRowsPerPage, filteredDegreeProjects.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                if (filteredDegreeProjects[i]) {
+                    filteredDegreeProjects[i].element.style.display = '';
+                }
+            }
+        }
+
+        // Function to set up pagination links
+        function setupPagination() {
+            const visibleRowsForPagination = allDegreeProjectsData.filter(dp => dp.isVisibleByFilter);
+
+            const pageCount = Math.ceil(visibleRowsForPagination.length / currentRowsPerPage);
+            const paginationUl = document.getElementById('pagination');
+            paginationUl.innerHTML = '';
+
+            if (currentPage > pageCount && pageCount > 0) {
+                currentPage = pageCount;
+            } else if (pageCount === 0 && visibleRowsForPagination.length > 0) {
+                currentPage = 1;
+            } else if (visibleRowsForPagination.length === 0) {
+                currentPage = 1;
+            }
+
+            if (pageCount <= 1) {
+                paginationUl.style.display = 'none';
+            } else {
+                paginationUl.style.display = '';
+            }
+
+            if (visibleRowsForPagination.length === 0) {
+                return;
+            }
+
+            let prevLi = document.createElement('li');
+            let prevLink = document.createElement('a');
+            prevLink.href = '#!';
+            prevLink.innerHTML = '«';
+            prevLink.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateTableAndPagination();
+                }
+            };
+            prevLi.appendChild(prevLink);
+            paginationUl.appendChild(prevLi);
+
+            for (let i = 1; i <= pageCount; i++) {
+                let li = document.createElement('li');
+                let link = document.createElement('a');
+                link.href = '#!';
+                link.textContent = i;
+                link.onclick = (function(pageNumber) {
+                    return function() {
+                        currentPage = pageNumber;
+                        updateTableAndPagination();
+                    };
+                })(i);
+                li.appendChild(link);
+                paginationUl.appendChild(li);
+            }
+
+            let nextLi = document.createElement('li');
+            let nextLink = document.createElement('a');
+            nextLink.href = '#!';
+            nextLink.innerHTML = '»';
+            nextLink.onclick = () => {
+                if (currentPage < pageCount) {
+                    currentPage++;
+                    updateTableAndPagination();
+                }
+            };
+            nextLi.appendChild(nextLink);
+            paginationUl.appendChild(nextLi);
+
+            if (currentPage === 1) {
+                prevLi.classList.add('disabled');
+            } else {
+                prevLi.classList.remove('disabled');
+            }
+            if (currentPage >= pageCount || pageCount === 0) {
+                nextLi.classList.add('disabled');
+            } else {
+                nextLi.classList.remove('disabled');
+            }
+
+            Array.from(paginationUl.children).forEach(li => {
+                if (li.textContent == currentPage && li.textContent !== '«' && li.textContent !== '»') {
+                    li.classList.add('active');
+                } else {
+                    li.classList.remove('active');
+                }
+            });
+        }
+
+        // Function to update table and pagination
+        function updateTableAndPagination() {
+            currentRowsPerPage = getRowsPerPage();
+            displayRows();
+            setupPagination();
+        }
+
+        // Function to filter the table
+        function filterTable() {
+            const input = document.getElementById('searchDegreeProject');
+            const filter = input.value.toLowerCase();
+            let currentFilteredN = 1;
+
+            allDegreeProjectsData.forEach(degreeProject => {
+                if (degreeProject.searchableText.includes(filter)) {
+                    degreeProject.isVisibleByFilter = true;
+                    if (filter !== '') {
+                        degreeProject.element.getElementsByTagName('td')[0].textContent = currentFilteredN++;
+                    }
+                } else {
+                    degreeProject.isVisibleByFilter = false;
+                }
+            });
+
+            if (filter === '') {
+                allDegreeProjectsData.forEach((degreeProject) => {
+                    degreeProject.element.getElementsByTagName('td')[0].textContent = degreeProject.originalN;
+                });
+            }
+
+            currentPage = 1;
+            updateTableAndPagination();
+        }
+
+        // Función para guardar (agregar o editar) un trabajo de grado
+        async function saveDegreeProject() {
+            const saveButton = document.getElementById('saveDegreeProjectBtn');
+            saveButton.disabled = true;
+            saveButton.textContent = 'Guardando...';
+
+            const degreeProjectId = document.getElementById('editDegreeProjectId').value;
+            const isEditing = !!degreeProjectId;
+
+            try {
+                const periodSelect = document.getElementById('degreeProjectPeriod');
+                const periodoId = periodSelect.value;
+
+                const degreeProjectName = document.getElementById('degreeProjectName').value;
+                
+                const studentCedula = document.getElementById('degreeProjectStudentCedula').value;
+                const studentName = document.getElementById('degreeProjectStudentName').value;
+                const studentId = document.getElementById('degreeProjectStudentName').dataset.id; // Obtener el ID del estudiante
+
+                const careerSelect = document.getElementById('degreeProjectCareer');
+                const carreraId = careerSelect.value;
+
+                const tutorCedula = document.getElementById('degreeProjectTutorCedula').value;
+                const tutorName = document.getElementById('degreeProjectTutorName').value;
+                const tutorId = document.getElementById('degreeProjectTutorName').dataset.id; // Obtener el ID del tutor
+                
+                const status = document.getElementById('degreeProjectStatus').value;
+                const fecha = document.getElementById('degreeProjectDate').value; 
+
+                if (!periodoId || !degreeProjectName || !studentCedula || !studentName || !carreraId || !tutorCedula || !tutorName || !status || !fecha) {
+                    await showCustomAlert("Error", "Por favor, completa todos los campos obligatorios.");
+                    return;
+                }
+                
+                const degreeProjectData = {
+                    periodoId: parseInt(periodoId),
+                    nombreProyecto: degreeProjectName,
+                    estudiante: {
+                        cedulaEstudiante: studentCedula,
+                        nombreCompletoEstudiante: studentName,
+                        idEstudiante: studentId // Pasar el ID del estudiante
+                    },
+                    carreraId: parseInt(carreraId),
+                    tutor: { 
+                        cedulaTutor: tutorCedula, 
+                        nombreCompletoTutor: tutorName,
+                        idTutor: tutorId // Pasar el ID del tutor
+                    },
+                    estado: status,
+                    fecha: fecha 
+                };
+
+                let response;
+                if (isEditing) {
+                    response = await fetchWithExponentialBackoff(`/api/trabajos-de-grado/${degreeProjectId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(degreeProjectData),
+                    });
+                } else {
+                    response = await fetchWithExponentialBackoff('/api/agregar-trabajo-de-grado', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(degreeProjectData),
+                    });
+                }
+                
+                if (response && response.message) {
+                    $('#addDegreeProjectModal').on('hidden.bs.modal', async function () {
+                        document.getElementById('addDegreeProjectForm').reset();
+                        document.getElementById('degreeProjectStudentName').readOnly = true;
+                        document.getElementById('degreeProjectTutorName').readOnly = true;
+                        document.getElementById('degreeProjectStudentName').removeAttribute('data-id');
+                        document.getElementById('degreeProjectTutorName').removeAttribute('data-id');
+                        
+                        $.material.init();
+                        await loadDegreeProjectsFromAPI();
+                        
+                        await showCustomAlert("¡Éxito!", response.message);
+                        
+                        $('.modal-backdrop').remove();
+                        $(this).off('hidden.bs.modal'); 
+                    });
+                    $('#addDegreeProjectModal').modal('hide');
+
+                } else {
+                    await showCustomAlert("Error", response.error || "No se pudo realizar la operación. Inténtalo de nuevo.");
+                }
+            } catch (error) {
+                console.error('Error al enviar el trabajo de grado:', error);
+                await showCustomAlert("Error", "Ocurrió un error de conexión al guardar el trabajo de grado. Revisa la consola.");
+            } finally {
+                saveButton.disabled = false;
+                saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Trabajo de Grado';
+            }
+        }
+
+        // Function para confirmar la eliminación lógica de un trabajo de grado
+        async function confirmDeleteDegreeProject(degreeProjectId, degreeProjectName) {
+            const { isConfirmed, inputValue: mensajeEliminacion } = await showCustomAlert(
+                'Confirmar Eliminación', 
+                `¿Estás seguro de que quieres eliminar lógicamente el trabajo de grado "${degreeProjectName}"?`,
+                true // Muestra el input de mensaje
+            );
+
+            if (isConfirmed) {
+                try {
+                    const response = await fetchWithExponentialBackoff(`/api/trabajos-de-grado/eliminar-logico/${degreeProjectId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion })
+                    });
+
+                    if (response && response.message) {
+                        await showCustomAlert('¡Éxito!', response.message);
+                        await loadDegreeProjectsFromAPI();
+                    } else {
+                        await showCustomAlert('Error', response.error || 'No se pudo eliminar el trabajo de grado lógicamente. Inténtalo de nuevo.');
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar lógicamente el trabajo de grado:', error);
+                    await showCustomAlert('Error', 'Ocurrió un error de conexión al intentar eliminar el trabajo de grado.');
+                }
+            }
+        }
+
+
+        // Initial call to populate allDegreeProjectsData and display table on load
+        $(document).ready(function() {
+            loadDegreeProjectsFromAPI(); 
+            $.material.init();
+            window.addEventListener('resize', updateTableAndPagination);
+
+            // Asegurarse de que las etiquetas flotantes se inicialicen correctamente al cargar el modal.
+            // Esto es crucial para Material Design y los campos precargados.
+            $('#addDegreeProjectModal').on('shown.bs.modal', function () {
+                updateFloatingLabels();
+            });
+
+        });
+	</script>
+</body>
+</html>

@@ -13,6 +13,11 @@ app.use(express.json());
 app.use(cors());
 dotenv.config();
 
+//Rutas del backend
+import servicio_comunitario from './server/rutas/servicio-comunitario.js';
+import trabajo_de_grado from './server/rutas/trabajo-de-grado.js';
+import proyectos_eliminados from './server/rutas/proyectos_eliminados.js';
+import proyectos from './server/rutas/proyectos.js';
 
 const PORT = process.env.PORT || 3000;
 const supabaseUrl = process.env.SUPABASE_URL
@@ -34,7 +39,14 @@ app.get("/", (req, res) => res.sendFile(__dirname + "/public/views/index.html"))
 app.get("/home", (req, res) => res.sendFile(__dirname + "/public/views/home.html"));
 app.get("/servicio-comunitario", (req, res) => res.sendFile(__dirname + "/public/views/servicio-comunitario.html"));
 app.get("/registro", (req, res) => res.sendFile(__dirname + "/public/views/registro.html"));
-
+app.get("/proyectos-eliminados", (req, res) => res.sendFile(__dirname + "/public/views/proyectos-eliminados.html"));
+app.get("/trabajo-de-grado", (req, res) => res.sendFile(__dirname + "/public/views/trabajo-de-grado.html"));
+app.get("/proyectos", (req, res) => res.sendFile(__dirname + "/public/views/proyectos.html"));
+app.get("/comprobante-proyecto-investigacion", (req, res) => res.sendFile(__dirname + "/public/views/comprobante-proyecto-investigacion.html"));
+app.use('/api', servicio_comunitario);
+app.use('/api', trabajo_de_grado);
+app.use('/api', proyectos_eliminados);
+app.use('/api', proyectos);
 //consulta
 app.get('/usuarios', async (req, res) => {
     try {
@@ -152,6 +164,25 @@ app.post('/api/login', async (req, res) => {
 
     } catch (error) {
         console.error('Error en la ruta /api/login:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+});
+
+//Ruta de prueba para traer los estudiantes
+app.get('/api/estudiantes', async (req, res) => {
+    try{
+        let { data: estudiante, error } = await supabase
+            .from('estudiante')
+            .select('*');
+
+        if (error) {
+            console.error('Error al obtener estudiantes de Supabase:', error.message);
+            return res.status(500).json({ error: 'Error interno del servidor al obtener estudiantes.' });
+        }
+
+        res.status(200).json(estudiante);
+    } catch (error) {
+        console.error('Error en la ruta /estudiantes:', error.message);
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });

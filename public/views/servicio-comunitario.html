@@ -5,6 +5,210 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<link rel="stylesheet" href="../css/main.css">
+    <!-- Aseguramos que el archivo bootstrap-icons.css se cargue si no lo tienes en main.css -->
+    <link rel="stylesheet" href="../css/bootstrap-icons.css">
+    <style>
+        /* Estilos para la ventana modal personalizada */
+        .custom-modal-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 9999; /* FIX: Asegura que esté por encima de TODO */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            border-radius: 8px;
+            text-align: center;
+            color: #333;
+        }
+
+        .custom-modal-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .custom-modal-body {
+            padding: 10px 0;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para el campo de mensaje en la alerta personalizada */
+        .custom-modal-body textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical; /* Permite redimensionar verticalmente */
+        }
+
+        .custom-modal-footer {
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+
+        .custom-modal-footer button {
+            background-color: #2a3e61; /* Azul oscuro */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal-footer button:hover {
+            background-color: #1a2a44; /* Azul más oscuro al pasar el ratón */
+        }
+
+        /* Animación de entrada */
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        /* Responsive Table Styles for mobile */
+        @media (max-width: 767px) {
+            .table-responsive {
+                border: none;
+            }
+            .table-projects thead {
+                display: none;
+            }
+            .table-projects, .table-projects tbody, .table-projects tr, .table-projects td {
+                display: block;
+                width: 100%;
+            }
+            .table-projects tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 10px;
+                background-color: #fff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .table-projects td {
+                text-align: right;
+                padding-left: 50% !important;
+                position: relative;
+                border: none;
+            }
+            .table-projects td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #555;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .table-projects td[data-label="Acciones"] {
+                padding-top: 10px !important;
+                text-align: center !important;
+                padding-left: 15px !important; 
+            }
+            .table-projects td[data-label="Acciones"]::before {
+                display: none;
+            }
+            /* Estilo para que el contenido de Integrantes no se recorte en móvil */
+            .table-projects td[data-label="Integrantes"] { 
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+            }
+            .table-projects td[data-label="Integrantes"]::before { 
+                top: 10px;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilos específicos para la gestión de integrantes */
+        .member-input-group { 
+            display: flex;
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+            align-items: center;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            position: relative; /* Para posicionar el botón de remover */
+        }
+        .member-input-group .form-group {
+            flex-grow: 1;
+            margin-bottom: 0; /* Ajuste para evitar doble margen */
+            padding-right: 10px; /* Espacio entre campos */
+        }
+        .member-input-group .col-xs-12 {
+            width: 100%; /* Asegura que cada campo ocupe su propia línea en móvil */
+        }
+        .member-input-group .col-sm-6 {
+            width: 50%; /* Divide el espacio en pantallas sm y mayores */
+        }
+        .remove-member-btn { 
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-left: auto; /* Empuja el botón a la derecha */
+            flex-shrink: 0; /* Evita que el botón se encoja */
+        }
+        .remove-member-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Estilo para la celda de Integrantes en la tabla principal */
+        .table-projects td[data-label="Integrantes"] {
+            text-align: left; /* Asegura alineación a la izquierda */
+            white-space: normal; /* Permite el ajuste de línea */
+            word-break: break-word; /* Permite romper palabras largas */
+            min-width: 180px; /* Aumentado el ancho mínimo para que se vea mejor */
+        }
+
+        /* Ajustes para la visualización del tutor en el modal */
+        .tutor-input-group .form-group {
+            margin-bottom: 0;
+            padding-right: 10px;
+        }
+        .tutor-input-group .col-xs-12, .tutor-input-group .col-sm-6 {
+            margin-bottom: 15px; /* Restaurar margen inferior para los campos del tutor */
+        }
+    </style>
 </head>
 <body>
 	<!-- SideBar -->
@@ -50,14 +254,17 @@
 							<a href="/servicio-comunitario"><i class="zmdi zmdi-timer zmdi-hc-fw"></i> Servicio Comunitario</a>
 						</li>
 						<li>
-							<a href="subject.html"><i class="zmdi zmdi-book zmdi-hc-fw"></i> Trabajo Grado</a>
+							<a href="/trabajo-de-grado"><i class="zmdi zmdi-book zmdi-hc-fw"></i> Trabajo Grado</a>
 						</li>
 						<li>
-							<a href="section.html"><i class="zmdi zmdi-graduation-cap zmdi-hc-fw"></i>Proyectos</a>
+							<a href="/proyectos"><i class="zmdi zmdi-graduation-cap zmdi-hc-fw"></i>Proyectos</a>
 						</li>
 						<li>
 							<a href="salon.html"><i class="zmdi zmdi-font zmdi-hc-fw"></i> Pasantias</a>
 						</li>
+                        <li>
+                            <a href="/proyectos-eliminados"><i class="zmdi zmdi-delete zmdi-hc-fw"></i> Proyectos Eliminados</a>
+                        </li>
 					</ul>
 				</li>
 				<li>
@@ -121,7 +328,7 @@
                             <div class="container-fluid">
                                 <div class="row" style="margin-bottom: 15px;">
                                     <div class="col-xs-12 col-sm-6">
-                                        <button class="btn btn-info btn-raised" data-toggle="modal" data-target="#addProjectModal">
+                                        <button class="btn btn-info btn-raised" data-toggle="modal" data-target="#addProjectModal" onclick="prepareAddModal()">
                                             <i class="zmdi zmdi-plus"></i> Agregar nuevo proyecto
                                         </button>
                                     </div>
@@ -146,101 +353,12 @@
 											<th class="text-center">Fecha Inicio</th>
 											<th class="text-center">Fecha Final</th>
                                             <th class="text-center">Estado</th>
+                                            <th class="text-center">Comunidad</th>
 											<th class="text-center">Acciones</th>
 										</tr>
 									</thead>
 									<tbody>
-										<!-- Datos de ejemplo, puedes reemplazarlos con tus datos reales -->
-										<tr>
-											<td data-label="N°">1</td>
-											<td data-label="Periodo">2024-1</td>
-											<td data-label="Nombre del Proyecto">Desarrollo de App Móvil</td>
-											<td data-label="Integrantes">12345678-Juan Pérez</td>
-                                            <td data-label="Carrera">Ing. Informática</td>
-											<td data-label="Tutor">Dr. Carlos Rodríguez</td>
-											<td data-label="Fecha Inicio">01/03/2024</td>
-											<td data-label="Fecha Final">30/07/2024</td>
-                                            <td data-label="Estado">Aprobado</td>
-											<td data-label="Acciones">
-												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
-												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
-											</td>
-										</tr>
-										<tr>
-											<td data-label="N°">2</td>
-											<td data-label="Periodo">2024-1</td>
-											<td data-label="Nombre del Proyecto">Sistema de Gestión de Biblioteca</td>
-											<td data-label="Integrantes">98765432-María López</td>
-                                            <td data-label="Carrera">Lic. Educación</td>
-											<td data-label="Tutor">Lic. Sofía Hernández</td>
-											<td data-label="Fecha Inicio">15/03/2024</td>
-											<td data-label="Fecha Final">15/08/2024</td>
-                                            <td data-label="Estado">Reprobado</td>
-											<td data-label="Acciones">
-												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
-												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
-											</td>
-										</tr>
-										<tr>
-											<td data-label="N°">3</td>
-											<td data-label="Periodo">2024-2</td>
-											<td data-label="Nombre del Proyecto">Plataforma de E-learning</td>
-											<td data-label="Integrantes">11223344-Ana García</td>
-                                            <td data-label="Carrera">Ing. Telecomunicaciones</td>
-											<td data-label="Tutor">Ing. Roberto Soto</td>
-											<td data-label="Fecha Inicio">01/09/2024</td>
-											<td data-label="Fecha Final">28/02/2025</td>
-                                            <td data-label="Estado">Aprobado</td>
-											<td data-label="Acciones">
-												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
-												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
-											</td>
-										</tr>
-                                        <tr>
-											<td data-label="N°">4</td>
-											<td data-label="Periodo">2024-2</td>
-											<td data-label="Nombre del Proyecto">Aplicación de Gestión de Inventario</td>
-											<td data-label="Integrantes">55667788-Pedro Martínez</td>
-                                            <td data-label="Carrera">Administración</td>
-											<td data-label="Tutor">Dra. Ana Bolívar</td>
-											<td data-label="Fecha Inicio">10/09/2024</td>
-											<td data-label="Fecha Final">05/03/2025</td>
-                                            <td data-label="Estado">Pendiente</td>
-											<td data-label="Acciones">
-												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
-												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
-											</td>
-										</tr>
-                                        <tr>
-											<td data-label="N°">5</td>
-											<td data-label="Periodo">2025-1</td>
-											<td data-label="Nombre del Proyecto">Análisis de Datos con IA</td>
-											<td data-label="Integrantes">99001122-Luis Ramos</td>
-                                            <td data-label="Carrera">Ciencias de Datos</td>
-											<td data-label="Tutor">Dr. Miguel Herrera</td>
-											<td data-label="Fecha Inicio">01/02/2025</td>
-											<td data-label="Fecha Final">30/06/2025</td>
-                                            <td data-label="Estado">Aprobado</td>
-											<td data-label="Acciones">
-												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
-												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
-											</td>
-										</tr>
-                                        <tr>
-											<td data-label="N°">6</td>
-											<td data-label="Periodo">2025-1</td>
-											<td data-label="Nombre del Proyecto">Robótica Educativa</td>
-											<td data-label="Integrantes">33445566-Carolina Díaz</td>
-                                            <td data-label="Carrera">Ing. Mecatrónica</td>
-											<td data-label="Tutor">Ing. Elena Bravo</td>
-											<td data-label="Fecha Inicio">10/02/2025</td>
-											<td data-label="Fecha Final">10/07/2025</td>
-                                            <td data-label="Estado">Pendiente</td>
-											<td data-label="Acciones">
-												<a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
-												<a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
-											</td>
-										</tr>
+										<!-- Los datos se cargarán dinámicamente aquí -->
 									</tbody>
 								</table>
 								<ul class="pagination pagination-sm" id="pagination">
@@ -292,7 +410,7 @@
 				      	<h4 class="list-group-item-heading">Tile with a label</h4>
 				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
 				    </div>
-				</div>
+			  	</div>
 			  	<div class="list-group-separator"></div>
 			  	<div class="list-group-item">
 				    <div class="row-action-primary">
@@ -315,68 +433,82 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Agregar Nuevo Proyecto</h4>
+                    <h4 class="modal-title" id="projectModalTitle">Agregar Nuevo Proyecto</h4>
                 </div>
                 <div class="modal-body">
                     <form id="addProjectForm">
+                        <!-- Campo oculto para guardar el ID del proyecto si estamos editando -->
+                        <input type="hidden" id="editProjectId">
+
                         <div class="form-group label-floating">
-                            <label class="control-label">Periodo</label>
-                            <input class="form-control" type="text" id="projectPeriod">
+                            <label class="control-label" for="projectPeriod">Periodo</label>
+                            <select class="form-control" id="projectPeriod">
+                                <!-- Opciones cargadas dinámicamente -->
+                            </select>
                         </div>
                         <div class="form-group label-floating">
-                            <label class="control-label">Nombre del Proyecto</label>
+                            <label class="control-label" for="projectName">Nombre del Proyecto</label>
                             <input class="form-control" type="text" id="projectName">
                         </div>
-                        <!-- Campos dinámicos para Cédula y Nombre Completo -->
+                        <!-- Campos dinámicos para Integrantes (Estudiantes) -->
                         <div id="membersContainer">
-                            <div class="row member-input-group">
-                                <div class="col-xs-12 col-sm-6">
-                                    <div class="form-group label-floating">
-                                        <label class="control-label">Cédula del Integrante</label>
-                                        <input class="form-control" type="text" class="projectMemberId">
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-sm-6">
-                                    <div class="form-group label-floating">
-                                        <label class="control-label">Nombre Completo del Integrante</label>
-                                        <input class="form-control" type="text" class="projectMemberName">
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Los integrantes se añadirán aquí dinámicamente -->
                         </div>
                         <button type="button" class="btn btn-info btn-raised" onclick="addMemberField()">
                             <i class="zmdi zmdi-plus"></i> Añadir Integrante
                         </button>
 
                         <div class="form-group label-floating">
-                            <label class="control-label">Carrera</label>
-                            <input class="form-control" type="text" id="projectCareer">
+                            <label class="control-label" for="projectCareer">Carrera</label>
+                            <select class="form-control" id="projectCareer">
+                                <!-- Opciones cargadas dinámicamente -->
+                            </select>
                         </div>
+                        
                         <div class="form-group label-floating">
-                            <label class="control-label">Tutor</label>
-                            <input class="form-control" type="text" id="projectTutor">
+                            <label class="control-label" for="projectCommunity">Comunidad</label>
+                            <input class="form-control" type="text" id="projectCommunity">
                         </div>
+
+                        <!-- Campos para Tutor -->
+                        <div class="row tutor-input-group">
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="form-group label-floating">
+                                    <label class="control-label" for="projectTutorCedula">Cédula del Tutor</label>
+                                    <input class="form-control" type="text" id="projectTutorCedula">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="form-group label-floating">
+                                    <label class="control-label" for="projectTutorName">Nombre Completo del Tutor</label>
+                                    <input class="form-control" type="text" id="projectTutorName" readonly>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
-                            <label class="control-label">Fecha Inicio</label>
+                            <label class="control-label" for="projectStartDate">Fecha Inicio</label>
                             <input class="form-control" type="date" id="projectStartDate">
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Fecha Final</label>
+                            <label class="control-label" for="projectEndDate">Fecha Final</label>
                             <input class="form-control" type="date" id="projectEndDate">
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Estado</label>
+                            <label class="control-label" for="projectStatus">Estado</label>
                             <select class="form-control" id="projectStatus">
+                                <option>Pendiente</option>
+                                <option>En Progreso</option>
+                                <option>Finalizado</option>
                                 <option>Aprobado</option>
                                 <option>Reprobado</option>
-                                <option>Pendiente</option>
                             </select>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-info btn-raised" onclick="addNewProject()">Guardar Proyecto</button>
+                    <button type="button" class="btn btn-info btn-raised" id="saveProjectBtn" onclick="saveProject()">Guardar Proyecto</button>
                 </div>
             </div>
         </div>
@@ -391,7 +523,7 @@
 			    </div>
 			    <div class="modal-body">
 			        <p>
-			        	Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt beatae esse velit ipsa sunt incidunt aut voluptas, nihil reiciendis maiores eaque hic vitae saepe voluptatibus. Ratione veritatis a unde autem!
+			        	Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt beatae esse velit ipsa sunt incidunt aut voluptas, nihil reiciendis mayores eaque hic vitae saepe voluptatibus. Ratione veritatis a unde autem!
 			        </p>
 			    </div>
 		      	<div class="modal-footer">
@@ -400,15 +532,88 @@
 		    </div>
 	  	</div>
 	</div>
+
+    <!-- Ventana modal personalizada (con campo de mensaje para eliminación) -->
+    <div id="customAlertModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <span id="customAlertTitle"></span>
+            </div>
+            <div class="custom-modal-body">
+                <p id="customAlertMessage"></p>
+                <div id="customAlertInputContainer" style="display: none;">
+                    <textarea id="customAlertInput" placeholder="Motivo de la eliminación (opcional)"></textarea>
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button id="customAlertOkBtn">Ok</button>
+                <button id="customAlertCancelBtn" style="display: none; background-color: #f44336; margin-left: 10px;">Cancelar</button>
+            </div>
+        </div>
+    </div>
 	<!--====== Scripts -->
 	<script src="./js/jquery-3.1.1.min.js"></script>
-	<script src="./js/sweetalert2.min.js"></script>
+	<!-- <script src="./js/sweetalert2.min.js"></script>  Ya no se necesita SweetAlert2 -->
 	<script src="./js/bootstrap.min.js"></script>
 	<script src="./js/material.min.js"></script>
 	<script src="./js/ripples.min.js"></script>
 	<script src="./js/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="./js/main.js"></script>
 <script>
+        // Referencias a los elementos de la modal personalizada
+        const customAlertModal = document.getElementById('customAlertModal');
+        const customAlertTitle = document.getElementById('customAlertTitle');
+        const customAlertMessage = document.getElementById('customAlertMessage');
+        const customAlertInputContainer = document.getElementById('customAlertInputContainer'); // Contenedor del input
+        const customAlertInput = document.getElementById('customAlertInput'); // El input/textarea
+        const customAlertOkBtn = document.getElementById('customAlertOkBtn');
+        const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); // Botón de cancelar
+
+        // Función para mostrar la modal personalizada
+        function showCustomAlert(title, message, showInput = false) {
+            customAlertTitle.textContent = title;
+            customAlertMessage.textContent = message;
+            
+            // Mostrar u ocultar el input/textarea
+            customAlertInputContainer.style.display = showInput ? 'block' : 'none';
+            customAlertInput.value = ''; // Limpiar el campo cada vez
+            
+            // Mostrar u ocultar el botón de cancelar
+            customAlertCancelBtn.style.display = showInput ? 'inline-block' : 'none';
+
+            customAlertModal.style.display = 'flex'; // Usamos flex para centrar
+
+            // Manejo de la promesa para simular .then() de Swal.fire
+            return new Promise(resolve => {
+                const okClickHandler = function() {
+                    customAlertModal.style.display = 'none';
+                    customAlertOkBtn.removeEventListener('click', okClickHandler);
+                    customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
+                    resolve({ isConfirmed: true, inputValue: customAlertInput.value });
+                };
+
+                const cancelClickHandler = function() {
+                    customAlertModal.style.display = 'none';
+                    customAlertOkBtn.removeEventListener('click', okClickHandler);
+                    customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
+                    resolve({ isConfirmed: false });
+                };
+
+                customAlertOkBtn.addEventListener('click', okClickHandler);
+                customAlertCancelBtn.addEventListener('click', cancelClickHandler);
+            });
+        }
+
+        // Para cerrar la modal si se hace clic fuera de ella
+        window.onclick = function(event) {
+            if (event.target == customAlertModal) {
+                customAlertModal.style.display = 'none';
+                // FIX: Asegurar que los listeners se limpien al cerrar haciendo clic fuera
+                customAlertOkBtn.removeEventListener('click', okClickHandler); 
+                customAlertCancelBtn.removeEventListener('click', cancelClickHandler); 
+            }
+        };
+
         const rowsPerPageDesktop = 5;
         const rowsPerPageMobile = 3;
         let currentPage = 1;
@@ -417,22 +622,96 @@
         // Global array to store all project data as objects, including a reference to the DOM element and filter visibility
         let allProjectsData = [];
 
-        // Function to initialize data from existing table rows on page load
-        function initializeProjectsData() {
-            const tableBody = document.getElementById('projectsTable').getElementsByTagName('tbody')[0];
-            allProjectsData = []; // Clear previous data
-            for (let i = 0; i < tableBody.rows.length; i++) {
-                const row = tableBody.rows[i];
-                const cells = row.getElementsByTagName('td');
-                allProjectsData.push({
-                    element: row,
-                    originalN: parseInt(cells[0].textContent),
-                    searchableText: Array.from(cells)
-                                        .filter((td, index) => index !== 0 && index !== cells.length - 1) // Exclude N° and Acciones
-                                        .map(td => td.textContent || td.innerText)
-                                        .join(' ').toLowerCase(),
-                    isVisibleByFilter: true // Initially all rows are visible by filter
+        // Variable para mantener un índice único para los campos de integrantes
+        let memberFieldIndex = 0;
+
+        // --- Funciones de Utilidad para Fetching ---
+        // Implementación de retraso exponencial para reintentos de fetch
+        async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    // Si es un error 404, no reintentamos ya que el recurso no existe
+                    if (response.status === 404) {
+                        return null; // O throw new Error('Not Found'); si quieres manejarlo como un error distinto
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                if (retries > 0) {
+                    console.warn(`Fetch failed, retrying in ${delay}ms... (${retries} retries left)`, error);
+                    await new Promise(res => setTimeout(res, delay));
+                    return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
+                } else {
+                    console.error('Max retries reached. Failed to fetch:', url, error);
+                    throw error;
+                }
+            }
+        }
+
+        // Función para cargar datos de la API y poblar la tabla
+        async function loadProjectsFromAPI() {
+            try {
+                // Llama a la API de tu backend para obtener los proyectos
+                // Ahora esta API solo trae los proyectos no eliminados lógicamente
+                const projects = await fetchWithExponentialBackoff('/api/proyectos-comunitarios', { method: 'GET' });
+                if (!projects) {
+                    await showCustomAlert('Error', 'No se pudieron cargar los proyectos. Inténtalo de nuevo más tarde.');
+                    return;
+                }
+
+                const tableBody = document.getElementById('projectsTable').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = ''; // Limpia los datos estáticos existentes
+                allProjectsData = []; // Limpia el array global
+
+                projects.forEach((project, index) => {
+                    const newOriginalN = index + 1;
+                    const newRow = tableBody.insertRow();
+                    newRow.dataset.projectId = project.id_servicio; // Guardar el ID del proyecto en la fila
+
+                    // Formatear integrantes para mostrar en la tabla: Cédula - Nombre Completo
+                    const integrantesDisplay = project.integrantes && project.integrantes.length > 0
+                        ? project.integrantes.map(i => `${i.cedula} - ${i.nombre_completo}`).join('<br>')
+                        : 'N/A';
+                    
+                    // Formatear fechas
+                    const fechaInicio = project.fecha_inicio ? new Date(project.fecha_inicio).toISOString().split('T')[0] : 'N/A';
+                    const fechaFinal = project.fecha_final ? new Date(project.fecha_final).toISOString().split('T')[0] : 'N/A';
+
+                    newRow.innerHTML = `
+                        <td data-label="N°">${newOriginalN}</td>
+                        <td data-label="Periodo">${project.periodo || 'N/A'}</td>
+                        <td data-label="Nombre del Proyecto">${project.nombre_proyecto || 'N/A'}</td>
+                        <td data-label="Integrantes">${integrantesDisplay}</td>
+                        <td data-label="Carrera">${project.carreras ? project.carreras.carrera : 'N/A'}</td>
+                        <td data-label="Tutor">${project.tutor ? project.tutor.nombre_completo : 'N/A'}</td>
+                        <td data-label="Fecha Inicio">${fechaInicio}</td>
+                        <td data-label="Fecha Final">${fechaFinal}</td>
+                        <td data-label="Estado">${project.estado || 'N/A'}</td>
+                        <td data-label="Comunidad">${project.comunidad || 'N/A'}</td>
+                        <td data-label="Acciones">
+                            <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar" onclick="openEditProjectModal('${project.id_servicio}')"><i class="zmdi zmdi-edit"></i></a>
+                            <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar" onclick="confirmDeleteProject('${project.id_servicio}', '${project.nombre_proyecto}')"><i class="zmdi zmdi-delete"></i></a>
+                            <a href ="/api/proyectos-comunitarios/${project.id_servicio}/descargar-pdf" target="_blank" class="btn btn-light btn-raised btn-xs" title="Descargar"><i class="zmdi zmdi-download"></i></a>
+                        </td>
+                    `;
+
+                    allProjectsData.push({
+                        element: newRow,
+                        originalN: newOriginalN,
+                        id_servicio: project.id_servicio, // Guardar el ID del proyecto aquí
+                        projectData: project, // Guardar el objeto completo del proyecto
+                        searchableText: `${project.periodo} ${project.nombre_proyecto} ${integrantesDisplay.replace(/<br>/g, ' ')} ${project.carreras ? project.carreras.carrera : ''} ${project.tutor ? project.tutor.nombre_completo : ''} ${project.estado} ${project.comunidad}`.toLowerCase(),
+                        isVisibleByFilter: true
+                    });
                 });
+
+                filterTable(); // Re-apply filter and update pagination after loading data
+                $.material.init(); // Re-initialize Material Design styles for new content
+            } catch (error) {
+                console.error('Error al cargar proyectos:', error);
+                await showCustomAlert('Error', 'Ocurrió un error al cargar los proyectos. Revisa la consola para más detalles.');
             }
         }
 
@@ -443,10 +722,8 @@
 
         // Function to apply pagination visibility
         function displayRows() {
-            // Get projects currently visible after filtering
             const filteredProjects = allProjectsData.filter(project => project.isVisibleByFilter);
 
-            // Hide all rows first to re-apply pagination
             allProjectsData.forEach(project => {
                 project.element.style.display = 'none';
             });
@@ -454,7 +731,6 @@
             const startIndex = (currentPage - 1) * currentRowsPerPage;
             const endIndex = Math.min(startIndex + currentRowsPerPage, filteredProjects.length);
 
-            // Display only the paginated subset of the filtered rows
             for (let i = startIndex; i < endIndex; i++) {
                 if (filteredProjects[i]) {
                     filteredProjects[i].element.style.display = '';
@@ -464,14 +740,12 @@
 
         // Function to set up pagination links
         function setupPagination() {
-            // Get currently visible rows (those not hidden by filterTable)
             const visibleRowsForPagination = allProjectsData.filter(project => project.isVisibleByFilter);
 
             const pageCount = Math.ceil(visibleRowsForPagination.length / currentRowsPerPage);
             const paginationUl = document.getElementById('pagination');
-            paginationUl.innerHTML = ''; // Clear existing pagination
+            paginationUl.innerHTML = '';
 
-            // Adjust currentPage if it's out of bounds after a filter or resize
             if (currentPage > pageCount && pageCount > 0) {
                 currentPage = pageCount;
             } else if (pageCount === 0 && visibleRowsForPagination.length > 0) {
@@ -480,19 +754,16 @@
                 currentPage = 1;
             }
 
-            // Hide pagination if there's only one page or no items
             if (pageCount <= 1) {
                 paginationUl.style.display = 'none';
             } else {
                 paginationUl.style.display = '';
             }
 
-            // If no visible rows, no need to create pagination links
             if (visibleRowsForPagination.length === 0) {
                 return;
             }
 
-            // Previous button
             let prevLi = document.createElement('li');
             let prevLink = document.createElement('a');
             prevLink.href = '#!';
@@ -506,7 +777,6 @@
             prevLi.appendChild(prevLink);
             paginationUl.appendChild(prevLi);
 
-            // Page numbers
             for (let i = 1; i <= pageCount; i++) {
                 let li = document.createElement('li');
                 let link = document.createElement('a');
@@ -522,7 +792,6 @@
                 paginationUl.appendChild(li);
             }
 
-            // Next button
             let nextLi = document.createElement('li');
             let nextLink = document.createElement('a');
             nextLink.href = '#!';
@@ -536,7 +805,6 @@
             nextLi.appendChild(nextLink);
             paginationUl.appendChild(nextLi);
 
-            // Update disabled/active states for pagination buttons
             if (currentPage === 1) {
                 prevLi.classList.add('disabled');
             } else {
@@ -548,7 +816,6 @@
                 nextLi.classList.remove('disabled');
             }
 
-            // Set active class on current page number
             Array.from(paginationUl.children).forEach(li => {
                 if (li.textContent == currentPage && li.textContent !== '«' && li.textContent !== '»') {
                     li.classList.add('active');
@@ -569,166 +836,474 @@
         function filterTable() {
             const input = document.getElementById('searchProject');
             const filter = input.value.toLowerCase();
-            let currentFilteredN = 1; // For re-indexing N° when filtered
+            let currentFilteredN = 1;
 
             allProjectsData.forEach(project => {
                 if (project.searchableText.includes(filter)) {
-                    project.isVisibleByFilter = true; // Mark as visible by filter
-                    // Update N° for filtered results if a filter is active
+                    project.isVisibleByFilter = true;
                     if (filter !== '') {
                         project.element.getElementsByTagName('td')[0].textContent = currentFilteredN++;
                     }
                 } else {
-                    project.isVisibleByFilter = false; // Mark as hidden by filter
+                    project.isVisibleByFilter = false;
                 }
             });
 
-            // Restore original N°s if filter is empty
             if (filter === '') {
                 allProjectsData.forEach((project) => {
                     project.element.getElementsByTagName('td')[0].textContent = project.originalN;
                 });
             }
 
-            currentPage = 1; // Reset to first page after filtering or clearing filter
-            updateTableAndPagination(); // Update pagination based on filtered results
+            currentPage = 1;
+            updateTableAndPagination();
         }
 
-        // Function to add a new set of Cédula and Nombre Completo fields
-        function addMemberField() {
+        // Función para preparar el modal para agregar un nuevo proyecto
+        async function prepareAddModal() {
+            document.getElementById('projectModalTitle').textContent = 'Agregar Nuevo Proyecto';
+            document.getElementById('saveProjectBtn').textContent = 'Guardar Proyecto';
+            document.getElementById('editProjectId').value = ''; // Limpiar ID de proyecto para agregar
+            document.getElementById('addProjectForm').reset(); // Limpiar todos los campos del formulario
+            document.getElementById('projectTutorName').readOnly = true;
+
+            // Restablecer campos de integrantes a uno por defecto
             const membersContainer = document.getElementById('membersContainer');
-            const newMemberGroup = document.createElement('div');
-            newMemberGroup.classList.add('row', 'member-input-group');
-            newMemberGroup.innerHTML = `
-                <div class="col-xs-12 col-sm-6">
-                    <div class="form-group label-floating">
-                        <label class="control-label">Cédula del Integrante</label>
-                        <input class="form-control" type="text" class="projectMemberId">
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-6">
-                    <div class="form-group label-floating">
-                        <label class="control-label">Nombre Completo del Integrante</label>
-                        <input class="form-control" type="text" class="projectMemberName">
-                    </div>
-                </div>
-            `;
-            membersContainer.appendChild(newMemberGroup);
-            $.material.init(); // Re-initialize Material Design styles for new elements
+            membersContainer.innerHTML = ''; // Limpiar primero
+            memberFieldIndex = -1; // Reset index to -1 so first call to addMemberField starts at 0
+            addMemberField(); // Añadir un campo de integrante vacío por defecto
+
+            await loadModalDataSelects(); // Cargar dropdowns de periodo y carrera
+            setupCedulaListeners(); // Re-adjuntar listeners de cédula a los campos
+            $.material.init(); // Re-inicializar Material Design
         }
 
-        // Function to add a new project to the table
-        function addNewProject() {
-            const period = document.getElementById('projectPeriod').value;
-            const name = document.getElementById('projectName').value;
-            const career = document.getElementById('projectCareer').value;
-            const tutor = document.getElementById('projectTutor').value;
-            const startDate = document.getElementById('projectStartDate').value;
-            const endDate = document.getElementById('projectEndDate').value;
-            const status = document.getElementById('projectStatus').value;
 
-            // Get all member IDs and Names
-            const memberIds = Array.from(document.querySelectorAll('.projectMemberId')).map(input => input.value);
-            const memberNames = Array.from(document.querySelectorAll('.projectMemberName')).map(input => input.value);
+        // Función para abrir el modal en modo edición
+        async function openEditProjectModal(projectId) {
+            document.getElementById('projectModalTitle').textContent = 'Editar Proyecto';
+            document.getElementById('saveProjectBtn').textContent = 'Guardar Cambios';
+            document.getElementById('editProjectId').value = projectId; // Guardar el ID del proyecto que estamos editando
+            document.getElementById('addProjectForm').reset(); // Limpiar el formulario primero
+            document.getElementById('projectTutorName').readOnly = true;
 
-            let allMembersValid = true;
-            let combinedMembers = [];
-            for (let i = 0; i < memberIds.length; i++) {
-                if (memberIds[i].trim() === '' || memberNames[i].trim() === '') {
-                    allMembersValid = false;
-                    break;
-                }
-                combinedMembers.push(`${memberIds[i].trim()}-${memberNames[i].trim()}`);
-            }
 
-            if (!period || !name || !career || !tutor || !startDate || !endDate || !status || !allMembersValid || combinedMembers.length === 0) {
-                Swal.fire({
-                    title: "Error",
-                    text: "Por favor, completa todos los campos, incluyendo al menos un integrante con cédula y nombre.",
-                    icon: "error",
-                    confirmButtonText: "Ok"
-                });
+            const project = allProjectsData.find(p => p.id_servicio == projectId)?.projectData;
+
+            if (!project) {
+                await showCustomAlert('Error', 'No se encontró el proyecto para editar.');
                 return;
             }
 
-            const membersString = combinedMembers.join(', '); // Join multiple members with a comma and space
+            // Llenar campos del proyecto
+            document.getElementById('projectName').value = project.nombre_proyecto || '';
+            document.getElementById('projectCommunity').value = project.comunidad || '';
+            document.getElementById('projectStartDate').value = project.fecha_inicio ? new Date(project.fecha_inicio).toISOString().split('T')[0] : '';
+            document.getElementById('projectEndDate').value = project.fecha_final ? new Date(project.fecha_final).toISOString().split('T')[0] : '';
+            document.getElementById('projectStatus').value = project.estado || 'Pendiente';
 
-            const tableBody = document.getElementById('projectsTable').getElementsByTagName('tbody')[0];
-            const newRow = tableBody.insertRow();
-            const newOriginalN = allProjectsData.length + 1;
+            // Llenar tutor
+            if (project.tutor) {
+                document.getElementById('projectTutorCedula').value = project.tutor.cedula || '';
+                document.getElementById('projectTutorName').value = project.tutor.nombre_completo || '';
+                document.getElementById('projectTutorName').setAttribute('data-id', project.tutor.id_tutor || '');
+                document.getElementById('projectTutorName').readOnly = true; // El nombre del tutor autocompletado es readonly
+            } else {
+                document.getElementById('projectTutorCedula').value = '';
+                document.getElementById('projectTutorName').value = '';
+                document.getElementById('projectTutorName').removeAttribute('data-id');
+                document.getElementById('projectTutorName').readOnly = false; // Permitir edición si no hay tutor
+            }
 
-            newRow.innerHTML = `
-                <td data-label="N°">${newOriginalN}</td>
-                <td data-label="Periodo">${period}</td>
-                <td data-label="Nombre del Proyecto">${name}</td>
-                <td data-label="Integrantes">${membersString}</td>
-                <td data-label="Carrera">${career}</td>
-                <td data-label="Tutor">${tutor}</td>
-                <td data-label="Fecha Inicio">${startDate}</td>
-                <td data-label="Fecha Final">${endDate}</td>
-                <td data-label="Estado">${status}</td>
-                <td data-label="Acciones">
-                    <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar"><i class="zmdi zmdi-edit"></i></a>
-                    <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar"><i class="zmdi zmdi-delete"></i></a>
-                </td>
-            `;
-
-            // Add new project to our data array
-            const newProjectData = {
-                element: newRow,
-                originalN: newOriginalN,
-                searchableText: Array.from(newRow.getElementsByTagName('td'))
-                                    .filter((td, index, array) => index !== 0 && index !== array.length - 1)
-                                    .map(td => td.textContent || td.innerText)
-                                    .join(' ').toLowerCase(),
-                isVisibleByFilter: true // New projects are initially visible
-            };
-            allProjectsData.push(newProjectData);
-
-            // Clear form and close modal
-            document.getElementById('addProjectForm').reset();
-            // Clear dynamically added member fields and restore the first one
+            // Llenar integrantes
             const membersContainer = document.getElementById('membersContainer');
-            membersContainer.innerHTML = `
-                <div class="row member-input-group">
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="form-group label-floating">
-                            <label class="control-label">Cédula del Integrante</label>
-                            <input class="form-control" type="text" class="projectMemberId">
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="form-group label-floating">
-                            <label class="control-label">Nombre Completo del Integrante</label>
-                            <input class="form-control" type="text" class="projectMemberName">
-                        </div>
-                    </div>
-                </div>
-            `;
-            $.material.init(); // Re-initialize Material Design styles for cleared fields
-            $('#addProjectModal').modal('hide');
+            membersContainer.innerHTML = ''; // Limpiar campos actuales
+            memberFieldIndex = -1; // Reset index for adding existing members
 
-            Swal.fire({
-                title: "¡Éxito!",
-                text: "El proyecto ha sido agregado correctamente.",
-                icon: "success",
-                confirmButtonText: "Ok"
+            if (project.integrantes && project.integrantes.length > 0) {
+                project.integrantes.forEach((integrante, index) => {
+                    memberFieldIndex = index; // Asegurarse de que el índice sea correcto
+                    const newMemberGroup = document.createElement('div');
+                    newMemberGroup.classList.add('member-input-group'); // Eliminar 'row' para un control más fino
+                    newMemberGroup.innerHTML = `
+                        <div class="form-group label-floating col-xs-12">
+                            <label class="control-label" for="projectMemberId_${memberFieldIndex}">Cédula del Integrante</label>
+                            <input class="form-control projectMemberId" type="text" id="projectMemberId_${memberFieldIndex}" data-member-index="${memberFieldIndex}" value="${integrante.cedula || ''}">
+                        </div>
+                        <div class="form-group label-floating col-xs-12">
+                            <label class="control-label" for="projectMemberName_${memberFieldIndex}">Nombre Completo del Integrante</label>
+                            <input class="form-control projectMemberName" type="text" id="projectMemberName_${memberFieldIndex}" data-member-index="${memberFieldIndex}" value="${integrante.nombre_completo || ''}" data-id="${integrante.id_estudiante || ''}" readonly>
+                        </div>
+                        <button type="button" class="remove-member-btn" onclick="removeMemberField(this)"><i class="zmdi zmdi-close"></i></button>
+                    `;
+                    membersContainer.appendChild(newMemberGroup);
+                });
+            } else {
+                // Si no hay integrantes, añadir un campo vacío por defecto
+                addMemberField();
+            }
+
+            // Cargar y seleccionar periodos y carreras
+            await loadModalDataSelects(project.id_periodo, project.id_carrera);
+            setupCedulaListeners(); // Re-adjuntar listeners de cédula a los campos dinámicos y del tutor
+            $.material.init(); // Re-inicializar Material Design para que los campos rellenos se vean bien
+
+            // Forzar actualización de labels flotantes para campos con valor
+            $('.form-group.label-floating').each(function() {
+                var $this = $(this);
+                var $input = $this.find('input, select, textarea');
+                if ($input.val() !== "" && $input.val() !== null) { // Asegurarse de que no sea null
+                    $this.addClass('is-focused'); // Marca como enfocado si tiene valor
+                } else {
+                    $this.removeClass('is-focused'); // Remueve si no tiene valor
+                }
             });
 
-            // Re-apply filter if active, otherwise just update pagination
-            const currentFilter = document.getElementById('searchProject').value.toLowerCase();
-            if (currentFilter !== '') {
-                filterTable(); // This will reset page to 1 and update pagination
-            } else {
-                currentPage = Math.ceil(allProjectsData.length / currentRowsPerPage); // Go to last page
-                updateTableAndPagination(); // This will update pagination
+            // Abrir el modal
+            $('#addProjectModal').modal('show');
+        }
+
+
+        // Función para poblar los dropdowns al abrir el modal (ahora acepta IDs para selección)
+        async function loadModalDataSelects(selectedPeriodId = null, selectedCareerId = null) {
+            try {
+                // Cargar periodos
+                const periodos = await fetchWithExponentialBackoff('/api/periodos', { method: 'GET' });
+                const periodSelect = document.getElementById('projectPeriod');
+                periodSelect.innerHTML = '<option value="">Selecciona un Periodo</option>'; // Placeholder
+                if (periodos) {
+                    periodos.forEach(p => {
+                        const option = document.createElement('option');
+                        option.value = p.id_periodo;
+                        option.textContent = p.periodo;
+                        if (selectedPeriodId && p.id_periodo == selectedPeriodId) {
+                            option.selected = true;
+                        }
+                        periodSelect.appendChild(option);
+                    });
+                }
+
+                // Cargar carreras
+                const carreras = await fetchWithExponentialBackoff('/api/carreras', { method: 'GET' });
+                const careerSelect = document.getElementById('projectCareer');
+                careerSelect.innerHTML = '<option value="">Selecciona una Carrera</option>'; // Placeholder
+                if (carreras) {
+                    carreras.forEach(c => {
+                        const option = document.createElement('option');
+                        option.value = c.id_carrera;
+                        option.textContent = c.carrera;
+                        if (selectedCareerId && c.id_carrera == selectedCareerId) {
+                            option.selected = true;
+                        }
+                        careerSelect.appendChild(option);
+                    });
+                }
+                
+                $.material.init(); // Re-inicializar Material Design para nuevos dropdowns
+            } catch (error) {
+                console.error('Error al cargar datos para los selects del modal:', error);
+                await showCustomAlert('Error', 'Ocurrió un error al cargar los datos de selección.');
             }
         }
 
+        // Función para añadir listeners a los campos de cédula de integrantes y tutor
+        function setupCedulaListeners() {
+            // Limpiar listeners existentes para evitar duplicados
+            $('.projectMemberId').off('blur keydown');
+            $('#projectTutorCedula').off('blur keydown');
+
+            // Estudiantes
+            document.querySelectorAll('.projectMemberId').forEach(input => {
+                input.onblur = async (event) => {
+                    await checkPersonByCedula(event.target, 'estudiante', 'projectMemberName', false);
+                    $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                };
+                input.onkeydown = async (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault(); // Previene el envío del formulario
+                        await checkPersonByCedula(event.target, 'estudiante', 'projectMemberName', false);
+                        $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                    }
+                };
+            });
+
+            // Tutor
+            const tutorCedulaInput = document.getElementById('projectTutorCedula');
+            
+            tutorCedulaInput.onblur = async (event) => {
+                await checkPersonByCedula(event.target, 'tutor', 'projectTutorName', true);
+                $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+            };
+            tutorCedulaInput.onkeydown = async (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Previene el envío del formulario
+                    await checkPersonByCedula(event.target, 'tutor', 'projectTutorName', true);
+                    $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                }
+            };
+        }
+
+        // Función genérica para verificar persona por cédula (estudiante o tutor)
+        async function checkPersonByCedula(cedulaInput, type, nameClassOrId, isTutor) {
+            const cedula = cedulaInput.value.trim();
+            const nameInput = isTutor ? document.getElementById(nameClassOrId) : document.getElementById(`${nameClassOrId}_${cedulaInput.dataset.memberIndex}`);
+            
+            // Limpiar el campo de nombre y ID al borrar la cédula
+            if (cedula === '') {
+                nameInput.value = '';
+                nameInput.readOnly = isTutor; // Si es tutor, se queda readonly por defecto
+                nameInput.removeAttribute('data-id'); // Limpia el ID
+                $(nameInput).closest('.form-group').removeClass('is-focused is-filled'); // Remover clases de Material Design
+                $.material.init();
+                return;
+            }
+
+            try {
+                const url = `/api/${type}-por-cedula/${cedula}`;
+                const personData = await fetchWithExponentialBackoff(url, { method: 'GET' });
+
+                if (personData) {
+                    nameInput.value = personData.nombre_completo;
+                    nameInput.readOnly = true; // Deshabilita edición
+                    nameInput.setAttribute('data-id', personData[`id_${type}`]); // Guarda el ID
+                    $(nameInput).closest('.form-group').addClass('is-focused is-filled');
+                    
+                } else {
+                    nameInput.value = ''; // Limpia el nombre si no se encontró
+                    nameInput.readOnly = false; // Habilita edición
+                    nameInput.removeAttribute('data-id'); // Asegura que no haya ID
+                    $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
+                    // await showCustomAlert('No encontrado', `No se encontró un ${type} con cédula ${cedula}.`);
+                }
+                $.material.init();
+
+            } catch (error) {
+                console.error(`Error al verificar cédula de ${type}:`, error);
+                nameInput.value = '';
+                nameInput.readOnly = false;
+                nameInput.removeAttribute('data-id');
+                $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
+                await showCustomAlert('Error de Conexión', `No se pudo verificar la cédula de ${type}. Intenta de nuevo.`);
+            }
+        }
+
+
+        // Function to add a new set of Cédula and Nombre Completo fields for Integrantes
+        function addMemberField() {
+            memberFieldIndex++; // Increment index for unique IDs
+            const membersContainer = document.getElementById('membersContainer');
+            const newMemberGroup = document.createElement('div');
+            newMemberGroup.classList.add('member-input-group'); // Eliminado 'row' para mayor control
+            newMemberGroup.innerHTML = `
+                <div class="form-group label-floating col-xs-12">
+                    <label class="control-label" for="projectMemberId_${memberFieldIndex}">Cédula del Integrante</label>
+                    <input class="form-control projectMemberId" type="text" id="projectMemberId_${memberFieldIndex}" data-member-index="${memberFieldIndex}">
+                </div>
+                <div class="form-group label-floating col-xs-12">
+                    <label class="control-label" for="projectMemberName_${memberFieldIndex}">Nombre Completo del Integrante</label>
+                    <input class="form-control projectMemberName" type="text" id="projectMemberName_${memberFieldIndex}" data-member-index="${memberFieldIndex}" readonly>
+                </div>
+                <button type="button" class="remove-member-btn" onclick="removeMemberField(this)"><i class="zmdi zmdi-close"></i></button>
+            `;
+            membersContainer.appendChild(newMemberGroup);
+            $.material.init(); // Re-inicializar Material Design styles for new elements
+            
+            // Adjuntar listeners de cédula a los nuevos campos
+            const newCedulaInput = document.getElementById(`projectMemberId_${memberFieldIndex}`);
+            newCedulaInput.onblur = async (event) => {
+                await checkPersonByCedula(event.target, 'estudiante', 'projectMemberName', false);
+                $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+            };
+            newCedulaInput.onkeydown = async (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    await checkPersonByCedula(event.target, 'estudiante', 'projectMemberName', false);
+                    $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                }
+            };
+        }
+
+        // Función para remover un campo de integrante
+        function removeMemberField(button) {
+            $(button).closest('.member-input-group').remove();
+            // No es necesario reajustar memberFieldIndex ni reindexar, ya que se leerán dinámicamente al guardar
+            // Pero es buena práctica re-inicializar Material Design si hay campos flotantes que se vean afectados.
+            $.material.init();
+        }
+
+        // Función para guardar (agregar o editar) un proyecto
+        async function saveProject() { // Renombrada de addNewProject
+            // Deshabilitar el botón para evitar múltiples envíos
+            const saveButton = document.getElementById('saveProjectBtn');
+            saveButton.disabled = true;
+            saveButton.textContent = 'Guardando...';
+
+            const projectId = document.getElementById('editProjectId').value; // Obtener el ID del proyecto si estamos editando
+            const isEditing = !!projectId; // true si hay un ID, false si estamos agregando
+
+            try {
+                const periodSelect = document.getElementById('projectPeriod');
+                const periodoId = periodSelect.value;
+
+                const projectName = document.getElementById('projectName').value;
+                
+                const careerSelect = document.getElementById('projectCareer');
+                const carreraId = careerSelect.value;
+
+                const comunidad = document.getElementById('projectCommunity').value;
+
+                const tutorCedula = document.getElementById('projectTutorCedula').value;
+                const tutorName = document.getElementById('projectTutorName').value;
+
+                const startDate = document.getElementById('projectStartDate').value;
+                const endDate = document.getElementById('projectEndDate').value;
+                const status = document.getElementById('projectStatus').value;
+
+                // Obtener todos los integrantes ingresados
+                const memberInputs = Array.from(document.querySelectorAll('#membersContainer .member-input-group'));
+                let allMembersValid = true;
+                let projectMembers = []; // Array de objetos { cedula, nombreCompleto, id (si existe) }
+                const uniqueCedulas = new Set(); // Para validar cédulas duplicadas en el frontend
+
+                for (const group of memberInputs) {
+                    const cedulaInput = group.querySelector('.projectMemberId');
+                    const nameInput = group.querySelector('.projectMemberName');
+                    const cedula = cedulaInput.value.trim();
+                    const nombreCompleto = nameInput.value.trim();
+                    const existingId = nameInput.dataset.id; // El ID si ya existe en la DB
+
+                    if (cedula === '' || nombreCompleto === '') {
+                        allMembersValid = false;
+                        break;
+                    }
+
+                    // Validar cédulas duplicadas en el frontend
+                    if (uniqueCedulas.has(cedula)) {
+                        await showCustomAlert("Error de Cédula", `La cédula ${cedula} está duplicada en la lista de integrantes.`);
+                        saveButton.disabled = false;
+                        saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Proyecto';
+                        return; // Detener el envío del formulario
+                    }
+                    uniqueCedulas.add(cedula);
+
+                    projectMembers.push({
+                        cedula: cedula,
+                        nombreCompleto: nombreCompleto,
+                        id: existingId // Se usará si el estudiante ya existe
+                    });
+                }
+
+                if (!periodoId || !projectName || !carreraId || !comunidad || !tutorCedula || !tutorName || !startDate || !endDate || !status || !allMembersValid || projectMembers.length === 0) {
+                    await showCustomAlert("Error", "Por favor, completa todos los campos obligatorios, incluyendo al menos un integrante con cédula y nombre.");
+                    saveButton.disabled = false;
+                    saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Proyecto';
+                    return; // Sale de la función para que el botón no se rehabilite antes de tiempo
+                }
+                
+                // Construir el objeto de datos a enviar
+                const projectData = {
+                    periodoId: parseInt(periodoId),
+                    nombreProyecto: projectName,
+                    integrantes: projectMembers,
+                    carreraId: parseInt(carreraId),
+                    tutor: { 
+                        cedulaTutor: tutorCedula, 
+                        nombreCompletoTutor: tutorName 
+                    },
+                    fechaInicio: startDate,
+                    fechaFinal: endDate,
+                    estado: status,
+                    comunidad: comunidad
+                };
+
+                let response;
+                if (isEditing) {
+                    response = await fetchWithExponentialBackoff(`/api/proyectos-comunitarios/${projectId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(projectData),
+                    });
+                } else {
+                    response = await fetchWithExponentialBackoff('/api/agregar-proyecto-comunitario', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(projectData),
+                    });
+                }
+                
+                if (response && response.message) {
+                    // Cierra el modal de Bootstrap y adjunta el listener para cuando esté COMPLETAMENTE oculto
+                    $('#addProjectModal').on('hidden.bs.modal', async function () {
+                        // FIX: Mover la lógica de reseteo y recarga *dentro* del handler
+                        document.getElementById('addProjectForm').reset();
+                        document.getElementById('projectTutorName').readOnly = true;
+                        
+                        // Reset dynamic member fields after closing modal
+                        const membersContainer = document.getElementById('membersContainer');
+                        membersContainer.innerHTML = ''; // Limpiar primero
+                        memberFieldIndex = -1; // Reset index for new modal opening
+                        addMemberField(); // Añadir un campo de integrante vacío por defecto
+                        
+                        $.material.init(); // Re-inicializar Material Design
+                        await loadProjectsFromAPI(); // Recargar proyectos para ver el nuevo
+                        
+                        // Ahora muestra la alerta personalizada
+                        await showCustomAlert("¡Éxito!", response.message);
+                        
+                        // FIX: Asegurarse de eliminar cualquier backdrop residual de Bootstrap
+                        $('.modal-backdrop').remove(); // Elimina el backdrop de Bootstrap
+                        
+                        // Remover el listener después de usarlo
+                        $(this).off('hidden.bs.modal'); 
+                    });
+                    $('#addProjectModal').modal('hide'); // Inicia el ocultamiento del modal de Bootstrap
+
+                } else {
+                    await showCustomAlert("Error", response.error || "No se pudo realizar la operación. Inténtalo de nuevo.");
+                }
+            } catch (error) {
+                console.error('Error al enviar el proyecto:', error);
+                await showCustomAlert("Error", "Ocurrió un error de conexión al guardar el proyecto. Revisa la consola.");
+            } finally {
+                // Re-habilitar el botón y restaurar su texto
+                saveButton.disabled = false;
+                saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Proyecto';
+            }
+        }
+
+        // Function para confirmar la eliminación lógica de un proyecto
+        async function confirmDeleteProject(projectId, projectName) {
+            const { isConfirmed, inputValue: mensajeEliminacion } = await showCustomAlert(
+                'Confirmar Eliminación', 
+                `¿Estás seguro de que quieres eliminar lógicamente el proyecto "${projectName}"?`,
+                true // Muestra el input de mensaje
+            );
+
+            if (isConfirmed) {
+                try {
+                    const response = await fetchWithExponentialBackoff(`/api/proyectos-comunitarios/eliminar-logico/${projectId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion })
+                    });
+
+                    if (response && response.message) {
+                        await showCustomAlert('¡Éxito!', response.message);
+                        await loadProjectsFromAPI(); // Recargar la tabla principal
+                    } else {
+                        await showCustomAlert('Error', response.error || 'No se pudo eliminar el proyecto lógicamente. Inténtalo de nuevo.');
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar lógicamente el proyecto:', error);
+                    await showCustomAlert('Error', 'Ocurrió un error de conexión al intentar eliminar el proyecto.');
+                }
+            }
+        }
+
+
         // Initial call to populate allProjectsData and display table on load
         $(document).ready(function() {
-            initializeProjectsData(); // Populate data from existing HTML
-            filterTable(); // Run filterTable (with empty filter) to set initial visibility and N°s
+            loadProjectsFromAPI(); 
             $.material.init(); // Apply Material Design styling after content is ready
 
             window.addEventListener('resize', updateTableAndPagination);

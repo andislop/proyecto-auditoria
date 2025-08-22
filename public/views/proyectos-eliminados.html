@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<title>Proyectos Eliminados</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" href="../css/main.css">
+    <!-- Aseguramos que el archivo bootstrap-icons.css se cargue si no lo tienes en main.css -->
+    <link rel="stylesheet" href="../css/bootstrap-icons.css">
+    <style>
+        /* Estilos para la ventana modal personalizada */
+        .custom-modal-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 9999; /* FIX: Asegura que esté por encima de TODO */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            border-radius: 8px;
+            text-align: center;
+            color: #333;
+        }
+
+        .custom-modal-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .custom-modal-body {
+            padding: 10px 0;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para el campo de mensaje en la alerta personalizada */
+        .custom-modal-body textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical; /* Permite redimensionar verticalmente */
+        }
+
+        .custom-modal-footer {
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+
+        .custom-modal-footer button {
+            background-color: #2a3e61; /* Azul oscuro */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal-footer button:hover {
+            background-color: #1a2a44; /* Azul más oscuro al pasar el ratón */
+        }
+
+        /* Animación de entrada */
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        /* Responsive Table Styles for mobile */
+        @media (max-width: 767px) {
+            .table-responsive {
+                border: none;
+            }
+            .table-projects thead {
+                display: none;
+            }
+            .table-projects, .table-projects tbody, .table-projects tr, .table-projects td {
+                display: block;
+                width: 100%;
+            }
+            .table-projects tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 10px;
+                background-color: #fff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .table-projects td {
+                text-align: right;
+                padding-left: 50% !important;
+                position: relative;
+                border: none;
+            }
+            .table-projects td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #555;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .table-projects td[data-label="Acciones"] {
+                padding-top: 10px !important;
+                text-align: center !important;
+                padding-left: 15px !important; 
+            }
+            .table-projects td[data-label="Acciones"]::before {
+                display: none;
+            }
+            /* Estilo para que el contenido de Estudiantes no se recorte en móvil */
+            .table-projects td[data-label="Estudiantes"] { 
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+            }
+            .table-projects td[data-label="Estudiantes"]::before { 
+                top: 10px;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilos para la celda de Estudiantes en la tabla principal */
+        .table-projects td[data-label="Estudiantes"] {
+            text-align: left; /* Asegura alineación a la izquierda */
+            white-space: normal; /* Permite el ajuste de línea */
+            word-break: break-word; /* Permite romper palabras largas */
+            min-width: 180px; /* Ancho mínimo para que se vea mejor */
+        }
+
+        .filter-buttons button {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+	<!-- SideBar -->
+	<section class="full-box cover dashboard-sideBar">
+		<div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
+		<div class="full-box dashboard-sideBar-ct">
+			<!--SideBar Title -->
+			<div class="full-box text-uppercase text-center text-titles dashboard-sideBar-title">
+				UNEFA <i class="zmdi zmdi-close btn-menu-dashboard visible-xs"></i>
+			</div>
+			<!-- SideBar User info -->
+			<div class="full-box dashboard-sideBar-UserInfo">
+				<figure class="full-box">
+					<img src="../assets/img/foto.jpg" alt="UserIcon">
+					<figcaption class="text-center text-titles">juancito007</figcaption>
+				</figure>
+				<ul class="full-box list-unstyled text-center">
+					<li>
+						<a href="#!">
+							<i class="zmdi zmdi-settings"></i>
+						</a>
+					</li>
+					<li>
+						<a href="/" class="btn-exit-system">
+							<i class="zmdi zmdi-power"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<!-- SideBar Menu -->
+			<ul class="list-unstyled full-box dashboard-sideBar-Menu">
+				<li>
+					<a href="/home">
+						<i class="zmdi zmdi-view-dashboard zmdi-hc-fw"></i> Dashboard
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-case zmdi-hc-fw"></i> Administracion <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="/servicio-comunitario"><i class="zmdi zmdi-timer zmdi-hc-fw"></i> Servicio Comunitario</a>
+						</li>
+						<li>
+							<a href="/trabajo-de-grado"><i class="zmdi zmdi-book zmdi-hc-fw"></i> Trabajo Grado</a>
+						</li>
+						<li>
+							<a href="/proyectos"><i class="zmdi zmdi-graduation-cap zmdi-hc-fw"></i>Proyectos</a>
+						</li>
+						<li>
+							<a href="salon.html"><i class="zmdi zmdi-font zmdi-hc-fw"></i> Pasantias</a>
+						</li>
+                        <li>
+                            <a href="/proyectos-eliminados"><i class="zmdi zmdi-delete zmdi-hc-fw"></i> Proyectos Eliminados</a>
+                        </li>
+					</ul>
+				</li>
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Users <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="admin.html"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
+						</li>
+						<li>
+							<a href="teacher.html"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Teacher</a>
+						</li>
+						<li>
+							<a href="student.html"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Student</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</section>
+
+	<!-- Content page-->
+	<section class="full-box dashboard-contentPage">
+		<!-- NavBar -->
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li class="pull-left">
+					<a href="#!" class="btn-menu-dashboard"><i class="zmdi zmdi-more-vert"></i></a>
+				</li>
+				<li>
+					<a href="#!" class="btn-Notifications-area">
+						<i class="zmdi zmdi-notifications-none"></i>
+						<span class="badge">7</span>
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-search">
+						<i class="zmdi zmdi-search"></i>
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<!-- Content page -->
+		<div class="container-fluid">
+			<div class="page-header" style="text-align: center;">
+			  <h1 class="text-titles" style="display: inline-block;"></i> Proyectos Eliminados</h1>
+			</div>
+			<p class="lead">Aquí puedes ver y restaurar todos los proyectos (Servicio Comunitario y Trabajo de Grado) que han sido eliminados lógicamente.</p>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<div id="myTabContent" class="tab-content">
+					  	<div class="tab-pane fade active in" id="list">
+                            <div class="container-fluid">
+                                <div class="row" style="margin-bottom: 15px;">
+                                    <div class="col-xs-12 col-sm-6 col-md-4">
+                                        <div class="form-group label-floating">
+                                            <label class="control-label" for="searchDeletedProject">Buscar Proyecto Eliminado</label>
+                                            <input class="form-control" type="text" id="searchDeletedProject" onkeyup="filterTable()">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-8 filter-buttons">
+                                        <button class="btn btn-primary btn-raised" onclick="setFilterType('')">Todos</button>
+                                        <button class="btn btn-info btn-raised" onclick="setFilterType('Servicio Comunitario')">Servicio Comunitario</button>
+                                        <button class="btn btn-success btn-raised" onclick="setFilterType('Trabajo de Grado')">Trabajo de Grado</button>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="table-responsive">
+								<table class="table table-hover text-center table-projects" id="deletedProjectsTable">
+									<thead>
+										<tr>
+											<th class="text-center">N°</th>
+											<th class="text-center">Tipo de Proyecto</th>
+											<th class="text-center">Periodo</th>
+											<th class="text-center">Nombre del Proyecto</th>
+											<th class="text-center">Carrera</th>
+											<th class="text-center">Tutor</th>
+											<th class="text-center">Estudiantes</th>
+                                            <th class="text-center">Mensaje Eliminación</th>
+											<th class="text-center">Acciones</th>
+										</tr>
+									</thead>
+									<tbody>
+										<!-- Los datos se cargarán dinámicamente aquí -->
+									</tbody>
+								</table>
+								<ul class="pagination pagination-sm" id="pagination">
+								</ul>
+							</div>
+					  	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Notifications area -->
+	<section class="full-box Notifications-area">
+		<div class="full-box Notifications-bg btn-Notifications-area"></div>
+		<div class="full-box Notifications-body">
+			<div class="Notifications-body-title text-titles text-center">
+				Notifications <i class="zmdi zmdi-close btn-Notifications-area"></i>
+			</div>
+			<div class="list-group">
+			  	<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-alert-triangle"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">17m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p>
+				    </div>
+			  	</div>
+			  	<div class="list-group-separator"></div>
+			  	<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-alert-octagon"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">15m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p>
+				    </div>
+			  	</div>
+			  	<div class="list-group-separator"></div>
+				<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-help"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">10m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
+				    </div>
+				</div>
+			  	<div class="list-group-separator"></div>
+			  	<div class="list-group-item">
+				    <div class="row-action-primary">
+				      	<i class="zmdi zmdi-info"></i>
+				    </div>
+				    <div class="row-content">
+				      	<div class="least-content">8m</div>
+				      	<h4 class="list-group-item-heading">Tile with a label</h4>
+				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
+				    </div>
+			  	</div>
+			</div>
+
+		</div>
+	</section>
+
+    <!-- Ventana modal personalizada para confirmar restauración -->
+    <div id="customAlertModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <span id="customAlertTitle"></span>
+            </div>
+            <div class="custom-modal-body">
+                <p id="customAlertMessage"></p>
+                <div id="customAlertInputContainer" style="display: none;">
+                    <textarea id="customAlertInput" placeholder="Motivo de la restauración (opcional)"></textarea>
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button id="customAlertOkBtn">Ok</button>
+                <button id="customAlertCancelBtn" style="display: none; background-color: #f44336; margin-left: 10px;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+	<!--====== Scripts -->
+	<script src="./js/jquery-3.1.1.min.js"></script>
+	<script src="./js/bootstrap.min.js"></script>
+	<script src="./js/material.min.js"></script>
+	<script src="./js/ripples.min.js"></script>
+	<script src="./js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="./js/main.js"></script>
+<script>
+        // Referencias a los elementos de la modal personalizada
+        const customAlertModal = document.getElementById('customAlertModal');
+        const customAlertTitle = document.getElementById('customAlertTitle');
+        const customAlertMessage = document.getElementById('customAlertMessage');
+        const customAlertInputContainer = document.getElementById('customAlertInputContainer'); // Contenedor del input
+        const customAlertInput = document.getElementById('customAlertInput'); // El input/textarea
+        const customAlertOkBtn = document.getElementById('customAlertOkBtn');
+        const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); // Botón de cancelar
+
+        let currentFilterType = ''; // Variable global para el tipo de filtro
+
+        // Función para mostrar la modal personalizada
+        function showCustomAlert(title, message, showInput = false, inputPlaceholder = 'Motivo de la restauración (opcional)') {
+            customAlertTitle.textContent = title;
+            customAlertMessage.textContent = message;
+            
+            // Mostrar u ocultar el input/textarea
+            customAlertInputContainer.style.display = showInput ? 'block' : 'none';
+            customAlertInput.value = ''; // Limpiar el campo cada vez
+            customAlertInput.placeholder = inputPlaceholder; // Establecer el placeholder
+            
+            // Mostrar u ocultar el botón de cancelar
+            customAlertCancelBtn.style.display = showInput ? 'inline-block' : 'none';
+
+            customAlertModal.style.display = 'flex'; // Usamos flex para centrar
+
+            // Manejo de la promesa para simular .then() de Swal.fire
+            return new Promise(resolve => {
+                const okClickHandler = function() {
+                    customAlertModal.style.display = 'none';
+                    customAlertOkBtn.removeEventListener('click', okClickHandler);
+                    customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
+                    resolve({ isConfirmed: true, inputValue: customAlertInput.value });
+                };
+
+                const cancelClickHandler = function() {
+                    customAlertModal.style.display = 'none';
+                    customAlertOkBtn.removeEventListener('click', okClickHandler);
+                    customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
+                    resolve({ isConfirmed: false });
+                };
+
+                customAlertOkBtn.addEventListener('click', okClickHandler);
+                customAlertCancelBtn.addEventListener('click', cancelClickHandler);
+            });
+        }
+
+        // Para cerrar la modal si se hace clic fuera de ella
+        window.onclick = function(event) {
+            if (event.target == customAlertModal) {
+                customAlertModal.style.display = 'none';
+                // FIX: Asegurar que los listeners se limpien al cerrar haciendo clic fuera
+                customAlertOkBtn.removeEventListener('click', okClickHandler); 
+                customAlertCancelBtn.removeEventListener('click', cancelClickHandler); 
+            }
+        };
+
+        const rowsPerPageDesktop = 5;
+        const rowsPerPageMobile = 3;
+        let currentPage = 1;
+        let currentRowsPerPage;
+
+        // Global array to store all deleted project data as objects
+        let allDeletedProjectsData = [];
+
+        // --- Funciones de Utilidad para Fetching ---
+        // Implementación de retraso exponencial para reintentos de fetch
+        async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        return null; 
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                if (retries > 0) {
+                    console.warn(`Fetch failed, retrying in ${delay}ms... (${retries} retries left)`, error);
+                    await new Promise(res => setTimeout(res, delay));
+                    return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
+                } else {
+                    console.error('Max retries reached. Failed to fetch:', url, error);
+                    throw error;
+                }
+            }
+        }
+
+        // Función para cargar datos de la API y poblar la tabla
+        async function loadDeletedProjectsFromAPI() {
+            try {
+                // Endpoint para obtener todos los proyectos eliminados (incluye tipo)
+                const deletedProjects = await fetchWithExponentialBackoff('/api/proyectos-eliminados', { method: 'GET' });
+                if (!deletedProjects) {
+                    await showCustomAlert('Error', 'No se pudieron cargar los proyectos eliminados. Inténtalo de nuevo más tarde.');
+                    return;
+                }
+
+                const tableBody = document.getElementById('deletedProjectsTable').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = ''; // Limpia los datos existentes
+                allDeletedProjectsData = []; // Limpia el array global
+
+                deletedProjects.forEach((project, index) => {
+                    const newOriginalN = index + 1;
+                    const newRow = tableBody.insertRow();
+                    newRow.dataset.projectId = project.id;
+                    newRow.dataset.projectType = project.tipo_proyecto; // Guardar el tipo de proyecto en el dataset
+                    
+                    // Formatear estudiantes
+                    const estudiantesDisplay = project.estudiantes && project.estudiantes.length > 0
+                        ? project.estudiantes.map(e => `${e.cedula} - ${e.nombre_completo}`).join('<br>')
+                        : 'N/A';
+                    
+                    newRow.innerHTML = `
+                        <td data-label="N°">${newOriginalN}</td>
+                        <td data-label="Tipo de Proyecto">${project.tipo_proyecto || 'N/A'}</td>
+                        <td data-label="Periodo">${project.periodo || 'N/A'}</td>
+                        <td data-label="Nombre del Proyecto">${project.nombre_proyecto || 'N/A'}</td>
+                        <td data-label="Carrera">${project.carrera || 'N/A'}</td>
+                        <td data-label="Tutor">${project.tutor ? project.tutor.nombre_completo : 'N/A'}</td>
+                        <td data-label="Estudiantes">${estudiantesDisplay}</td>
+                        <td data-label="Mensaje Eliminación">${project.mensaje_eliminacion || 'Sin mensaje'}</td>
+                        <td data-label="Acciones">
+                            <a href="#!" class="btn btn-info btn-raised btn-xs" title="Restaurar" onclick="confirmRestoreProject('${project.id}', '${project.tipo_proyecto}', '${project.nombre_proyecto}')"><i class="zmdi zmdi-refresh"></i> Restaurar</a>
+                        </td>
+                    `;
+
+                    allDeletedProjectsData.push({
+                        element: newRow,
+                        originalN: newOriginalN,
+                        id: project.id,
+                        type: project.tipo_proyecto, // Almacenar el tipo para el filtro
+                        projectData: project, 
+                        searchableText: `${project.tipo_proyecto} ${project.periodo} ${project.nombre_proyecto} ${project.carrera} ${project.tutor ? project.tutor.nombre_completo : ''} ${estudiantesDisplay.replace(/<br>/g, ' ')} ${project.mensaje_eliminacion}`.toLowerCase(),
+                        isVisibleByFilter: true // Inicialmente visible
+                    });
+                });
+
+                filterTable(); // Aplicar el filtro de búsqueda y el filtro por tipo
+                $.material.init();
+            } catch (error) {
+                console.error('Error al cargar proyectos eliminados:', error);
+                await showCustomAlert('Error', 'Ocurrió un error al cargar los proyectos eliminados. Revisa la consola para más detalles.');
+            }
+        }
+
+        // Función para establecer el tipo de filtro y recargar la tabla
+        function setFilterType(type) {
+            currentFilterType = type;
+            filterTable(); // Re-aplicar el filtro con el nuevo tipo
+            // Actualizar el estilo de los botones de filtro si tienes alguno
+            $('.filter-buttons .btn').removeClass('btn-primary').addClass('btn-info');
+            if (type === '') {
+                $('.filter-buttons .btn:contains("Todos")').removeClass('btn-info').addClass('btn-primary');
+            } else if (type === 'Servicio Comunitario') {
+                $('.filter-buttons .btn:contains("Servicio Comunitario")').removeClass('btn-info').addClass('btn-primary');
+            } else if (type === 'Trabajo de Grado') {
+                $('.filter-buttons .btn:contains("Trabajo de Grado")').removeClass('btn-info').addClass('btn-primary');
+            }
+        }
+
+        // Function to determine rows per page based on screen width
+        function getRowsPerPage() {
+            return window.innerWidth <= 767 ? rowsPerPageMobile : rowsPerPageDesktop;
+        }
+
+        // Function to apply pagination visibility
+        function displayRows() {
+            const filteredProjects = allDeletedProjectsData.filter(project => project.isVisibleByFilter);
+
+            allDeletedProjectsData.forEach(project => {
+                project.element.style.display = 'none';
+            });
+
+            const startIndex = (currentPage - 1) * currentRowsPerPage;
+            const endIndex = Math.min(startIndex + currentRowsPerPage, filteredProjects.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                if (filteredProjects[i]) {
+                    filteredProjects[i].element.style.display = '';
+                }
+            }
+        }
+
+        // Function to set up pagination links
+        function setupPagination() {
+            const visibleRowsForPagination = allDeletedProjectsData.filter(project => project.isVisibleByFilter);
+
+            const pageCount = Math.ceil(visibleRowsForPagination.length / currentRowsPerPage);
+            const paginationUl = document.getElementById('pagination');
+            paginationUl.innerHTML = '';
+
+            if (currentPage > pageCount && pageCount > 0) {
+                currentPage = pageCount;
+            } else if (pageCount === 0 && visibleRowsForPagination.length > 0) {
+                currentPage = 1;
+            } else if (visibleRowsForPagination.length === 0) {
+                currentPage = 1;
+            }
+
+            if (pageCount <= 1) {
+                paginationUl.style.display = 'none';
+            } else {
+                paginationUl.style.display = '';
+            }
+
+            if (visibleRowsForPagination.length === 0) {
+                return;
+            }
+
+            let prevLi = document.createElement('li');
+            let prevLink = document.createElement('a');
+            prevLink.href = '#!';
+            prevLink.innerHTML = '«';
+            prevLink.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateTableAndPagination();
+                }
+            };
+            prevLi.appendChild(prevLink);
+            paginationUl.appendChild(prevLi);
+
+            for (let i = 1; i <= pageCount; i++) {
+                let li = document.createElement('li');
+                let link = document.createElement('a');
+                link.href = '#!';
+                link.textContent = i;
+                link.onclick = (function(pageNumber) {
+                    return function() {
+                        currentPage = pageNumber;
+                        updateTableAndPagination();
+                    };
+                })(i);
+                li.appendChild(link);
+                paginationUl.appendChild(li);
+            }
+
+            let nextLi = document.createElement('li');
+            let nextLink = document.createElement('a');
+            nextLink.href = '#!';
+            nextLink.innerHTML = '»';
+            nextLink.onclick = () => {
+                if (currentPage < pageCount) {
+                    currentPage++;
+                    updateTableAndPagination();
+                }
+            };
+            nextLi.appendChild(nextLink);
+            paginationUl.appendChild(nextLi);
+
+            if (currentPage === 1) {
+                prevLi.classList.add('disabled');
+            } else {
+                prevLi.classList.remove('disabled');
+            }
+            if (currentPage >= pageCount || pageCount === 0) {
+                nextLi.classList.add('disabled');
+            } else {
+                nextLi.classList.remove('disabled');
+            }
+
+            Array.from(paginationUl.children).forEach(li => {
+                if (li.textContent == currentPage && li.textContent !== '«' && li.textContent !== '»') {
+                    li.classList.add('active');
+                } else {
+                    li.classList.remove('active');
+                }
+            });
+        }
+
+        // Function to update table and pagination
+        function updateTableAndPagination() {
+            currentRowsPerPage = getRowsPerPage();
+            displayRows();
+            setupPagination();
+        }
+
+        // Function to filter the table
+        function filterTable() {
+            const input = document.getElementById('searchDeletedProject');
+            const filterText = input.value.toLowerCase();
+            let currentFilteredN = 1;
+
+            allDeletedProjectsData.forEach(project => {
+                const matchesSearch = project.searchableText.includes(filterText);
+                const matchesType = currentFilterType === '' || project.type === currentFilterType;
+
+                if (matchesSearch && matchesType) {
+                    project.isVisibleByFilter = true;
+                    if (filterText !== '' || currentFilterType !== '') {
+                        project.element.getElementsByTagName('td')[0].textContent = currentFilteredN++;
+                    }
+                } else {
+                    project.isVisibleByFilter = false;
+                }
+            });
+
+            // Re-apply original numbering if no filters are active
+            if (filterText === '' && currentFilterType === '') {
+                allDeletedProjectsData.forEach((project) => {
+                    project.element.getElementsByTagName('td')[0].textContent = project.originalN;
+                });
+            }
+
+            currentPage = 1;
+            updateTableAndPagination();
+        }
+        
+        // Función para confirmar la restauración de un proyecto
+        async function confirmRestoreProject(projectId, projectType, projectName) {
+            const { isConfirmed, inputValue: mensajeRestauracion } = await showCustomAlert(
+                'Confirmar Restauración', 
+                `¿Estás seguro de que quieres restaurar el proyecto "${projectName}" de tipo "${projectType}"?`,
+                true, // Muestra el input de mensaje
+                'Motivo de la restauración (opcional)' // Placeholder personalizado
+            );
+
+            if (isConfirmed) {
+                try {
+                    let endpoint = '';
+                    if (projectType === 'Servicio Comunitario') {
+                        endpoint = `/api/proyectos-comunitarios/restaurar/${projectId}`;
+                    } else if (projectType === 'Trabajo de Grado') {
+                        endpoint = `/api/trabajos-de-grado/restaurar/${projectId}`;
+                    } else {
+                        await showCustomAlert('Error', 'Tipo de proyecto desconocido para restaurar.');
+                        return;
+                    }
+
+                    const response = await fetchWithExponentialBackoff(endpoint, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mensajeRestauracion: mensajeRestauracion })
+                    });
+
+                    if (response && response.message) {
+                        await showCustomAlert('¡Éxito!', response.message);
+                        await loadDeletedProjectsFromAPI(); // Recargar la tabla
+                    } else {
+                        await showCustomAlert('Error', response.error || 'No se pudo restaurar el proyecto. Inténtalo de nuevo.');
+                    }
+                } catch (error) {
+                    console.error('Error al restaurar el proyecto:', error);
+                    await showCustomAlert('Error', 'Ocurrió un error de conexión al intentar restaurar el proyecto.');
+                }
+            }
+        }
+
+
+        // Initial call to populate allDeletedProjectsData and display table on load
+        $(document).ready(function() {
+            loadDeletedProjectsFromAPI(); 
+            $.material.init(); // Apply Material Design styling after content is ready
+
+            window.addEventListener('resize', updateTableAndPagination);
+        });
+	</script>
+</body>
+</html>

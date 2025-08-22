@@ -753,7 +753,7 @@ body, html{
     }
     /* Ensure action buttons are well-aligned */
     .table-projects td[data-label="Acciones"] {
-        padding-top: 15px !important;
+        padding-top: 10px !important;
         text-align: center !important;
         padding-left: 15px !important; /* Reset padding-left for actions column */
     }
