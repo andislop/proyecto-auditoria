@@ -5,20 +5,19 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<link rel="stylesheet" href="../css/main.css">
-    <!-- Aseguramos que el archivo bootstrap-icons.css se cargue si no lo tienes en main.css -->
     <link rel="stylesheet" href="../css/bootstrap-icons.css">
     <style>
         /* Estilos para la ventana modal personalizada */
         .custom-modal-overlay {
             display: none; /* Oculto por defecto */
             position: fixed;
-            z-index: 9999; /* FIX: Asegura que esté por encima de TODO */
+            z-index: 9999; 
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente */
+            background-color: rgba(0,0,0,0.6); 
             justify-content: center;
             align-items: center;
         }
@@ -59,7 +58,7 @@
             margin-top: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            resize: vertical; /* Permite redimensionar verticalmente */
+            resize: vertical; 
         }
 
         .custom-modal-footer {
@@ -69,7 +68,7 @@
         }
 
         .custom-modal-footer button {
-            background-color: #2a3e61; /* Azul oscuro */
+            background-color: #2a3e61; 
             color: white;
             padding: 10px 20px;
             border: none;
@@ -80,7 +79,7 @@
         }
 
         .custom-modal-footer button:hover {
-            background-color: #1a2a44; /* Azul más oscuro al pasar el ratón */
+            background-color: #1a2a44; 
         }
 
         /* Animación de entrada */
@@ -151,25 +150,25 @@
         /* Estilos específicos para la gestión de integrantes */
         .member-input-group { 
             display: flex;
-            flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+            flex-wrap: wrap; 
             align-items: center;
             background-color: #f9f9f9;
             border: 1px solid #eee;
             padding: 8px 12px;
-            margin-bottom: 5px;
+            margin-bottom: 5px; 
             border-radius: 5px;
-            position: relative; /* Para posicionar el botón de remover */
+            position: relative; 
         }
         .member-input-group .form-group {
             flex-grow: 1;
-            margin-bottom: 0; /* Ajuste para evitar doble margen */
-            padding-right: 10px; /* Espacio entre campos */
+            margin-bottom: 0; 
+            padding-right: 10px; 
         }
         .member-input-group .col-xs-12 {
-            width: 100%; /* Asegura que cada campo ocupe su propia línea en móvil */
+            width: 100%; 
         }
         .member-input-group .col-sm-6 {
-            width: 50%; /* Divide el espacio en pantallas sm y mayores */
+            width: 50%; 
         }
         .remove-member-btn { 
             background-color: #f44336;
@@ -185,8 +184,8 @@
             font-size: 14px;
             font-weight: bold;
             transition: background-color 0.3s ease;
-            margin-left: auto; /* Empuja el botón a la derecha */
-            flex-shrink: 0; /* Evita que el botón se encoja */
+            margin-left: auto; 
+            flex-shrink: 0; 
         }
         .remove-member-btn:hover {
             background-color: #d32f2f;
@@ -194,10 +193,10 @@
 
         /* Estilo para la celda de Integrantes en la tabla principal */
         .table-projects td[data-label="Integrantes"] {
-            text-align: left; /* Asegura alineación a la izquierda */
-            white-space: normal; /* Permite el ajuste de línea */
-            word-break: break-word; /* Permite romper palabras largas */
-            min-width: 180px; /* Aumentado el ancho mínimo para que se vea mejor */
+            text-align: left; 
+            white-space: normal; 
+            word-break: break-word; 
+            min-width: 180px; 
         }
 
         /* Ajustes para la visualización del tutor en el modal */
@@ -206,7 +205,7 @@
             padding-right: 10px;
         }
         .tutor-input-group .col-xs-12, .tutor-input-group .col-sm-6 {
-            margin-bottom: 15px; /* Restaurar margen inferior para los campos del tutor */
+            margin-bottom: 15px; 
         }
     </style>
 </head>
@@ -410,7 +409,7 @@
 				      	<h4 class="list-group-item-heading">Tile with a label</h4>
 				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
 				    </div>
-			  	</div>
+				</div>
 			  	<div class="list-group-separator"></div>
 			  	<div class="list-group-item">
 				    <div class="row-action-primary">
@@ -551,763 +550,1006 @@
             </div>
         </div>
     </div>
+
+
 	<!--====== Scripts -->
 	<script src="./js/jquery-3.1.1.min.js"></script>
-	<!-- <script src="./js/sweetalert2.min.js"></script>  Ya no se necesita SweetAlert2 -->
 	<script src="./js/bootstrap.min.js"></script>
 	<script src="./js/material.min.js"></script>
 	<script src="./js/ripples.min.js"></script>
 	<script src="./js/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="./js/main.js"></script>
+    <!-- Librerías jsPDF y autoTable (localmente) -->
+    <!-- FIX: Asegurar que jspdf.umd.min.js se cargue primero y autotable después -->
+    <script src="../js/jspdf.umd.min.js"></script>
+    <script src="../js/jspdf.plugin.autotable.min.js"></script>
+
+
 <script>
-        // Referencias a los elementos de la modal personalizada
-        const customAlertModal = document.getElementById('customAlertModal');
-        const customAlertTitle = document.getElementById('customAlertTitle');
-        const customAlertMessage = document.getElementById('customAlertMessage');
-        const customAlertInputContainer = document.getElementById('customAlertInputContainer'); // Contenedor del input
-        const customAlertInput = document.getElementById('customAlertInput'); // El input/textarea
-        const customAlertOkBtn = document.getElementById('customAlertOkBtn');
-        const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); // Botón de cancelar
+    // Referencias a los elementos de la modal personalizada
+    const customAlertModal = document.getElementById('customAlertModal');
+    const customAlertTitle = document.getElementById('customAlertTitle');
+    const customAlertMessage = document.getElementById('customAlertMessage');
+    const customAlertInputContainer = document.getElementById('customAlertInputContainer'); // Contenedor del input
+    const customAlertInput = document.getElementById('customAlertInput'); // El input/textarea
+    const customAlertOkBtn = document.getElementById('customAlertOkBtn');
+    const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); // Botón de cancelar
 
-        // Función para mostrar la modal personalizada
-        function showCustomAlert(title, message, showInput = false) {
-            customAlertTitle.textContent = title;
-            customAlertMessage.textContent = message;
-            
-            // Mostrar u ocultar el input/textarea
-            customAlertInputContainer.style.display = showInput ? 'block' : 'none';
-            customAlertInput.value = ''; // Limpiar el campo cada vez
-            
-            // Mostrar u ocultar el botón de cancelar
-            customAlertCancelBtn.style.display = showInput ? 'inline-block' : 'none';
+    // Función para mostrar la modal personalizada
+    function showCustomAlert(title, message, showInput = false) {
+        customAlertTitle.textContent = title;
+        customAlertMessage.textContent = message;
+        
+        // Mostrar u ocultar el input/textarea
+        customAlertInputContainer.style.display = showInput ? 'block' : 'none';
+        customAlertInput.value = ''; // Limpiar el campo cada vez
+        
+        // Mostrar u ocultar el botón de cancelar
+        customAlertCancelBtn.style.display = showInput ? 'inline-block' : 'none';
 
-            customAlertModal.style.display = 'flex'; // Usamos flex para centrar
+        customAlertModal.style.display = 'flex'; // Usamos flex para centrar
 
-            // Manejo de la promesa para simular .then() de Swal.fire
-            return new Promise(resolve => {
-                const okClickHandler = function() {
-                    customAlertModal.style.display = 'none';
-                    customAlertOkBtn.removeEventListener('click', okClickHandler);
-                    customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
-                    resolve({ isConfirmed: true, inputValue: customAlertInput.value });
-                };
-
-                const cancelClickHandler = function() {
-                    customAlertModal.style.display = 'none';
-                    customAlertOkBtn.removeEventListener('click', okClickHandler);
-                    customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
-                    resolve({ isConfirmed: false });
-                };
-
-                customAlertOkBtn.addEventListener('click', okClickHandler);
-                customAlertCancelBtn.addEventListener('click', cancelClickHandler);
-            });
-        }
-
-        // Para cerrar la modal si se hace clic fuera de ella
-        window.onclick = function(event) {
-            if (event.target == customAlertModal) {
+        // Manejo de la promesa para simular .then() de Swal.fire
+        return new Promise(resolve => {
+            const okClickHandler = function() {
                 customAlertModal.style.display = 'none';
-                // FIX: Asegurar que los listeners se limpien al cerrar haciendo clic fuera
-                customAlertOkBtn.removeEventListener('click', okClickHandler); 
-                customAlertCancelBtn.removeEventListener('click', cancelClickHandler); 
-            }
-        };
+                customAlertOkBtn.removeEventListener('click', okClickHandler);
+                customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
+                resolve({ isConfirmed: true, inputValue: customAlertInput.value });
+            };
 
-        const rowsPerPageDesktop = 5;
-        const rowsPerPageMobile = 3;
-        let currentPage = 1;
-        let currentRowsPerPage;
+            const cancelClickHandler = function() {
+                customAlertModal.style.display = 'none';
+                customAlertOkBtn.removeEventListener('click', okClickHandler);
+                customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
+                resolve({ isConfirmed: false });
+            };
 
-        // Global array to store all project data as objects, including a reference to the DOM element and filter visibility
-        let allProjectsData = [];
+            customAlertOkBtn.addEventListener('click', okClickHandler);
+            customAlertCancelBtn.addEventListener('click', cancelClickHandler);
+        });
+    }
 
-        // Variable para mantener un índice único para los campos de integrantes
-        let memberFieldIndex = 0;
-
-        // --- Funciones de Utilidad para Fetching ---
-        // Implementación de retraso exponencial para reintentos de fetch
-        async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
-            try {
-                const response = await fetch(url, options);
-                if (!response.ok) {
-                    // Si es un error 404, no reintentamos ya que el recurso no existe
-                    if (response.status === 404) {
-                        return null; // O throw new Error('Not Found'); si quieres manejarlo como un error distinto
-                    }
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return await response.json();
-            } catch (error) {
-                if (retries > 0) {
-                    console.warn(`Fetch failed, retrying in ${delay}ms... (${retries} retries left)`, error);
-                    await new Promise(res => setTimeout(res, delay));
-                    return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
-                } else {
-                    console.error('Max retries reached. Failed to fetch:', url, error);
-                    throw error;
-                }
-            }
+    // Para cerrar la modal si se hace clic fuera de ella
+    window.onclick = function(event) {
+        if (event.target == customAlertModal) {
+            customAlertModal.style.display = 'none';
+            customAlertOkBtn.removeEventListener('click', okClickHandler); 
+            customAlertCancelBtn.removeEventListener('click', cancelClickHandler); 
         }
+    };
 
-        // Función para cargar datos de la API y poblar la tabla
-        async function loadProjectsFromAPI() {
-            try {
-                // Llama a la API de tu backend para obtener los proyectos
-                // Ahora esta API solo trae los proyectos no eliminados lógicamente
-                const projects = await fetchWithExponentialBackoff('/api/proyectos-comunitarios', { method: 'GET' });
-                if (!projects) {
-                    await showCustomAlert('Error', 'No se pudieron cargar los proyectos. Inténtalo de nuevo más tarde.');
-                    return;
+    const rowsPerPageDesktop = 5;
+    const rowsPerPageMobile = 3;
+    let currentPage = 1;
+    let currentRowsPerPage;
+
+    // Global array to store all project data as objects
+    let allProjectsData = [];
+
+    // Variable para mantener un índice único para los campos de integrantes
+    let memberFieldIndex = 0;
+
+    // --- Funciones de Utilidad para Fetching ---
+    async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
+        console.log(`%c[fetchWithExponentialBackoff] 📡 Attempting fetch for: ${url}, Retries left: ${retries}`, 'color: #1a73e8; font-weight: bold;');
+        try {
+            const response = await fetch(url, options);
+            console.log(`%c[fetchWithExponentialBackoff] ✅ Response status for ${url}: ${response.status}`, 'color: #34a853; font-weight: bold;');
+            if (!response.ok) {
+                if (response.status === 404) {
+                    console.warn(`%c[fetchWithExponentialBackoff] ⚠️ Recurso no encontrado en ${url}. Retornando null.`, 'color: #fbbc04;');
+                    return null; 
                 }
-
-                const tableBody = document.getElementById('projectsTable').getElementsByTagName('tbody')[0];
-                tableBody.innerHTML = ''; // Limpia los datos estáticos existentes
-                allProjectsData = []; // Limpia el array global
-
-                projects.forEach((project, index) => {
-                    const newOriginalN = index + 1;
-                    const newRow = tableBody.insertRow();
-                    newRow.dataset.projectId = project.id_servicio; // Guardar el ID del proyecto en la fila
-
-                    // Formatear integrantes para mostrar en la tabla: Cédula - Nombre Completo
-                    const integrantesDisplay = project.integrantes && project.integrantes.length > 0
-                        ? project.integrantes.map(i => `${i.cedula} - ${i.nombre_completo}`).join('<br>')
-                        : 'N/A';
-                    
-                    // Formatear fechas
-                    const fechaInicio = project.fecha_inicio ? new Date(project.fecha_inicio).toISOString().split('T')[0] : 'N/A';
-                    const fechaFinal = project.fecha_final ? new Date(project.fecha_final).toISOString().split('T')[0] : 'N/A';
-
-                    newRow.innerHTML = `
-                        <td data-label="N°">${newOriginalN}</td>
-                        <td data-label="Periodo">${project.periodo || 'N/A'}</td>
-                        <td data-label="Nombre del Proyecto">${project.nombre_proyecto || 'N/A'}</td>
-                        <td data-label="Integrantes">${integrantesDisplay}</td>
-                        <td data-label="Carrera">${project.carreras ? project.carreras.carrera : 'N/A'}</td>
-                        <td data-label="Tutor">${project.tutor ? project.tutor.nombre_completo : 'N/A'}</td>
-                        <td data-label="Fecha Inicio">${fechaInicio}</td>
-                        <td data-label="Fecha Final">${fechaFinal}</td>
-                        <td data-label="Estado">${project.estado || 'N/A'}</td>
-                        <td data-label="Comunidad">${project.comunidad || 'N/A'}</td>
-                        <td data-label="Acciones">
-                            <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar" onclick="openEditProjectModal('${project.id_servicio}')"><i class="zmdi zmdi-edit"></i></a>
-                            <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar" onclick="confirmDeleteProject('${project.id_servicio}', '${project.nombre_proyecto}')"><i class="zmdi zmdi-delete"></i></a>
-                            <a href ="/api/proyectos-comunitarios/${project.id_servicio}/descargar-pdf" target="_blank" class="btn btn-light btn-raised btn-xs" title="Descargar"><i class="zmdi zmdi-download"></i></a>
-                        </td>
-                    `;
-
-                    allProjectsData.push({
-                        element: newRow,
-                        originalN: newOriginalN,
-                        id_servicio: project.id_servicio, // Guardar el ID del proyecto aquí
-                        projectData: project, // Guardar el objeto completo del proyecto
-                        searchableText: `${project.periodo} ${project.nombre_proyecto} ${integrantesDisplay.replace(/<br>/g, ' ')} ${project.carreras ? project.carreras.carrera : ''} ${project.tutor ? project.tutor.nombre_completo : ''} ${project.estado} ${project.comunidad}`.toLowerCase(),
-                        isVisibleByFilter: true
-                    });
-                });
-
-                filterTable(); // Re-apply filter and update pagination after loading data
-                $.material.init(); // Re-initialize Material Design styles for new content
-            } catch (error) {
-                console.error('Error al cargar proyectos:', error);
-                await showCustomAlert('Error', 'Ocurrió un error al cargar los proyectos. Revisa la consola para más detalles.');
+                const errorText = await response.text();
+                console.error(`%c[fetchWithExponentialBackoff] ❌ HTTP error for ${url}: status ${response.status}, message: ${errorText}`, 'color: #ea4335; font-weight: bold;');
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
-        }
-
-        // Function to determine rows per page based on screen width
-        function getRowsPerPage() {
-            return window.innerWidth <= 767 ? rowsPerPageMobile : rowsPerPageDesktop;
-        }
-
-        // Function to apply pagination visibility
-        function displayRows() {
-            const filteredProjects = allProjectsData.filter(project => project.isVisibleByFilter);
-
-            allProjectsData.forEach(project => {
-                project.element.style.display = 'none';
-            });
-
-            const startIndex = (currentPage - 1) * currentRowsPerPage;
-            const endIndex = Math.min(startIndex + currentRowsPerPage, filteredProjects.length);
-
-            for (let i = startIndex; i < endIndex; i++) {
-                if (filteredProjects[i]) {
-                    filteredProjects[i].element.style.display = '';
-                }
-            }
-        }
-
-        // Function to set up pagination links
-        function setupPagination() {
-            const visibleRowsForPagination = allProjectsData.filter(project => project.isVisibleByFilter);
-
-            const pageCount = Math.ceil(visibleRowsForPagination.length / currentRowsPerPage);
-            const paginationUl = document.getElementById('pagination');
-            paginationUl.innerHTML = '';
-
-            if (currentPage > pageCount && pageCount > 0) {
-                currentPage = pageCount;
-            } else if (pageCount === 0 && visibleRowsForPagination.length > 0) {
-                currentPage = 1;
-            } else if (visibleRowsForPagination.length === 0) {
-                currentPage = 1;
-            }
-
-            if (pageCount <= 1) {
-                paginationUl.style.display = 'none';
+            const jsonData = await response.json();
+            console.log(`%c[fetchWithExponentialBackoff] 🎉 Successful fetch for ${url}. Data received.`, 'color: #34a853; font-weight: bold;');
+            return jsonData;
+        } catch (error) {
+            console.error(`%c[fetchWithExponentialBackoff] 🛑 Catch block hit for ${url}, error:`, 'color: #ea4335; font-weight: bold;', error);
+            if (retries > 0) {
+                console.warn(`%c[fetchWithExponentialBackoff] Fetch failed, retrying in ${delay}ms... (${retries} retries left) for ${url}`, 'color: #fbbc04;');
+                await new Promise(res => setTimeout(res, delay));
+                return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
             } else {
-                paginationUl.style.display = '';
+                console.error(`%c[fetchWithExponentialBackoff] 🚨 Max retries reached for ${url}. Failed to fetch:`, 'color: #ea4335; font-weight: bold;', error);
+                throw error; 
             }
+        }
+    }
 
-            if (visibleRowsForPagination.length === 0) {
+    // Función para cargar datos de la API y poblar la tabla
+    async function loadProjectsFromAPI() {
+        try {
+            const projects = await fetchWithExponentialBackoff('/api/proyectos-comunitarios', { method: 'GET' });
+            if (!projects) {
+                await showCustomAlert('Error', 'No se pudieron cargar los proyectos de servicio comunitario. Inténtalo de nuevo más tarde.');
                 return;
             }
 
-            let prevLi = document.createElement('li');
-            let prevLink = document.createElement('a');
-            prevLink.href = '#!';
-            prevLink.innerHTML = '«';
-            prevLink.onclick = () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    updateTableAndPagination();
-                }
-            };
-            prevLi.appendChild(prevLink);
-            paginationUl.appendChild(prevLi);
+            const tableBody = document.getElementById('projectsTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ''; 
+            allProjectsData = []; 
 
-            for (let i = 1; i <= pageCount; i++) {
-                let li = document.createElement('li');
-                let link = document.createElement('a');
-                link.href = '#!';
-                link.textContent = i;
-                link.onclick = (function(pageNumber) {
-                    return function() {
-                        currentPage = pageNumber;
-                        updateTableAndPagination();
-                    };
-                })(i);
-                li.appendChild(link);
-                paginationUl.appendChild(li);
-            }
-
-            let nextLi = document.createElement('li');
-            let nextLink = document.createElement('a');
-            nextLink.href = '#!';
-            nextLink.innerHTML = '»';
-            nextLink.onclick = () => {
-                if (currentPage < pageCount) {
-                    currentPage++;
-                    updateTableAndPagination();
-                }
-            };
-            nextLi.appendChild(nextLink);
-            paginationUl.appendChild(nextLi);
-
-            if (currentPage === 1) {
-                prevLi.classList.add('disabled');
-            } else {
-                prevLi.classList.remove('disabled');
-            }
-            if (currentPage >= pageCount || pageCount === 0) {
-                nextLi.classList.add('disabled');
-            } else {
-                nextLi.classList.remove('disabled');
-            }
-
-            Array.from(paginationUl.children).forEach(li => {
-                if (li.textContent == currentPage && li.textContent !== '«' && li.textContent !== '»') {
-                    li.classList.add('active');
-                } else {
-                    li.classList.remove('active');
-                }
-            });
-        }
-
-        // Function to update table and pagination
-        function updateTableAndPagination() {
-            currentRowsPerPage = getRowsPerPage();
-            displayRows();
-            setupPagination();
-        }
-
-        // Function to filter the table
-        function filterTable() {
-            const input = document.getElementById('searchProject');
-            const filter = input.value.toLowerCase();
-            let currentFilteredN = 1;
-
-            allProjectsData.forEach(project => {
-                if (project.searchableText.includes(filter)) {
-                    project.isVisibleByFilter = true;
-                    if (filter !== '') {
-                        project.element.getElementsByTagName('td')[0].textContent = currentFilteredN++;
-                    }
-                } else {
-                    project.isVisibleByFilter = false;
-                }
-            });
-
-            if (filter === '') {
-                allProjectsData.forEach((project) => {
-                    project.element.getElementsByTagName('td')[0].textContent = project.originalN;
-                });
-            }
-
-            currentPage = 1;
-            updateTableAndPagination();
-        }
-
-        // Función para preparar el modal para agregar un nuevo proyecto
-        async function prepareAddModal() {
-            document.getElementById('projectModalTitle').textContent = 'Agregar Nuevo Proyecto';
-            document.getElementById('saveProjectBtn').textContent = 'Guardar Proyecto';
-            document.getElementById('editProjectId').value = ''; // Limpiar ID de proyecto para agregar
-            document.getElementById('addProjectForm').reset(); // Limpiar todos los campos del formulario
-            document.getElementById('projectTutorName').readOnly = true;
-
-            // Restablecer campos de integrantes a uno por defecto
-            const membersContainer = document.getElementById('membersContainer');
-            membersContainer.innerHTML = ''; // Limpiar primero
-            memberFieldIndex = -1; // Reset index to -1 so first call to addMemberField starts at 0
-            addMemberField(); // Añadir un campo de integrante vacío por defecto
-
-            await loadModalDataSelects(); // Cargar dropdowns de periodo y carrera
-            setupCedulaListeners(); // Re-adjuntar listeners de cédula a los campos
-            $.material.init(); // Re-inicializar Material Design
-        }
-
-
-        // Función para abrir el modal en modo edición
-        async function openEditProjectModal(projectId) {
-            document.getElementById('projectModalTitle').textContent = 'Editar Proyecto';
-            document.getElementById('saveProjectBtn').textContent = 'Guardar Cambios';
-            document.getElementById('editProjectId').value = projectId; // Guardar el ID del proyecto que estamos editando
-            document.getElementById('addProjectForm').reset(); // Limpiar el formulario primero
-            document.getElementById('projectTutorName').readOnly = true;
-
-
-            const project = allProjectsData.find(p => p.id_servicio == projectId)?.projectData;
-
-            if (!project) {
-                await showCustomAlert('Error', 'No se encontró el proyecto para editar.');
-                return;
-            }
-
-            // Llenar campos del proyecto
-            document.getElementById('projectName').value = project.nombre_proyecto || '';
-            document.getElementById('projectCommunity').value = project.comunidad || '';
-            document.getElementById('projectStartDate').value = project.fecha_inicio ? new Date(project.fecha_inicio).toISOString().split('T')[0] : '';
-            document.getElementById('projectEndDate').value = project.fecha_final ? new Date(project.fecha_final).toISOString().split('T')[0] : '';
-            document.getElementById('projectStatus').value = project.estado || 'Pendiente';
-
-            // Llenar tutor
-            if (project.tutor) {
-                document.getElementById('projectTutorCedula').value = project.tutor.cedula || '';
-                document.getElementById('projectTutorName').value = project.tutor.nombre_completo || '';
-                document.getElementById('projectTutorName').setAttribute('data-id', project.tutor.id_tutor || '');
-                document.getElementById('projectTutorName').readOnly = true; // El nombre del tutor autocompletado es readonly
-            } else {
-                document.getElementById('projectTutorCedula').value = '';
-                document.getElementById('projectTutorName').value = '';
-                document.getElementById('projectTutorName').removeAttribute('data-id');
-                document.getElementById('projectTutorName').readOnly = false; // Permitir edición si no hay tutor
-            }
-
-            // Llenar integrantes
-            const membersContainer = document.getElementById('membersContainer');
-            membersContainer.innerHTML = ''; // Limpiar campos actuales
-            memberFieldIndex = -1; // Reset index for adding existing members
-
-            if (project.integrantes && project.integrantes.length > 0) {
-                project.integrantes.forEach((integrante, index) => {
-                    memberFieldIndex = index; // Asegurarse de que el índice sea correcto
-                    const newMemberGroup = document.createElement('div');
-                    newMemberGroup.classList.add('member-input-group'); // Eliminar 'row' para un control más fino
-                    newMemberGroup.innerHTML = `
-                        <div class="form-group label-floating col-xs-12">
-                            <label class="control-label" for="projectMemberId_${memberFieldIndex}">Cédula del Integrante</label>
-                            <input class="form-control projectMemberId" type="text" id="projectMemberId_${memberFieldIndex}" data-member-index="${memberFieldIndex}" value="${integrante.cedula || ''}">
-                        </div>
-                        <div class="form-group label-floating col-xs-12">
-                            <label class="control-label" for="projectMemberName_${memberFieldIndex}">Nombre Completo del Integrante</label>
-                            <input class="form-control projectMemberName" type="text" id="projectMemberName_${memberFieldIndex}" data-member-index="${memberFieldIndex}" value="${integrante.nombre_completo || ''}" data-id="${integrante.id_estudiante || ''}" readonly>
-                        </div>
-                        <button type="button" class="remove-member-btn" onclick="removeMemberField(this)"><i class="zmdi zmdi-close"></i></button>
-                    `;
-                    membersContainer.appendChild(newMemberGroup);
-                });
-            } else {
-                // Si no hay integrantes, añadir un campo vacío por defecto
-                addMemberField();
-            }
-
-            // Cargar y seleccionar periodos y carreras
-            await loadModalDataSelects(project.id_periodo, project.id_carrera);
-            setupCedulaListeners(); // Re-adjuntar listeners de cédula a los campos dinámicos y del tutor
-            $.material.init(); // Re-inicializar Material Design para que los campos rellenos se vean bien
-
-            // Forzar actualización de labels flotantes para campos con valor
-            $('.form-group.label-floating').each(function() {
-                var $this = $(this);
-                var $input = $this.find('input, select, textarea');
-                if ($input.val() !== "" && $input.val() !== null) { // Asegurarse de que no sea null
-                    $this.addClass('is-focused'); // Marca como enfocado si tiene valor
-                } else {
-                    $this.removeClass('is-focused'); // Remueve si no tiene valor
-                }
-            });
-
-            // Abrir el modal
-            $('#addProjectModal').modal('show');
-        }
-
-
-        // Función para poblar los dropdowns al abrir el modal (ahora acepta IDs para selección)
-        async function loadModalDataSelects(selectedPeriodId = null, selectedCareerId = null) {
-            try {
-                // Cargar periodos
-                const periodos = await fetchWithExponentialBackoff('/api/periodos', { method: 'GET' });
-                const periodSelect = document.getElementById('projectPeriod');
-                periodSelect.innerHTML = '<option value="">Selecciona un Periodo</option>'; // Placeholder
-                if (periodos) {
-                    periodos.forEach(p => {
-                        const option = document.createElement('option');
-                        option.value = p.id_periodo;
-                        option.textContent = p.periodo;
-                        if (selectedPeriodId && p.id_periodo == selectedPeriodId) {
-                            option.selected = true;
-                        }
-                        periodSelect.appendChild(option);
-                    });
-                }
-
-                // Cargar carreras
-                const carreras = await fetchWithExponentialBackoff('/api/carreras', { method: 'GET' });
-                const careerSelect = document.getElementById('projectCareer');
-                careerSelect.innerHTML = '<option value="">Selecciona una Carrera</option>'; // Placeholder
-                if (carreras) {
-                    carreras.forEach(c => {
-                        const option = document.createElement('option');
-                        option.value = c.id_carrera;
-                        option.textContent = c.carrera;
-                        if (selectedCareerId && c.id_carrera == selectedCareerId) {
-                            option.selected = true;
-                        }
-                        careerSelect.appendChild(option);
-                    });
-                }
+            projects.forEach((project, index) => {
+                const newOriginalN = index + 1;
+                const newRow = tableBody.insertRow();
+                newRow.dataset.projectId = project.id_servicio; 
                 
-                $.material.init(); // Re-inicializar Material Design para nuevos dropdowns
-            } catch (error) {
-                console.error('Error al cargar datos para los selects del modal:', error);
-                await showCustomAlert('Error', 'Ocurrió un error al cargar los datos de selección.');
-            }
-        }
+                const integrantesDisplay = project.integrantes && project.integrantes.length > 0
+                    ? project.integrantes.map(i => `${i.cedula} - ${i.nombre_completo}`).join('<br>')
+                    : 'N/A';
 
-        // Función para añadir listeners a los campos de cédula de integrantes y tutor
-        function setupCedulaListeners() {
-            // Limpiar listeners existentes para evitar duplicados
-            $('.projectMemberId').off('blur keydown');
-            $('#projectTutorCedula').off('blur keydown');
+                const fechaInicio = project.fecha_inicio ? new Date(project.fecha_inicio).toISOString().split('T')[0] : 'N/A';
+                const fechaFinal = project.fecha_final ? new Date(project.fecha_final).toISOString().split('T')[0] : 'N/A';
 
-            // Estudiantes
-            document.querySelectorAll('.projectMemberId').forEach(input => {
-                input.onblur = async (event) => {
-                    await checkPersonByCedula(event.target, 'estudiante', 'projectMemberName', false);
-                    $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
-                };
-                input.onkeydown = async (event) => {
-                    if (event.key === 'Enter') {
-                        event.preventDefault(); // Previene el envío del formulario
-                        await checkPersonByCedula(event.target, 'estudiante', 'projectMemberName', false);
-                        $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
-                    }
-                };
+                newRow.innerHTML = `
+                    <td data-label="N°">${newOriginalN}</td>
+                    <td data-label="Periodo">${project.periodo || 'N/A'}</td>
+                    <td data-label="Nombre del Proyecto">${project.nombre_proyecto || 'N/A'}</td>
+                    <td data-label="Integrantes">${integrantesDisplay}</td>
+                    <td data-label="Carrera">${project.carrera || 'N/A'}</td>
+                    <td data-label="Tutor">${project.tutor ? project.tutor.nombre_completo : 'N/A'}</td>
+                    <td data-label="Fecha Inicio">${fechaInicio}</td>
+                    <td data-label="Fecha Final">${fechaFinal}</td>
+                    <td data-label="Estado">${project.estado || 'N/A'}</td>
+                    <td data-label="Comunidad">${project.comunidad || 'N/A'}</td>
+                    <td data-label="Acciones">
+                        <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar" onclick="openEditProjectModal('${project.id_servicio}')"><i class="zmdi zmdi-edit"></i></a>
+                        <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar" onclick="confirmDeleteProject('${project.id_servicio}', '${project.nombre_proyecto}')"><i class="zmdi zmdi-delete"></i></a>
+                        <button class="btn btn-light btn-raised btn-xs" title="Descargar" onclick="generateCommunityServicePdf(${project.id_servicio})"><i class="zmdi zmdi-download"></i></button>
+                    </td>
+                `;
+
+                allProjectsData.push({
+                    element: newRow,
+                    originalN: newOriginalN,
+                    id_servicio: project.id_servicio,
+                    projectData: project,
+                    searchableText: `${project.periodo} ${project.nombre_proyecto} ${integrantesDisplay.replace(/<br>/g, ' ')} ${project.carrera} ${project.tutor ? project.tutor.nombre_completo : ''} ${project.estado} ${project.comunidad}`.toLowerCase(),
+                    isVisibleByFilter: true
+                });
             });
 
-            // Tutor
-            const tutorCedulaInput = document.getElementById('projectTutorCedula');
-            
-            tutorCedulaInput.onblur = async (event) => {
-                await checkPersonByCedula(event.target, 'tutor', 'projectTutorName', true);
-                $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
-            };
-            tutorCedulaInput.onkeydown = async (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); // Previene el envío del formulario
-                    await checkPersonByCedula(event.target, 'tutor', 'projectTutorName', true);
-                    $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
-                }
-            };
+            filterTable();
+            $.material.init();
+        } catch (error) {
+            console.error('%c[loadProjectsFromAPI] ❌ Error al cargar proyectos de servicio comunitario:', 'color: #ea4335; font-weight: bold;', error);
+            await showCustomAlert('Error', 'Ocurrió un error al cargar los proyectos de servicio comunitario. Revisa la consola para más detalles.');
         }
+    }
 
-        // Función genérica para verificar persona por cédula (estudiante o tutor)
-        async function checkPersonByCedula(cedulaInput, type, nameClassOrId, isTutor) {
-            const cedula = cedulaInput.value.trim();
-            const nameInput = isTutor ? document.getElementById(nameClassOrId) : document.getElementById(`${nameClassOrId}_${cedulaInput.dataset.memberIndex}`);
-            
-            // Limpiar el campo de nombre y ID al borrar la cédula
-            if (cedula === '') {
-                nameInput.value = '';
-                nameInput.readOnly = isTutor; // Si es tutor, se queda readonly por defecto
-                nameInput.removeAttribute('data-id'); // Limpia el ID
-                $(nameInput).closest('.form-group').removeClass('is-focused is-filled'); // Remover clases de Material Design
-                $.material.init();
-                return;
-            }
-
-            try {
-                const url = `/api/${type}-por-cedula/${cedula}`;
-                const personData = await fetchWithExponentialBackoff(url, { method: 'GET' });
-
-                if (personData) {
-                    nameInput.value = personData.nombre_completo;
-                    nameInput.readOnly = true; // Deshabilita edición
-                    nameInput.setAttribute('data-id', personData[`id_${type}`]); // Guarda el ID
-                    $(nameInput).closest('.form-group').addClass('is-focused is-filled');
-                    
-                } else {
-                    nameInput.value = ''; // Limpia el nombre si no se encontró
-                    nameInput.readOnly = false; // Habilita edición
-                    nameInput.removeAttribute('data-id'); // Asegura que no haya ID
-                    $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
-                    // await showCustomAlert('No encontrado', `No se encontró un ${type} con cédula ${cedula}.`);
-                }
-                $.material.init();
-
-            } catch (error) {
-                console.error(`Error al verificar cédula de ${type}:`, error);
-                nameInput.value = '';
-                nameInput.readOnly = false;
-                nameInput.removeAttribute('data-id');
-                $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
-                await showCustomAlert('Error de Conexión', `No se pudo verificar la cédula de ${type}. Intenta de nuevo.`);
-            }
-        }
-
-
-        // Function to add a new set of Cédula and Nombre Completo fields for Integrantes
-        function addMemberField() {
-            memberFieldIndex++; // Increment index for unique IDs
-            const membersContainer = document.getElementById('membersContainer');
-            const newMemberGroup = document.createElement('div');
-            newMemberGroup.classList.add('member-input-group'); // Eliminado 'row' para mayor control
-            newMemberGroup.innerHTML = `
-                <div class="form-group label-floating col-xs-12">
-                    <label class="control-label" for="projectMemberId_${memberFieldIndex}">Cédula del Integrante</label>
-                    <input class="form-control projectMemberId" type="text" id="projectMemberId_${memberFieldIndex}" data-member-index="${memberFieldIndex}">
-                </div>
-                <div class="form-group label-floating col-xs-12">
-                    <label class="control-label" for="projectMemberName_${memberFieldIndex}">Nombre Completo del Integrante</label>
-                    <input class="form-control projectMemberName" type="text" id="projectMemberName_${memberFieldIndex}" data-member-index="${memberFieldIndex}" readonly>
-                </div>
-                <button type="button" class="remove-member-btn" onclick="removeMemberField(this)"><i class="zmdi zmdi-close"></i></button>
-            `;
-            membersContainer.appendChild(newMemberGroup);
-            $.material.init(); // Re-inicializar Material Design styles for new elements
-            
-            // Adjuntar listeners de cédula a los nuevos campos
-            const newCedulaInput = document.getElementById(`projectMemberId_${memberFieldIndex}`);
-            newCedulaInput.onblur = async (event) => {
+    // --- Funciones para la Modal de Agregar/Editar Proyecto ---
+    function addMemberField() {
+        memberFieldIndex++; 
+        const membersContainer = document.getElementById('membersContainer');
+        const newMemberGroup = document.createElement('div');
+        newMemberGroup.classList.add('member-input-group'); 
+        newMemberGroup.innerHTML = `
+            <div class="form-group label-floating col-xs-12">
+                <label class="control-label" for="projectMemberId_${memberFieldIndex}">Cédula del Integrante</label>
+                <input class="form-control projectMemberId" type="text" id="projectMemberId_${memberFieldIndex}" data-member-index="${memberFieldIndex}">
+            </div>
+            <div class="form-group label-floating col-xs-12">
+                <label class="control-label" for="projectMemberName_${memberFieldIndex}">Nombre Completo del Integrante</label>
+                <input class="form-control projectMemberName" type="text" id="projectMemberName_${memberFieldIndex}" data-member-index="${memberFieldIndex}" readonly>
+            </div>
+            <button type="button" class="remove-member-btn" onclick="removeMemberField(this)"><i class="zmdi zmdi-close"></i></button>
+        `;
+        membersContainer.appendChild(newMemberGroup);
+        $.material.init(); 
+        
+        const newCedulaInput = document.getElementById(`projectMemberId_${memberFieldIndex}`);
+        newCedulaInput.onblur = async (event) => {
+            await checkPersonByCedula(event.target, 'estudiante', 'projectMemberName', false);
+            $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+            updateFloatingLabelsForElement(event.target);
+        };
+        newCedulaInput.onkeydown = async (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
                 await checkPersonByCedula(event.target, 'estudiante', 'projectMemberName', false);
                 $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                updateFloatingLabelsForElement(event.target);
+            }
+        };
+    }
+
+    function removeMemberField(button) {
+        $(button).closest('.member-input-group').remove();
+        $.material.init();
+    }
+
+    async function prepareAddModal() {
+        document.getElementById('projectModalTitle').textContent = 'Agregar Nuevo Proyecto';
+        document.getElementById('saveProjectBtn').textContent = 'Guardar Proyecto';
+        document.getElementById('editProjectId').value = '';
+        document.getElementById('addProjectForm').reset();
+        document.getElementById('projectTutorName').readOnly = true;
+        document.getElementById('projectTutorName').removeAttribute('data-id');
+
+
+        const membersContainer = document.getElementById('membersContainer');
+        membersContainer.innerHTML = ''; 
+        memberFieldIndex = -1; 
+        addMemberField(); 
+
+        await loadModalDataSelects(); 
+        setupCedulaListeners(); 
+        $.material.init(); 
+        updateFloatingLabels();
+    }
+
+    async function openEditProjectModal(projectId) {
+        document.getElementById('projectModalTitle').textContent = 'Editar Proyecto';
+        document.getElementById('saveProjectBtn').textContent = 'Guardar Cambios';
+        document.getElementById('editProjectId').value = projectId;
+        document.getElementById('addProjectForm').reset();
+        document.getElementById('projectTutorName').readOnly = true;
+
+        const project = allProjectsData.find(p => p.id_servicio == projectId)?.projectData;
+
+        if (!project) {
+            await showCustomAlert('Error', 'No se encontró el proyecto para editar.');
+            return;
+        }
+
+        // Llenar campos del proyecto
+        document.getElementById('projectName').value = project.nombre_proyecto || '';
+        document.getElementById('projectCommunity').value = project.comunidad || '';
+        document.getElementById('projectStartDate').value = project.fecha_inicio ? new Date(project.fecha_inicio).toISOString().split('T')[0] : '';
+        document.getElementById('projectEndDate').value = project.fecha_final ? new Date(project.fecha_final).toISOString().split('T')[0] : '';
+        document.getElementById('projectStatus').value = project.estado || 'Pendiente';
+
+        // Llenar tutor
+        if (project.tutor) {
+            document.getElementById('projectTutorCedula').value = project.tutor.cedula || '';
+            document.getElementById('projectTutorName').value = project.tutor.nombre_completo || '';
+            document.getElementById('projectTutorName').setAttribute('data-id', project.tutor.id_tutor || '');
+            document.getElementById('projectTutorName').readOnly = true; 
+        } else {
+            document.getElementById('projectTutorCedula').value = '';
+            document.getElementById('projectTutorName').value = '';
+            document.getElementById('projectTutorName').removeAttribute('data-id');
+            document.getElementById('projectTutorName').readOnly = false; 
+        }
+
+        // Llenar integrantes
+        const membersContainer = document.getElementById('membersContainer');
+        membersContainer.innerHTML = ''; 
+        memberFieldIndex = -1; 
+
+        if (project.integrantes && project.integrantes.length > 0) {
+            project.integrantes.forEach((integrante, index) => {
+                memberFieldIndex = index; 
+                const newMemberGroup = document.createElement('div');
+                newMemberGroup.classList.add('member-input-group'); 
+                newMemberGroup.innerHTML = `
+                    <div class="form-group label-floating col-xs-12">
+                        <label class="control-label" for="projectMemberId_${memberFieldIndex}">Cédula del Integrante</label>
+                        <input class="form-control projectMemberId" type="text" id="projectMemberId_${memberFieldIndex}" data-member-index="${memberFieldIndex}" value="${integrante.cedula || ''}">
+                    </div>
+                    <div class="form-group label-floating col-xs-12">
+                        <label class="control-label" for="projectMemberName_${memberFieldIndex}">Nombre Completo del Integrante</label>
+                        <input class="form-control projectMemberName" type="text" id="projectMemberName_${memberFieldIndex}" data-member-index="${memberFieldIndex}" value="${integrante.nombre_completo || ''}" data-id="${integrante.id_estudiante || ''}" readonly>
+                    </div>
+                    <button type="button" class="remove-member-btn" onclick="removeMemberField(this)"><i class="zmdi zmdi-close"></i></button>
+                `;
+                membersContainer.appendChild(newMemberGroup);
+            });
+        } else {
+            addMemberField();
+        }
+
+        await loadModalDataSelects(project.id_periodo, project.id_carrera);
+        setupCedulaListeners();
+        
+        $.material.init(); 
+        updateFloatingLabels(); 
+        $('#addProjectModal').modal('show');
+    }
+
+    // Función para poblar los dropdowns al abrir el modal
+    async function loadModalDataSelects(selectedPeriodId = null, selectedCareerId = null) {
+        try {
+            const periodSelect = document.getElementById('projectPeriod');
+            const careerSelect = document.getElementById('projectCareer');
+
+            // Cargar periodos
+            const periodos = await fetchWithExponentialBackoff('/api/periodos', { method: 'GET' });
+            periodSelect.innerHTML = '<option value="">Selecciona un Periodo</option>'; 
+            if (periodos) {
+                periodos.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.id_periodo;
+                    option.textContent = p.periodo;
+                    if (selectedPeriodId && p.id_periodo == selectedPeriodId) {
+                        option.selected = true;
+                    }
+                    periodSelect.appendChild(option);
+                });
+            }
+
+            // Cargar carreras
+            const carreras = await fetchWithExponentialBackoff('/api/carreras', { method: 'GET' });
+            careerSelect.innerHTML = '<option value="">Selecciona una Carrera</option>'; 
+            if (carreras) {
+                carreras.forEach(c => {
+                    const option = document.createElement('option');
+                    option.value = c.id_carrera;
+                    option.textContent = c.carrera;
+                    if (selectedCareerId && c.id_carrera == selectedCareerId) {
+                        option.selected = true;
+                    }
+                    careerSelect.appendChild(option);
+                });
+            }
+            // Disparar evento change en los selects para que Material Design los actualice visualmente
+            $(periodSelect).trigger('change');
+            $(careerSelect).trigger('change');
+
+            $.material.init(); 
+        } catch (error) {
+            console.error('%c[loadModalDataSelects] ❌ Error al cargar datos para los selects del modal:', 'color: #ea4335; font-weight: bold;', error);
+            await showCustomAlert('Error', 'Ocurrió un error al cargar los datos de selección.');
+        }
+    }
+
+    // Función para añadir listeners a los campos de cédula de integrantes y tutor
+    function setupCedulaListeners() {
+        $('.projectMemberId').off('blur keydown');
+        $('#projectTutorCedula').off('blur keydown');
+
+        // Estudiantes
+        document.querySelectorAll('.projectMemberId').forEach(input => {
+            input.onblur = async (event) => {
+                await checkPersonByCedula(event.target, 'estudiante', 'projectMemberName', false);
+                $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                updateFloatingLabelsForElement(event.target);
             };
-            newCedulaInput.onkeydown = async (event) => {
+            input.onkeydown = async (event) => {
                 if (event.key === 'Enter') {
-                    event.preventDefault();
+                    event.preventDefault(); 
                     await checkPersonByCedula(event.target, 'estudiante', 'projectMemberName', false);
                     $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                    updateFloatingLabelsForElement(event.target);
+                }
+            };
+        });
+
+        // Tutor
+        const tutorCedulaInput = document.getElementById('projectTutorCedula');
+        
+        tutorCedulaInput.onblur = async (event) => {
+            await checkPersonByCedula(event.target, 'tutor', 'projectTutorName', true);
+            $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+            updateFloatingLabelsForElement(event.target);
+        };
+        tutorCedulaInput.onkeydown = async (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                await checkPersonByCedula(event.target, 'tutor', 'projectTutorName', true);
+                $(event.target).closest('.form-group').removeClass('is-focused').trigger('change');
+                updateFloatingLabelsForElement(event.target);
                 }
             };
         }
 
-        // Función para remover un campo de integrante
-        function removeMemberField(button) {
-            $(button).closest('.member-input-group').remove();
-            // No es necesario reajustar memberFieldIndex ni reindexar, ya que se leerán dinámicamente al guardar
-            // Pero es buena práctica re-inicializar Material Design si hay campos flotantes que se vean afectados.
+    // Función genérica para verificar persona por cédula (estudiante o tutor)
+    async function checkPersonByCedula(cedulaInput, type, nameClassOrId, isTutor) {
+        const cedula = cedulaInput.value.trim();
+        const nameInput = isTutor ? document.getElementById(nameClassOrId) : document.getElementById(`${nameClassOrId}_${cedulaInput.dataset.memberIndex}`);
+        
+        if (cedula === '') {
+            nameInput.value = '';
+            nameInput.readOnly = isTutor; 
+            nameInput.removeAttribute('data-id'); 
+            $(nameInput).closest('.form-group').removeClass('is-focused is-filled'); 
             $.material.init();
+            return;
         }
 
-        // Función para guardar (agregar o editar) un proyecto
-        async function saveProject() { // Renombrada de addNewProject
-            // Deshabilitar el botón para evitar múltiples envíos
-            const saveButton = document.getElementById('saveProjectBtn');
-            saveButton.disabled = true;
-            saveButton.textContent = 'Guardando...';
+        try {
+            const url = `/api/${type}-por-cedula/${cedula}`;
+            const personData = await fetchWithExponentialBackoff(url, { method: 'GET' });
 
-            const projectId = document.getElementById('editProjectId').value; // Obtener el ID del proyecto si estamos editando
-            const isEditing = !!projectId; // true si hay un ID, false si estamos agregando
-
-            try {
-                const periodSelect = document.getElementById('projectPeriod');
-                const periodoId = periodSelect.value;
-
-                const projectName = document.getElementById('projectName').value;
+            if (personData) {
+                nameInput.value = personData.nombre_completo;
+                nameInput.readOnly = true; 
+                nameInput.setAttribute('data-id', personData[`id_${type}`]); 
+                $(nameInput).closest('.form-group').addClass('is-focused is-filled');
                 
-                const careerSelect = document.getElementById('projectCareer');
-                const carreraId = careerSelect.value;
+            } else {
+                nameInput.value = ''; 
+                nameInput.readOnly = false; 
+                nameInput.removeAttribute('data-id'); 
+                $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
+            }
+            $.material.init();
+            updateFloatingLabelsForElement(nameInput); 
 
-                const comunidad = document.getElementById('projectCommunity').value;
+        } catch (error) {
+            console.error(`%c[checkPersonByCedula] ❌ Error al verificar cédula de ${type}:`, 'color: #ea4335; font-weight: bold;', error);
+            nameInput.value = '';
+            nameInput.readOnly = false;
+            nameInput.removeAttribute('data-id');
+            $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
+            await showCustomAlert('Error de Conexión', `No se pudo verificar la cédula de ${type}. Intenta de nuevo.`);
+            updateFloatingLabelsForElement(nameInput); 
+        }
+    }
 
-                const tutorCedula = document.getElementById('projectTutorCedula').value;
-                const tutorName = document.getElementById('projectTutorName').value;
+    // Función para actualizar el estado de las etiquetas flotantes de un elemento específico
+    function updateFloatingLabelsForElement(element) {
+        var $input = $(element);
+        var $formGroup = $input.closest('.form-group.label-floating');
+        if ($input.val() !== "" && $input.val() !== null && $input.val() !== undefined && $input.val() !== "Selecciona un Periodo" && $input.val() !== "Selecciona una Carrera") {
+            $formGroup.addClass('is-focused is-filled');
+        } else {
+            $formGroup.removeClass('is-focused is-filled');
+        }
+        // For selects, specifically handle the 'is-dirty' class if it exists
+        if ($input.is('select')) {
+            if ($input.val() !== "" && $input.val() !== null && $input.val() !== undefined) {
+                $formGroup.addClass('is-focused');
+                $formGroup.find('label').addClass('is-dirty');
+            } else {
+                $formGroup.removeClass('is-focused');
+                $formGroup.find('label').removeClass('is-dirty');
+            }
+        }
+    }
 
-                const startDate = document.getElementById('projectStartDate').value;
-                const endDate = document.getElementById('projectEndDate').value;
-                const status = document.getElementById('projectStatus').value;
+    // Función para actualizar el estado de las etiquetas flotantes de todos los campos del modal
+    function updateFloatingLabels() {
+        $('#addProjectModal .form-group.label-floating').each(function() {
+            var $this = $(this);
+            var $input = $this.find('input, select, textarea');
+            if ($input.val() !== "" && $input.val() !== null && $input.val() !== undefined && $input.val() !== "Selecciona un Periodo" && $input.val() !== "Selecciona una Carrera") {
+                $this.addClass('is-focused is-filled');
+            } else {
+                $this.removeClass('is-focused is-filled');
+            }
+        });
+        // For selects, specifically handle the 'is-dirty' class if it exists
+        $('#addProjectModal .form-group.label-floating select').each(function() {
+            var $this = $(this);
+            if ($this.val() !== "" && $this.val() !== null && $this.val() !== undefined) {
+                $this.closest('.form-group').addClass('is-focused');
+                $this.closest('.form-group').find('label').addClass('is-dirty'); // For Material Design Lite
+            } else {
+                $this.closest('.form-group').removeClass('is-focused');
+                $this.closest('.form-group').find('label').removeClass('is-dirty');
+            }
+        });
+    }
 
-                // Obtener todos los integrantes ingresados
-                const memberInputs = Array.from(document.querySelectorAll('#membersContainer .member-input-group'));
-                let allMembersValid = true;
-                let projectMembers = []; // Array de objetos { cedula, nombreCompleto, id (si existe) }
-                const uniqueCedulas = new Set(); // Para validar cédulas duplicadas en el frontend
+    // --- Paginación y Filtrado ---
+    function getRowsPerPage() {
+        return window.innerWidth <= 767 ? rowsPerPageMobile : rowsPerPageDesktop;
+    }
 
-                for (const group of memberInputs) {
-                    const cedulaInput = group.querySelector('.projectMemberId');
-                    const nameInput = group.querySelector('.projectMemberName');
-                    const cedula = cedulaInput.value.trim();
-                    const nombreCompleto = nameInput.value.trim();
-                    const existingId = nameInput.dataset.id; // El ID si ya existe en la DB
+    function displayRows() {
+        const filteredProjects = allProjectsData.filter(p => p.isVisibleByFilter);
 
-                    if (cedula === '' || nombreCompleto === '') {
-                        allMembersValid = false;
-                        break;
-                    }
+        allProjectsData.forEach(p => {
+            p.element.style.display = 'none';
+        });
 
-                    // Validar cédulas duplicadas en el frontend
-                    if (uniqueCedulas.has(cedula)) {
-                        await showCustomAlert("Error de Cédula", `La cédula ${cedula} está duplicada en la lista de integrantes.`);
-                        saveButton.disabled = false;
-                        saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Proyecto';
-                        return; // Detener el envío del formulario
-                    }
-                    uniqueCedulas.add(cedula);
+        const startIndex = (currentPage - 1) * currentRowsPerPage;
+        const endIndex = Math.min(startIndex + currentRowsPerPage, filteredProjects.length);
 
-                    projectMembers.push({
-                        cedula: cedula,
-                        nombreCompleto: nombreCompleto,
-                        id: existingId // Se usará si el estudiante ya existe
-                    });
+        for (let i = startIndex; i < endIndex; i++) {
+            if (filteredProjects[i]) {
+                filteredProjects[i].element.style.display = '';
+            }
+        }
+    }
+
+    function setupPagination() {
+        const visibleRowsForPagination = allProjectsData.filter(p => p.isVisibleByFilter);
+
+        const pageCount = Math.ceil(visibleRowsForPagination.length / currentRowsPerPage);
+        const paginationUl = document.getElementById('pagination');
+        paginationUl.innerHTML = '';
+
+        if (currentPage > pageCount && pageCount > 0) {
+            currentPage = pageCount;
+        } else if (pageCount === 0 && visibleRowsForPagination.length > 0) {
+            currentPage = 1;
+        } else if (visibleRowsForPagination.length === 0) {
+            currentPage = 1;
+        }
+
+        if (pageCount <= 1) {
+            paginationUl.style.display = 'none';
+        } else {
+            paginationUl.style.display = '';
+        }
+
+        if (visibleRowsForPagination.length === 0) {
+            return;
+        }
+
+        let prevLi = document.createElement('li');
+        let prevLink = document.createElement('a');
+        prevLink.href = '#!';
+        prevLink.innerHTML = '«';
+        prevLink.onclick = () => {
+            if (currentPage > 1) {
+                currentPage--;
+                updateTableAndPagination();
+            }
+        };
+        prevLi.appendChild(prevLink);
+        paginationUl.appendChild(prevLi);
+
+        for (let i = 1; i <= pageCount; i++) {
+            let li = document.createElement('li');
+            let link = document.createElement('a');
+            link.href = '#!';
+            link.textContent = i;
+            link.onclick = (function(pageNumber) {
+                return function() {
+                    currentPage = pageNumber;
+                    updateTableAndPagination();
+                };
+            })(i);
+            li.appendChild(link);
+            paginationUl.appendChild(li);
+        }
+
+        let nextLi = document.createElement('li');
+        let nextLink = document.createElement('a');
+        nextLink.href = '#!';
+        nextLink.innerHTML = '»';
+        nextLink.onclick = () => {
+            if (currentPage < pageCount) {
+                currentPage++;
+                updateTableAndPagination();
+            }
+        };
+        nextLi.appendChild(nextLink);
+        paginationUl.appendChild(nextLi);
+
+        if (currentPage === 1) {
+            prevLi.classList.add('disabled');
+        } else {
+            prevLi.classList.remove('disabled');
+        }
+        if (currentPage >= pageCount || pageCount === 0) {
+            nextLi.classList.add('disabled');
+        } else {
+            nextLi.classList.remove('disabled');
+        }
+
+        Array.from(paginationUl.children).forEach(li => {
+            if (li.textContent == currentPage && li.textContent !== '«' && li.textContent !== '»') {
+                li.classList.add('active');
+            } else {
+                li.classList.remove('active');
+            }
+        });
+    }
+
+    function updateTableAndPagination() {
+        currentRowsPerPage = getRowsPerPage();
+        displayRows();
+        setupPagination();
+    }
+
+    function filterTable() {
+        const input = document.getElementById('searchProject');
+        const filter = input.value.toLowerCase();
+        let currentFilteredN = 1;
+
+        allProjectsData.forEach(project => {
+            if (project.searchableText.includes(filter)) {
+                project.isVisibleByFilter = true;
+                if (filter !== '') {
+                    project.element.getElementsByTagName('td')[0].textContent = currentFilteredN++;
+                }
+            } else {
+                project.isVisibleByFilter = false;
+            }
+        });
+
+        if (filter === '') {
+            allProjectsData.forEach((project) => {
+                project.element.getElementsByTagName('td')[0].textContent = project.originalN;
+            });
+        }
+
+        currentPage = 1;
+        updateTableAndPagination();
+    }
+
+    // --- Guardar (Agregar/Editar) Proyecto ---
+    async function saveProject() { 
+        const saveButton = document.getElementById('saveProjectBtn');
+        saveButton.disabled = true;
+        saveButton.textContent = 'Guardando...';
+
+        const projectId = document.getElementById('editProjectId').value;
+        const isEditing = !!projectId; 
+
+        try {
+            const periodSelect = document.getElementById('projectPeriod');
+            const periodoId = periodSelect.value;
+
+            const projectName = document.getElementById('projectName').value;
+            
+            const careerSelect = document.getElementById('projectCareer');
+            const carreraId = careerSelect.value;
+
+            const comunidad = document.getElementById('projectCommunity').value;
+
+            const tutorCedula = document.getElementById('projectTutorCedula').value;
+            const tutorName = document.getElementById('projectTutorName').value;
+            const tutorId = document.getElementById('projectTutorName').dataset.id; // Obtener el ID del tutor si existe
+
+            const startDate = document.getElementById('projectStartDate').value;
+            const endDate = document.getElementById('projectEndDate').value;
+            const status = document.getElementById('projectStatus').value;
+
+            const memberInputs = Array.from(document.querySelectorAll('#membersContainer .member-input-group'));
+            let allMembersValid = true;
+            let projectMembers = []; 
+            const uniqueCedulas = new Set(); 
+
+            for (const group of memberInputs) {
+                const cedulaInput = group.querySelector('.projectMemberId');
+                const nameInput = group.querySelector('.projectMemberName');
+                const cedula = cedulaInput.value.trim();
+                const nombreCompleto = nameInput.value.trim();
+                const existingId = nameInput.dataset.id; 
+
+                if (cedula === '' || nombreCompleto === '') {
+                    allMembersValid = false;
+                    break;
                 }
 
-                if (!periodoId || !projectName || !carreraId || !comunidad || !tutorCedula || !tutorName || !startDate || !endDate || !status || !allMembersValid || projectMembers.length === 0) {
-                    await showCustomAlert("Error", "Por favor, completa todos los campos obligatorios, incluyendo al menos un integrante con cédula y nombre.");
+                if (uniqueCedulas.has(cedula)) {
+                    await showCustomAlert("Error de Cédula", `La cédula ${cedula} está duplicada en la lista de integrantes.`);
                     saveButton.disabled = false;
                     saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Proyecto';
-                    return; // Sale de la función para que el botón no se rehabilite antes de tiempo
+                    return; 
                 }
-                
-                // Construir el objeto de datos a enviar
-                const projectData = {
-                    periodoId: parseInt(periodoId),
-                    nombreProyecto: projectName,
-                    integrantes: projectMembers,
-                    carreraId: parseInt(carreraId),
-                    tutor: { 
-                        cedulaTutor: tutorCedula, 
-                        nombreCompletoTutor: tutorName 
-                    },
-                    fechaInicio: startDate,
-                    fechaFinal: endDate,
-                    estado: status,
-                    comunidad: comunidad
-                };
+                uniqueCedulas.add(cedula);
 
-                let response;
-                if (isEditing) {
-                    response = await fetchWithExponentialBackoff(`/api/proyectos-comunitarios/${projectId}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(projectData),
-                    });
-                } else {
-                    response = await fetchWithExponentialBackoff('/api/agregar-proyecto-comunitario', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(projectData),
-                    });
-                }
-                
-                if (response && response.message) {
-                    // Cierra el modal de Bootstrap y adjunta el listener para cuando esté COMPLETAMENTE oculto
-                    $('#addProjectModal').on('hidden.bs.modal', async function () {
-                        // FIX: Mover la lógica de reseteo y recarga *dentro* del handler
-                        document.getElementById('addProjectForm').reset();
-                        document.getElementById('projectTutorName').readOnly = true;
-                        
-                        // Reset dynamic member fields after closing modal
-                        const membersContainer = document.getElementById('membersContainer');
-                        membersContainer.innerHTML = ''; // Limpiar primero
-                        memberFieldIndex = -1; // Reset index for new modal opening
-                        addMemberField(); // Añadir un campo de integrante vacío por defecto
-                        
-                        $.material.init(); // Re-inicializar Material Design
-                        await loadProjectsFromAPI(); // Recargar proyectos para ver el nuevo
-                        
-                        // Ahora muestra la alerta personalizada
-                        await showCustomAlert("¡Éxito!", response.message);
-                        
-                        // FIX: Asegurarse de eliminar cualquier backdrop residual de Bootstrap
-                        $('.modal-backdrop').remove(); // Elimina el backdrop de Bootstrap
-                        
-                        // Remover el listener después de usarlo
-                        $(this).off('hidden.bs.modal'); 
-                    });
-                    $('#addProjectModal').modal('hide'); // Inicia el ocultamiento del modal de Bootstrap
+                projectMembers.push({
+                    cedula: cedula,
+                    nombreCompleto: nombreCompleto,
+                    idEstudiante: existingId 
+                });
+            }
 
-                } else {
-                    await showCustomAlert("Error", response.error || "No se pudo realizar la operación. Inténtalo de nuevo.");
-                }
-            } catch (error) {
-                console.error('Error al enviar el proyecto:', error);
-                await showCustomAlert("Error", "Ocurrió un error de conexión al guardar el proyecto. Revisa la consola.");
-            } finally {
-                // Re-habilitar el botón y restaurar su texto
+            if (!periodoId || !projectName || !carreraId || !comunidad || !tutorCedula || !tutorName || !startDate || !endDate || !status || !allMembersValid || projectMembers.length === 0) {
+                await showCustomAlert("Error", "Por favor, completa todos los campos obligatorios, incluyendo al menos un integrante con cédula y nombre.");
                 saveButton.disabled = false;
                 saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Proyecto';
+                return; 
             }
+            
+            const projectData = {
+                periodoId: parseInt(periodoId),
+                nombreProyecto: projectName,
+                integrantes: projectMembers,
+                carreraId: parseInt(carreraId),
+                tutor: { 
+                    cedulaTutor: tutorCedula, 
+                    nombreCompletoTutor: tutorName,
+                    idTutor: tutorId 
+                },
+                fechaInicio: startDate,
+                fechaFinal: endDate,
+                estado: status,
+                comunidad: comunidad
+            };
+
+            let response;
+            if (isEditing) {
+                response = await fetchWithExponentialBackoff(`/api/proyectos-comunitarios/${projectId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(projectData),
+                });
+            } else {
+                response = await fetchWithExponentialBackoff('/api/agregar-proyecto-comunitario', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(projectData),
+                });
+            }
+            
+            if (response && response.message) {
+                $('#addProjectModal').on('hidden.bs.modal', async function () {
+                    document.getElementById('addProjectForm').reset();
+                    document.getElementById('projectTutorName').readOnly = true;
+                    document.getElementById('projectTutorName').removeAttribute('data-id');
+                    
+                    const membersContainer = document.getElementById('membersContainer');
+                    membersContainer.innerHTML = ''; 
+                    memberFieldIndex = -1; 
+                    addMemberField(); 
+                    
+                    $.material.init(); 
+                    await loadProjectsFromAPI(); 
+                    
+                    await showCustomAlert("¡Éxito!", response.message);
+                    
+                    $('.modal-backdrop').remove(); 
+                    $(this).off('hidden.bs.modal'); 
+                });
+                $('#addProjectModal').modal('hide'); 
+
+            } else {
+                await showCustomAlert("Error", response.error || "No se pudo realizar la operación. Inténtalo de nuevo.");
+            }
+        } catch (error) {
+            console.error('%c[saveProject] ❌ Error al enviar el proyecto:', 'color: #ea4335; font-weight: bold;', error);
+            await showCustomAlert("Error", "Ocurrió un error de conexión al guardar el proyecto. Revisa la consola.");
+        } finally {
+            saveButton.disabled = false;
+            saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Proyecto';
         }
+    }
 
-        // Function para confirmar la eliminación lógica de un proyecto
-        async function confirmDeleteProject(projectId, projectName) {
-            const { isConfirmed, inputValue: mensajeEliminacion } = await showCustomAlert(
-                'Confirmar Eliminación', 
-                `¿Estás seguro de que quieres eliminar lógicamente el proyecto "${projectName}"?`,
-                true // Muestra el input de mensaje
-            );
+    // --- Eliminar Lógicamente Proyecto ---
+    async function confirmDeleteProject(projectId, projectName) {
+        const { isConfirmed, inputValue: mensajeEliminacion } = await showCustomAlert(
+            'Confirmar Eliminación', 
+            `¿Estás seguro de que quieres eliminar lógicamente el proyecto "${projectName}"?`,
+            true 
+        );
 
-            if (isConfirmed) {
-                try {
-                    const response = await fetchWithExponentialBackoff(`/api/proyectos-comunitarios/eliminar-logico/${projectId}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion })
-                    });
+        if (isConfirmed) {
+            try {
+                const response = await fetchWithExponentialBackoff(`/api/proyectos-comunitarios/eliminar-logico/${projectId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion })
+                });
 
-                    if (response && response.message) {
-                        await showCustomAlert('¡Éxito!', response.message);
-                        await loadProjectsFromAPI(); // Recargar la tabla principal
-                    } else {
-                        await showCustomAlert('Error', response.error || 'No se pudo eliminar el proyecto lógicamente. Inténtalo de nuevo.');
-                    }
-                } catch (error) {
-                    console.error('Error al eliminar lógicamente el proyecto:', error);
-                    await showCustomAlert('Error', 'Ocurrió un error de conexión al intentar eliminar el proyecto.');
+                if (response && response.message) {
+                    await showCustomAlert('¡Éxito!', response.message);
+                    await loadProjectsFromAPI(); 
+                } else {
+                    await showCustomAlert('Error', response.error || 'No se pudo eliminar el proyecto lógicamente. Inténtalo de nuevo.');
                 }
+            } catch (error) {
+                console.error('%c[confirmDeleteProject] ❌ Error al eliminar lógicamente el proyecto:', 'color: #ea4335; font-weight: bold;', error);
+                await showCustomAlert('Error', 'Ocurrió un error de conexión al intentar eliminar el proyecto.');
             }
         }
+    }
+
+    // --- GENERACIÓN DE PDF EN EL CLIENTE CON JSPDF ---
+    async function generateCommunityServicePdf(projectId) {
+        console.log(`%c[generateCommunityServicePdf] 🚀 Starting PDF generation for project ID: ${projectId}`, 'color: #1e88e5; font-weight: bold;');
+        // FIX: Asegurar que jsPDF y autoTable estén realmente disponibles
+        if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined' || typeof window.jspdf.jsPDF.API.autoTable === 'undefined') {
+            console.error('%c[generateCommunityServicePdf] ❌ jsPDF o autoTable no están completamente cargados o inicializados.', 'color: #ea4335; font-weight: bold;');
+            await showCustomAlert('Error', 'Las librerías necesarias para generar el PDF (jsPDF y AutoTable) aún no están disponibles. Por favor, espera un momento y inténtalo de nuevo.');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        try {
+            console.log(`%c[generateCommunityServicePdf] Calling fetchWithExponentialBackoff for datos-pdf for project ID: ${projectId}.`, 'color: #1e88e5;');
+            const projectData = await fetchWithExponentialBackoff(`/api/proyectos-comunitarios/${projectId}/datos-pdf`, { method: 'GET' });
+            console.log(`%c[generateCommunityServicePdf] Result of fetchWithExponentialBackoff:`, 'color: #1e88e5;', projectData);
+
+            if (!projectData) {
+                console.warn('%c[generateCommunityServicePdf] ⚠️ projectData is falsy (null or undefined). Showing alert and returning.', 'color: #fbbc04;');
+                await showCustomAlert('Error', 'No se pudieron obtener los datos del proyecto para generar el PDF.');
+                return;
+            }
+
+            // --- Configuración del Documento ---
+            const pageWidth = doc.internal.pageSize.getWidth();
+            let yOffset = 10; // Margen superior inicial
+
+            // --- Logo de UNEFA (PNG) ---
+            // La ruta ahora es para un PNG.
+            const imageUrl = '../assets/img/unefa.png'; 
+            const img = new Image();
+            img.src = imageUrl;
+
+            console.log(`%c[generateCommunityServicePdf] Attempting to load logo from: ${imageUrl}`, 'color: #1e88e5;');
+            await new Promise((resolve, reject) => {
+                img.onload = () => {
+                    console.log('%c[generateCommunityServicePdf] Logo PNG loaded successfully.', 'color: #34a853;');
+                    resolve();
+                };
+                img.onerror = () => {
+                    console.warn('%c[generateCommunityServicePdf] ⚠️ Error al cargar el logo PNG. Se intentará continuar sin logo.', 'color: #fbbc04;');
+                    resolve(); 
+                };
+            });
+
+            // Ajustar el tamaño del logo y su posición
+            const logoWidth = 40; // Reduced width
+            const logoHeight = 20; // Reduced height
+            const logoX = 10; // Keep X position
+            const logoY = 10; // Adjusted Y position to be higher
+
+            if (img.complete && img.naturalWidth !== 0) { 
+                const canvas = document.createElement('canvas');
+                const canvasResolutionMultiplier = 4; 
+                canvas.width = logoWidth * canvasResolutionMultiplier;
+                canvas.height = logoHeight * canvasResolutionMultiplier;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#FFFFFF'; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                const imgData = canvas.toDataURL('image/png');
+                doc.addImage(imgData, 'PNG', logoX, logoY, logoWidth, logoHeight); // Use adjusted logoY
+                console.log('%c[generateCommunityServicePdf] Logo dibujado en el PDF con nuevas dimensiones y posición.', 'color: #34a853;');
+            } else {
+                console.warn('%c[generateCommunityServicePdf] ⚠️ No se pudo dibujar el logo en el PDF. Asegúrate de que ../assets/img/unefa.png existe y es accesible.', 'color: #fbbc04;');
+            }
+            
+            // Ajustar el yOffset inicial para el texto del encabezado para que no choque con el logo
+            yOffset = logoY + logoHeight + 5; // Start text below the logo with some padding
+
+            // --- Encabezado ---
+            doc.setFontSize(10);
+            doc.text('REPÚBLICA BOLIVARIANA DE VENEZUELA', pageWidth / 2, yOffset + 5, { align: 'center' });
+            doc.text('MINISTERIO DEL PODER POPULAR PARA LA DEFENSA', pageWidth / 2, yOffset + 10, { align: 'center' });
+            doc.text('VICEMINISTERIO DE EDUCACIÓN PARA LA DEFENSA', pageWidth / 2, yOffset + 15, { align: 'center' });
+            doc.text('UNIVERSIDAD NACIONAL EXPERIMENTAL POLITÉCNICA DE LA FUERZA ARMADA NACIONAL BOLIVARIANA', pageWidth / 2, yOffset + 20, { align: 'center' });
+            
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'bold');
+            doc.text('U.N.E.F.A.', pageWidth / 2, yOffset + 27, { align: 'center' });
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.text('NÚCLEO: LARA BARQUISIMETO', pageWidth / 2, yOffset + 32, { align: 'center' });
+            
+            yOffset += 45; // Espacio después del encabezado
+            
+            // --- Título del Documento ---
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(42, 62, 97); // Color similar a #2a3e61
+            doc.text('COMPROBANTE DE SERVICIO COMUNITARIO', pageWidth / 2, yOffset, { align: 'center' });
+            doc.setTextColor(0, 0, 0); // Resetear color
+            doc.setFont('helvetica', 'normal');
+            yOffset += 15;
+
+            // --- Datos del Proyecto ---
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Datos del Proyecto', 10, yOffset);
+            doc.line(10, yOffset + 1, pageWidth - 10, yOffset + 1); // Línea divisoria
+            doc.setFont('helvetica', 'normal');
+            yOffset += 7;
+
+            const projectDetails = [
+                `Nombre del Proyecto: ${projectData.nombreProyecto || 'N/A'}`,
+                `Comunidad: ${projectData.comunidad || 'N/A'}`,
+                `Periodo: ${projectData.periodo || 'N/A'}`,
+                `Carrera: ${projectData.carrera || 'N/A'}`,
+                `Fecha de Inicio: ${projectData.fechaInicio || 'N/A'}`,
+                `Fecha Final: ${projectData.fechaFinal || 'N/A'}`,
+                `Estado: ${projectData.estado || 'N/A'}`
+            ];
+            projectDetails.forEach(detail => {
+                doc.text(detail, 10, yOffset);
+                yOffset += 6;
+            });
+            yOffset += 5; // Espacio adicional
+
+            // --- Datos del Tutor ---
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Datos del Tutor', 10, yOffset);
+            doc.line(10, yOffset + 1, pageWidth - 10, yOffset + 1); // Línea divisoria
+            doc.setFont('helvetica', 'normal');
+            yOffset += 7;
+
+            doc.text(`Cédula: ${projectData.tutorCedula || 'N/A'}`, 10, yOffset);
+            yOffset += 6;
+            doc.text(`Nombre Completo: ${projectData.tutorNombre || 'N/A'}`, 10, yOffset);
+            yOffset += 10; // Espacio adicional
+
+            // --- Datos de los Integrantes (Tabla) ---
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Datos de los Integrantes', 10, yOffset);
+            doc.line(10, yOffset + 1, pageWidth - 10, yOffset + 1); // Línea divisoria
+            doc.setFont('helvetica', 'normal');
+            yOffset += 7;
+
+            const tableColumn = ["Cédula", "Nombre Completo", "Carrera del Estudiante"];
+            const tableRows = [];
+
+            if (projectData.integrantes && projectData.integrantes.length > 0) {
+                projectData.integrantes.forEach(integrante => {
+                    tableRows.push([
+                        integrante.cedula || 'N/A',
+                        integrante.nombreCompleto || 'N/A',
+                        integrante.carreraEstudiante || 'N/A' 
+                    ]);
+                });
+            } else {
+                tableRows.push(['', 'No hay integrantes registrados.', '']);
+            }
+
+            // Utiliza doc.autoTable para la tabla
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: yOffset,
+                theme: 'striped',
+                headStyles: { 
+                    fillColor: [42, 62, 97], 
+                    textColor: 255, 
+                    fontStyle: 'bold' 
+                },
+                styles: { fontSize: 10, cellPadding: 2, overflow: 'linebreak' },
+                columnStyles: {
+                    0: { cellWidth: 35 },
+                    1: { cellWidth: 70 },
+                    2: { cellWidth: 'auto' }
+                },
+                margin: { top: 5, bottom: 5, left: 10, right: 10 },
+                didDrawPage: function (data) {
+                    // Update yOffset only if autoTable.previous is available,
+                    // which is when a page has actually been drawn.
+                    if (doc.autoTable.previous) {
+                        yOffset = data.cursor.y; 
+                    }
+                }
+            });
+            
+            // Check if doc.autoTable.previous exists before accessing its properties.
+            if (doc.autoTable.previous) {
+                yOffset = doc.autoTable.previous.finalY + 30; // Espacio después de la tabla
+            } else {
+                // Fallback if no table was drawn (e.g., empty data), adjust yOffset manually
+                yOffset += (tableRows.length * 10) + 30; 
+            }
+            
+            // --- Firma ---
+            // Asegurarse de que la firma no se corte al final de la página
+            if (yOffset > doc.internal.pageSize.height - 50) {
+                doc.addPage();
+                yOffset = 30; // Reiniciar yOffset para la nueva página
+            }
+            doc.line(pageWidth / 2 - 40, yOffset, pageWidth / 2 + 40, yOffset); // Línea de firma
+            doc.setFontSize(10);
+            doc.text('Firma del Administrador / Jefe de Área Académica', pageWidth / 2, yOffset + 5, { align: 'center' });
+
+            // Guardar el PDF
+            doc.save(`Comprobante_Servicio_Comunitario_${projectId}.pdf`);
+            console.log('%c[generateCommunityServicePdf] ✅ PDF generado y guardado exitosamente.', 'color: #34a853; font-weight: bold;');
+
+        } catch (error) {
+            console.error('%c[generateCommunityServicePdf] ❌ An error occurred during PDF generation (caught by top-level catch):', 'color: #ea4335; font-weight: bold;', error);
+            await showCustomAlert('Error', 'Ocurrió un error al intentar generar el PDF. Revisa la consola para más detalles.');
+        }
+    }
 
 
-        // Initial call to populate allProjectsData and display table on load
-        $(document).ready(function() {
-            loadProjectsFromAPI(); 
-            $.material.init(); // Apply Material Design styling after content is ready
+    // Initial call to populate allProjectsData and display table on load
+    $(document).ready(function() {
+        console.log('%c[DOM Ready] Loading projects from API...', 'color: #1a73e8; font-weight: bold;');
+        loadProjectsFromAPI(); 
+        $.material.init(); 
 
-            window.addEventListener('resize', updateTableAndPagination);
+        window.addEventListener('resize', updateTableAndPagination);
+
+        $('#addProjectModal').on('shown.bs.modal', function () {
+            updateFloatingLabels();
         });
-	</script>
+    });
+</script>
 </body>
 </html>
