@@ -5,20 +5,19 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<link rel="stylesheet" href="../css/main.css">
-    <!-- Aseguramos que el archivo bootstrap-icons.css se cargue si no lo tienes en main.css -->
     <link rel="stylesheet" href="../css/bootstrap-icons.css">
     <style>
         /* Estilos para la ventana modal personalizada */
         .custom-modal-overlay {
             display: none; /* Oculto por defecto */
             position: fixed;
-            z-index: 9999; /* FIX: Asegura que esté por encima de TODO */
+            z-index: 9999; 
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente */
+            background-color: rgba(0,0,0,0.6); 
             justify-content: center;
             align-items: center;
         }
@@ -59,7 +58,7 @@
             margin-top: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            resize: vertical; /* Permite redimensionar verticalmente */
+            resize: vertical; 
         }
 
         .custom-modal-footer {
@@ -69,7 +68,7 @@
         }
 
         .custom-modal-footer button {
-            background-color: #2a3e61; /* Azul oscuro */
+            background-color: #2a3e61; 
             color: white;
             padding: 10px 20px;
             border: none;
@@ -80,7 +79,7 @@
         }
 
         .custom-modal-footer button:hover {
-            background-color: #1a2a44; /* Azul más oscuro al pasar el ratón */
+            background-color: #1a2a44; 
         }
 
         /* Animación de entrada */
@@ -93,6 +92,7 @@
         @media (max-width: 767px) {
             .table-responsive {
                 border: none;
+                display: none; /* Ocultar la tabla original en móvil */
             }
             .table-projects thead {
                 display: none;
@@ -146,19 +146,134 @@
                 top: 10px;
                 transform: translateY(0);
             }
+
+            /* --- Nuevos estilos para la vista móvil con tarjetas --- */
+            .mobile-cards-container {
+                display: block; /* Mostrar los cards en móvil */
+                padding: 15px;
+            }
+
+            .project-card {
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                margin-bottom: 15px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                padding: 15px;
+            }
+
+            .card-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 5px 0;
+                border-bottom: 1px dashed #eee;
+            }
+
+            .card-item:last-child {
+                border-bottom: none;
+            }
+
+            .card-label {
+                font-weight: bold;
+                color: #555;
+            }
+
+            .card-value {
+                text-align: right;
+                color: #333;
+            }
+
+            .card-actions {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .card-actions .btn {
+                flex-grow: 1; /* Para que los botones se expandan */
+            }
+        }
+
+        @media (min-width: 768px) {
+            .mobile-cards-container {
+                display: none; /* Ocultar los cards en desktop */
+            }
         }
 
         /* Estilos para la celda de Estudiantes en la tabla principal */
         .table-projects td[data-label="Estudiantes"] {
-            text-align: left; /* Asegura alineación a la izquierda */
-            white-space: normal; /* Permite el ajuste de línea */
-            word-break: break-word; /* Permite romper palabras largas */
-            min-width: 180px; /* Ancho mínimo para que se vea mejor */
+            text-align: left; 
+            white-space: normal; 
+            word-break: break-word; 
+            min-width: 180px; 
         }
 
         .filter-buttons button {
             margin-right: 10px;
             margin-bottom: 10px;
+        }
+
+        /* === ESTILOS ACTUALIZADOS PARA LA TABLA DE PROYECTOS ELIMINADOS === */
+        .table-projects {
+            border-collapse: separate; 
+            border-spacing: 0; 
+        }
+
+        .table-projects thead {
+            background-color: #2a3e61; 
+            color: white; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            margin-bottom: 10px; 
+            display: table-header-group; 
+        }
+        
+        .table-projects thead tr {
+            border-radius: 8px; 
+        }
+
+        .table-projects thead th {
+            color: white !important; 
+            border-right: 1px solid rgba(255, 255, 255, 0.3); 
+            padding: 12px 8px; 
+        }
+        .table-projects thead th:first-child {
+            border-top-left-radius: 8px; 
+        }
+        .table-projects thead th:last-child {
+            border-top-right-radius: 8px; 
+            border-right: none; 
+        }
+
+        /* Estilos para las filas del cuerpo de la tabla */
+        .table-projects tbody tr {
+            background-color: #ffffff; 
+            border-bottom: 1px solid #eee; 
+            transition: background-color 0.3s ease; 
+        }
+        .table-projects tbody tr:last-child {
+            border-bottom: none; 
+        }
+        .table-projects tbody tr:hover {
+            background-color: #e0f2f7; 
+            cursor: pointer;
+        }
+        .table-projects tbody td {
+            padding: 8px; 
+            vertical-align: middle; 
+            border-right: 1px solid #f0f0f0; 
+        }
+        .table-projects tbody td:last-child {
+            border-right: none; 
+        }
+
+        /* Estilo para los nombres de proyectos e integrantes dentro de las celdas */
+        .table-projects tbody td[data-label="Nombre del Proyecto / Título"] .project-name-display,
+        .table-projects tbody td[data-label="Tutor"] .tutor-name-display,
+        .table-projects tbody td[data-label="Estudiantes"] .student-name-display {
+            color: #2a3e61; 
+            font-weight: normal; 
         }
     </style>
 </head>
@@ -203,16 +318,16 @@
 					</a>
 					<ul class="list-unstyled full-box">
 						<li>
-							<a href="/servicio-comunitario"><i class="zmdi zmdi-timer zmdi-hc-fw"></i> Servicio Comunitario</a>
+							<a href="/servicio-comunitario"><i class="zmdi zmdi-accounts"></i> Servicio Comunitario</a>
 						</li>
 						<li>
 							<a href="/trabajo-de-grado"><i class="zmdi zmdi-book zmdi-hc-fw"></i> Trabajo Grado</a>
 						</li>
 						<li>
-							<a href="/proyectos"><i class="zmdi zmdi-graduation-cap zmdi-hc-fw"></i>Proyectos</a>
+							<a href="/proyectos"><i class="zmdi zmdi-graduation-cap zmdi-hc-fw"></i> Proyectos</a>
 						</li>
 						<li>
-							<a href="salon.html"><i class="zmdi zmdi-font zmdi-hc-fw"></i> Pasantias</a>
+							<a href="/pasantias"><i class="zmdi zmdi-assignment"></i> Pasantias</a>
 						</li>
                         <li>
                             <a href="/proyectos-eliminados"><i class="zmdi zmdi-delete zmdi-hc-fw"></i> Proyectos Eliminados</a>
@@ -247,22 +362,6 @@
 				<li class="pull-left">
 					<a href="#!" class="btn-menu-dashboard"><i class="zmdi zmdi-more-vert"></i></a>
 				</li>
-				<li>
-					<a href="#!" class="btn-Notifications-area">
-						<i class="zmdi zmdi-notifications-none"></i>
-						<span class="badge">7</span>
-					</a>
-				</li>
-				<li>
-					<a href="#!" class="btn-search">
-						<i class="zmdi zmdi-search"></i>
-					</a>
-				</li>
-				<li>
-					<a href="#!" class="btn-modal-help">
-						<i class="zmdi zmdi-help-outline"></i>
-					</a>
-				</li>
 			</ul>
 		</nav>
 		<!-- Content page -->
@@ -270,7 +369,7 @@
 			<div class="page-header" style="text-align: center;">
 			  <h1 class="text-titles" style="display: inline-block;"></i> Proyectos Eliminados</h1>
 			</div>
-			<p class="lead">Aquí puedes ver y restaurar todos los proyectos (Servicio Comunitario y Trabajo de Grado) que han sido eliminados lógicamente.</p>
+			<p class="lead">Aquí puedes ver y restaurar todos los proyectos (Servicio Comunitario, Trabajo de Grado, Proyectos de Investigación y Pasantías) que han sido eliminados lógicamente.</p>
 		</div>
 		<div class="container-fluid">
 			<div class="row">
@@ -289,9 +388,12 @@
                                         <button class="btn btn-primary btn-raised" onclick="setFilterType('')">Todos</button>
                                         <button class="btn btn-info btn-raised" onclick="setFilterType('Servicio Comunitario')">Servicio Comunitario</button>
                                         <button class="btn btn-success btn-raised" onclick="setFilterType('Trabajo de Grado')">Trabajo de Grado</button>
+                                        <button class="btn btn-warning btn-raised" onclick="setFilterType('Proyecto de Investigación')">Investigación</button>
+                                        <button class="btn btn-danger btn-raised" onclick="setFilterType('Pasantía')">Pasantías</button>
                                     </div>
                                 </div>
                             </div>
+                            <!-- Tabla para vista de escritorio -->
 							<div class="table-responsive">
 								<table class="table table-hover text-center table-projects" id="deletedProjectsTable">
 									<thead>
@@ -299,7 +401,7 @@
 											<th class="text-center">N°</th>
 											<th class="text-center">Tipo de Proyecto</th>
 											<th class="text-center">Periodo</th>
-											<th class="text-center">Nombre del Proyecto</th>
+											<th class="text-center">Nombre del Proyecto / Título</th>
 											<th class="text-center">Carrera</th>
 											<th class="text-center">Tutor</th>
 											<th class="text-center">Estudiantes</th>
@@ -311,9 +413,14 @@
 										<!-- Los datos se cargarán dinámicamente aquí -->
 									</tbody>
 								</table>
+							</div>
+                            <!-- Contenedor para tarjetas en vista móvil -->
+                            <div class="mobile-cards-container" id="mobileDeletedProjectsCards">
+                                <!-- Las tarjetas se cargarán dinámicamente aquí para móvil -->
+                            </div>
+
 								<ul class="pagination pagination-sm" id="pagination">
 								</ul>
-							</div>
 					  	</div>
 					</div>
 				</div>
@@ -407,29 +514,26 @@
         const customAlertModal = document.getElementById('customAlertModal');
         const customAlertTitle = document.getElementById('customAlertTitle');
         const customAlertMessage = document.getElementById('customAlertMessage');
-        const customAlertInputContainer = document.getElementById('customAlertInputContainer'); // Contenedor del input
-        const customAlertInput = document.getElementById('customAlertInput'); // El input/textarea
+        const customAlertInputContainer = document.getElementById('customAlertInputContainer'); 
+        const customAlertInput = document.getElementById('customAlertInput'); 
         const customAlertOkBtn = document.getElementById('customAlertOkBtn');
-        const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); // Botón de cancelar
+        const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); 
 
-        let currentFilterType = ''; // Variable global para el tipo de filtro
+        let currentFilterType = ''; 
 
         // Función para mostrar la modal personalizada
         function showCustomAlert(title, message, showInput = false, inputPlaceholder = 'Motivo de la restauración (opcional)') {
             customAlertTitle.textContent = title;
             customAlertMessage.textContent = message;
             
-            // Mostrar u ocultar el input/textarea
             customAlertInputContainer.style.display = showInput ? 'block' : 'none';
-            customAlertInput.value = ''; // Limpiar el campo cada vez
-            customAlertInput.placeholder = inputPlaceholder; // Establecer el placeholder
+            customAlertInput.value = ''; 
+            customAlertInput.placeholder = inputPlaceholder; 
             
-            // Mostrar u ocultar el botón de cancelar
             customAlertCancelBtn.style.display = showInput ? 'inline-block' : 'none';
 
-            customAlertModal.style.display = 'flex'; // Usamos flex para centrar
+            customAlertModal.style.display = 'flex'; 
 
-            // Manejo de la promesa para simular .then() de Swal.fire
             return new Promise(resolve => {
                 const okClickHandler = function() {
                     customAlertModal.style.display = 'none';
@@ -450,13 +554,9 @@
             });
         }
 
-        // Para cerrar la modal si se hace clic fuera de ella
         window.onclick = function(event) {
             if (event.target == customAlertModal) {
                 customAlertModal.style.display = 'none';
-                // FIX: Asegurar que los listeners se limpien al cerrar haciendo clic fuera
-                customAlertOkBtn.removeEventListener('click', okClickHandler); 
-                customAlertCancelBtn.removeEventListener('click', cancelClickHandler); 
             }
         };
 
@@ -465,11 +565,8 @@
         let currentPage = 1;
         let currentRowsPerPage;
 
-        // Global array to store all deleted project data as objects
         let allDeletedProjectsData = [];
 
-        // --- Funciones de Utilidad para Fetching ---
-        // Implementación de retraso exponencial para reintentos de fetch
         async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
             try {
                 const response = await fetch(url, options);
@@ -492,38 +589,51 @@
             }
         }
 
-        // Función para cargar datos de la API y poblar la tabla
         async function loadDeletedProjectsFromAPI() {
             try {
-                // Endpoint para obtener todos los proyectos eliminados (incluye tipo)
-                const deletedProjects = await fetchWithExponentialBackoff('/api/proyectos-eliminados', { method: 'GET' });
-                if (!deletedProjects) {
-                    await showCustomAlert('Error', 'No se pudieron cargar los proyectos eliminados. Inténtalo de nuevo más tarde.');
-                    return;
-                }
+                // Hacer llamadas individuales a cada API
+                const [
+                    servicioComunitarioProjects,
+                    trabajoGradoProjects,
+                    proyectosInvestigacion,
+                    pasantiasProjects
+                ] = await Promise.all([
+                    fetchWithExponentialBackoff('/api/proyectos-eliminados/servicio-comunitario', { method: 'GET' }),
+                    fetchWithExponentialBackoff('/api/proyectos-eliminados/trabajo-de-grado', { method: 'GET' }),
+                    fetchWithExponentialBackoff('/api/proyectos-eliminados/proyectos-investigacion', { method: 'GET' }),
+                    fetchWithExponentialBackoff('/api/proyectos-eliminados/pasantias', { method: 'GET' })
+                ]);
+
+                // Combinar todos los resultados, filtrando los nulos si alguna API falla
+                let combinedProjects = [];
+                if (servicioComunitarioProjects) combinedProjects = combinedProjects.concat(servicioComunitarioProjects);
+                if (trabajoGradoProjects) combinedProjects = combinedProjects.concat(trabajoGradoProjects);
+                if (proyectosInvestigacion) combinedProjects = combinedProjects.concat(proyectosInvestigacion);
+                if (pasantiasProjects) combinedProjects = combinedProjects.concat(pasantiasProjects);
 
                 const tableBody = document.getElementById('deletedProjectsTable').getElementsByTagName('tbody')[0];
-                tableBody.innerHTML = ''; // Limpia los datos existentes
-                allDeletedProjectsData = []; // Limpia el array global
+                tableBody.innerHTML = ''; 
+                allDeletedProjectsData = []; 
 
-                deletedProjects.forEach((project, index) => {
+                combinedProjects.forEach((project, index) => {
                     const newOriginalN = index + 1;
                     const newRow = tableBody.insertRow();
                     newRow.dataset.projectId = project.id;
-                    newRow.dataset.projectType = project.tipo_proyecto; // Guardar el tipo de proyecto en el dataset
+                    newRow.dataset.projectType = project.tipo_proyecto; 
                     
-                    // Formatear estudiantes
                     const estudiantesDisplay = project.estudiantes && project.estudiantes.length > 0
-                        ? project.estudiantes.map(e => `${e.cedula} - ${e.nombre_completo}`).join('<br>')
-                        : 'N/A';
+                        ? project.estudiantes.map(e => `<span class="student-name-display">${e.nombre_completo || ''}</span>`).join('<br>')
+                        : ''; 
+                    
+                    const tutorDisplay = project.tutor ? `<span class="tutor-name-display">${project.tutor.nombre_completo || ''}</span>` : ''; 
                     
                     newRow.innerHTML = `
                         <td data-label="N°">${newOriginalN}</td>
-                        <td data-label="Tipo de Proyecto">${project.tipo_proyecto || 'N/A'}</td>
-                        <td data-label="Periodo">${project.periodo || 'N/A'}</td>
-                        <td data-label="Nombre del Proyecto">${project.nombre_proyecto || 'N/A'}</td>
-                        <td data-label="Carrera">${project.carrera || 'N/A'}</td>
-                        <td data-label="Tutor">${project.tutor ? project.tutor.nombre_completo : 'N/A'}</td>
+                        <td data-label="Tipo de Proyecto">${project.tipo_proyecto || ''}</td>
+                        <td data-label="Periodo">${project.periodo || ''}</td>
+                        <td data-label="Nombre del Proyecto / Título"><span class="project-name-display">${project.nombre_proyecto || ''}</span></td>
+                        <td data-label="Carrera">${project.carrera || ''}</td>
+                        <td data-label="Tutor">${tutorDisplay}</td>
                         <td data-label="Estudiantes">${estudiantesDisplay}</td>
                         <td data-label="Mensaje Eliminación">${project.mensaje_eliminacion || 'Sin mensaje'}</td>
                         <td data-label="Acciones">
@@ -531,18 +641,24 @@
                         </td>
                     `;
 
+                    // Unificar searchableText para todos los campos relevantes
+                    const tutorName = project.tutor ? project.tutor.nombre_completo : '';
+                    const studentNames = project.estudiantes ? project.estudiantes.map(e => e.nombre_completo).join(' ') : '';
+                    const studentCedulas = project.estudiantes ? project.estudiantes.map(e => e.cedula).join(' ') : '';
+
+
                     allDeletedProjectsData.push({
                         element: newRow,
                         originalN: newOriginalN,
                         id: project.id,
-                        type: project.tipo_proyecto, // Almacenar el tipo para el filtro
+                        type: project.tipo_proyecto, 
                         projectData: project, 
-                        searchableText: `${project.tipo_proyecto} ${project.periodo} ${project.nombre_proyecto} ${project.carrera} ${project.tutor ? project.tutor.nombre_completo : ''} ${estudiantesDisplay.replace(/<br>/g, ' ')} ${project.mensaje_eliminacion}`.toLowerCase(),
-                        isVisibleByFilter: true // Inicialmente visible
+                        searchableText: `${project.tipo_proyecto} ${project.periodo} ${project.nombre_proyecto} ${project.carrera} ${tutorName} ${studentNames} ${studentCedulas} ${project.mensaje_eliminacion}`.toLowerCase(),
+                        isVisibleByFilter: true 
                     });
                 });
 
-                filterTable(); // Aplicar el filtro de búsqueda y el filtro por tipo
+                filterTable(); 
                 $.material.init();
             } catch (error) {
                 console.error('Error al cargar proyectos eliminados:', error);
@@ -550,11 +666,9 @@
             }
         }
 
-        // Función para establecer el tipo de filtro y recargar la tabla
         function setFilterType(type) {
             currentFilterType = type;
-            filterTable(); // Re-aplicar el filtro con el nuevo tipo
-            // Actualizar el estilo de los botones de filtro si tienes alguno
+            filterTable(); 
             $('.filter-buttons .btn').removeClass('btn-primary').addClass('btn-info');
             if (type === '') {
                 $('.filter-buttons .btn:contains("Todos")').removeClass('btn-info').addClass('btn-primary');
@@ -562,33 +676,105 @@
                 $('.filter-buttons .btn:contains("Servicio Comunitario")').removeClass('btn-info').addClass('btn-primary');
             } else if (type === 'Trabajo de Grado') {
                 $('.filter-buttons .btn:contains("Trabajo de Grado")').removeClass('btn-info').addClass('btn-primary');
+            } else if (type === 'Proyecto de Investigación') {
+                $('.filter-buttons .btn:contains("Investigación")').removeClass('btn-info').addClass('btn-primary');
+            } else if (type === 'Pasantía') {
+                $('.filter-buttons .btn:contains("Pasantías")').removeClass('btn-info').addClass('btn-primary');
             }
         }
 
-        // Function to determine rows per page based on screen width
         function getRowsPerPage() {
             return window.innerWidth <= 767 ? rowsPerPageMobile : rowsPerPageDesktop;
         }
 
-        // Function to apply pagination visibility
         function displayRows() {
             const filteredProjects = allDeletedProjectsData.filter(project => project.isVisibleByFilter);
 
-            allDeletedProjectsData.forEach(project => {
-                project.element.style.display = 'none';
-            });
+            // Ocultar todas las filas de la tabla de escritorio antes de redibujar
+            $('.table-projects tbody tr').hide();
+            // Limpiar las tarjetas móviles
+            $('#mobileDeletedProjectsCards').empty(); 
 
+            currentRowsPerPage = getRowsPerPage();
             const startIndex = (currentPage - 1) * currentRowsPerPage;
             const endIndex = Math.min(startIndex + currentRowsPerPage, filteredProjects.length);
 
-            for (let i = startIndex; i < endIndex; i++) {
-                if (filteredProjects[i]) {
-                    filteredProjects[i].element.style.display = '';
+            if (window.innerWidth <= 767) { 
+                // Mostrar tarjetas en móvil
+                $('.table-responsive').hide();
+                $('#mobileDeletedProjectsCards').show();
+                let currentMobileN = startIndex + 1; // Contador para N° en móvil
+                for (let i = startIndex; i < endIndex; i++) {
+                    if (filteredProjects[i]) {
+                        const project = filteredProjects[i].projectData;
+                        const card = createMobileProjectCard(project, currentMobileN++); 
+                        $('#mobileDeletedProjectsCards').append(card);
+                    }
+                }
+            } else { 
+                // Mostrar tabla en escritorio
+                $('.table-responsive').show();
+                $('#mobileDeletedProjectsCards').hide();
+                let currentDesktopN = startIndex + 1; // Contador para N° en escritorio
+                for (let i = startIndex; i < endIndex; i++) {
+                    if (filteredProjects[i]) {
+                        filteredProjects[i].element.style.display = '';
+                        // Asegurar que el N° se actualice también aquí para la vista de escritorio
+                        filteredProjects[i].element.getElementsByTagName('td')[0].textContent = currentDesktopN++; 
+                    }
                 }
             }
         }
 
-        // Function to set up pagination links
+        // Función para crear una tarjeta de proyecto eliminado para vista móvil
+        function createMobileProjectCard(project, displayN) {
+            const estudiantesDisplay = project.estudiantes && project.estudiantes.length > 0
+                ? project.estudiantes.map(e => `${e.nombre_completo || ''}`).join('<br>')
+                : '';
+            const tutorDisplay = project.tutor ? `${project.tutor.nombre_completo || ''}` : '';
+            
+            return `
+                <div class="project-card" data-project-id="${project.id}" data-project-type="${project.tipo_proyecto}">
+                    <div class="card-item">
+                        <span class="card-label">N°:</span>
+                        <span class="card-value">${displayN}</span>
+                    </div>
+                    <div class="card-item">
+                        <span class="card-label">Tipo de Proyecto:</span>
+                        <span class="card-value">${project.tipo_proyecto || ''}</span>
+                    </div>
+                    <div class="card-item">
+                        <span class="card-label">Periodo:</span>
+                        <span class="card-value">${project.periodo || ''}</span>
+                    </div>
+                    <div class="card-item">
+                        <span class="card-label">Nombre del Proyecto / Título:</span>
+                        <span class="card-value">${project.nombre_proyecto || ''}</span>
+                    </div>
+                    <div class="card-item">
+                        <span class="card-label">Carrera:</span>
+                        <span class="card-value">${project.carrera || ''}</span>
+                    </div>
+                    <div class="card-item">
+                        <span class="card-label">Tutor:</span>
+                        <span class="card-value">${tutorDisplay}</span>
+                    </div>
+                    <div class="card-item">
+                        <span class="card-label">Estudiantes:</span>
+                        <span class="card-value">${estudiantesDisplay}</span>
+                    </div>
+                    <div class="card-item">
+                        <span class="card-label">Mensaje Eliminación:</span>
+                        <span class="card-value">${project.mensaje_eliminacion || 'Sin mensaje'}</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#!" class="btn btn-info btn-raised btn-xs" title="Restaurar" onclick="confirmRestoreProject('${project.id}', '${project.tipo_proyecto}', '${project.nombre_proyecto}')"><i class="zmdi zmdi-refresh"></i> Restaurar</a>
+                    </div>
+                </div>
+            `;
+        }
+
+
         function setupPagination() {
             const visibleRowsForPagination = allDeletedProjectsData.filter(project => project.isVisibleByFilter);
 
@@ -675,51 +861,33 @@
             });
         }
 
-        // Function to update table and pagination
         function updateTableAndPagination() {
             currentRowsPerPage = getRowsPerPage();
             displayRows();
             setupPagination();
         }
 
-        // Function to filter the table
         function filterTable() {
             const input = document.getElementById('searchDeletedProject');
             const filterText = input.value.toLowerCase();
-            let currentFilteredN = 1;
-
+            
             allDeletedProjectsData.forEach(project => {
                 const matchesSearch = project.searchableText.includes(filterText);
                 const matchesType = currentFilterType === '' || project.type === currentFilterType;
 
-                if (matchesSearch && matchesType) {
-                    project.isVisibleByFilter = true;
-                    if (filterText !== '' || currentFilterType !== '') {
-                        project.element.getElementsByTagName('td')[0].textContent = currentFilteredN++;
-                    }
-                } else {
-                    project.isVisibleByFilter = false;
-                }
+                project.isVisibleByFilter = matchesSearch && matchesType;
             });
-
-            // Re-apply original numbering if no filters are active
-            if (filterText === '' && currentFilterType === '') {
-                allDeletedProjectsData.forEach((project) => {
-                    project.element.getElementsByTagName('td')[0].textContent = project.originalN;
-                });
-            }
-
+            
             currentPage = 1;
             updateTableAndPagination();
         }
         
-        // Función para confirmar la restauración de un proyecto
         async function confirmRestoreProject(projectId, projectType, projectName) {
             const { isConfirmed, inputValue: mensajeRestauracion } = await showCustomAlert(
                 'Confirmar Restauración', 
                 `¿Estás seguro de que quieres restaurar el proyecto "${projectName}" de tipo "${projectType}"?`,
-                true, // Muestra el input de mensaje
-                'Motivo de la restauración (opcional)' // Placeholder personalizado
+                true, 
+                'Motivo de la restauración (opcional)' 
             );
 
             if (isConfirmed) {
@@ -729,6 +897,10 @@
                         endpoint = `/api/proyectos-comunitarios/restaurar/${projectId}`;
                     } else if (projectType === 'Trabajo de Grado') {
                         endpoint = `/api/trabajos-de-grado/restaurar/${projectId}`;
+                    } else if (projectType === 'Proyecto de Investigación') {
+                        endpoint = `/api/proyectos-investigacion/restaurar/${projectId}`;
+                    } else if (projectType === 'Pasantía') { 
+                        endpoint = `/api/pasantias/restaurar/${projectId}`;
                     } else {
                         await showCustomAlert('Error', 'Tipo de proyecto desconocido para restaurar.');
                         return;
@@ -742,7 +914,7 @@
 
                     if (response && response.message) {
                         await showCustomAlert('¡Éxito!', response.message);
-                        await loadDeletedProjectsFromAPI(); // Recargar la tabla
+                        await loadDeletedProjectsFromAPI(); 
                     } else {
                         await showCustomAlert('Error', response.error || 'No se pudo restaurar el proyecto. Inténtalo de nuevo.');
                     }
@@ -754,12 +926,13 @@
         }
 
 
-        // Initial call to populate allDeletedProjectsData and display table on load
         $(document).ready(function() {
             loadDeletedProjectsFromAPI(); 
-            $.material.init(); // Apply Material Design styling after content is ready
+            $.material.init(); 
 
             window.addEventListener('resize', updateTableAndPagination);
+
+            setFilterType('');
         });
 	</script>
 </body>

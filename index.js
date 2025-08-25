@@ -18,6 +18,8 @@ import servicio_comunitario from './server/rutas/servicio-comunitario.js';
 import trabajo_de_grado from './server/rutas/trabajo-de-grado.js';
 import proyectos_eliminados from './server/rutas/proyectos_eliminados.js';
 import proyectos from './server/rutas/proyectos.js';
+import pasantias from './server/rutas/pasantias.js';
+import home from './server/rutas/home.js';
 
 const PORT = process.env.PORT || 3000;
 const supabaseUrl = process.env.SUPABASE_URL
@@ -43,10 +45,13 @@ app.get("/proyectos-eliminados", (req, res) => res.sendFile(__dirname + "/public
 app.get("/trabajo-de-grado", (req, res) => res.sendFile(__dirname + "/public/views/trabajo-de-grado.html"));
 app.get("/proyectos", (req, res) => res.sendFile(__dirname + "/public/views/proyectos.html"));
 app.get("/comprobante-proyecto-investigacion", (req, res) => res.sendFile(__dirname + "/public/views/comprobante-proyecto-investigacion.html"));
+app.get("/pasantias", (req, res) => res.sendFile(__dirname + "/public/views/pasantias.html"));
 app.use('/api', servicio_comunitario);
 app.use('/api', trabajo_de_grado);
 app.use('/api', proyectos_eliminados);
 app.use('/api', proyectos);
+app.use('/api', pasantias);
+app.use('/api', home);
 //consulta
 app.get('/usuarios', async (req, res) => {
     try {

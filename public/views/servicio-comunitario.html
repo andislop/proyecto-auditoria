@@ -250,7 +250,7 @@
 					</a>
 					<ul class="list-unstyled full-box">
 						<li>
-							<a href="/servicio-comunitario"><i class="zmdi zmdi-timer zmdi-hc-fw"></i> Servicio Comunitario</a>
+							<a href="/servicio-comunitario"><i class="zmdi zmdi-accounts"></i> Servicio Comunitario</a>
 						</li>
 						<li>
 							<a href="/trabajo-de-grado"><i class="zmdi zmdi-book zmdi-hc-fw"></i> Trabajo Grado</a>
@@ -259,7 +259,7 @@
 							<a href="/proyectos"><i class="zmdi zmdi-graduation-cap zmdi-hc-fw"></i>Proyectos</a>
 						</li>
 						<li>
-							<a href="salon.html"><i class="zmdi zmdi-font zmdi-hc-fw"></i> Pasantias</a>
+							<a href="/pasantias""><i class="zmdi zmdi-assignment"></i> Pasantias</a>
 						</li>
                         <li>
                             <a href="/proyectos-eliminados"><i class="zmdi zmdi-delete zmdi-hc-fw"></i> Proyectos Eliminados</a>
@@ -293,22 +293,6 @@
 			<ul class="full-box list-unstyled text-right">
 				<li class="pull-left">
 					<a href="#!" class="btn-menu-dashboard"><i class="zmdi zmdi-more-vert"></i></a>
-				</li>
-				<li>
-					<a href="#!" class="btn-Notifications-area">
-						<i class="zmdi zmdi-notifications-none"></i>
-						<span class="badge">7</span>
-					</a>
-				</li>
-				<li>
-					<a href="#!" class="btn-search">
-						<i class="zmdi zmdi-search"></i>
-					</a>
-				</li>
-				<li>
-					<a href="#!" class="btn-modal-help">
-						<i class="zmdi zmdi-help-outline"></i>
-					</a>
 				</li>
 			</ul>
 		</nav>
@@ -1355,31 +1339,47 @@
             const pageWidth = doc.internal.pageSize.getWidth();
             let yOffset = 10; // Margen superior inicial
 
-            // --- Logo de UNEFA (PNG) ---
-            // La ruta ahora es para un PNG.
-            const imageUrl = '../assets/img/unefa.png'; 
-            const img = new Image();
-            img.src = imageUrl;
+            // --- Logos ---
+            const unefaImageUrl = '../assets/img/unefa.png'; 
+            const fuerzaArmadaImageUrl = '../assets/img/fuerza-armada.png'; 
 
-            console.log(`%c[generateCommunityServicePdf] Attempting to load logo from: ${imageUrl}`, 'color: #1e88e5;');
-            await new Promise((resolve, reject) => {
-                img.onload = () => {
-                    console.log('%c[generateCommunityServicePdf] Logo PNG loaded successfully.', 'color: #34a853;');
-                    resolve();
-                };
-                img.onerror = () => {
-                    console.warn('%c[generateCommunityServicePdf] ⚠️ Error al cargar el logo PNG. Se intentará continuar sin logo.', 'color: #fbbc04;');
-                    resolve(); 
-                };
-            });
+            const unefaImg = new Image();
+            unefaImg.src = unefaImageUrl;
+            const fuerzaArmadaImg = new Image();
+            fuerzaArmadaImg.src = fuerzaArmadaImageUrl;
 
-            // Ajustar el tamaño del logo y su posición
-            const logoWidth = 40; // Reduced width
-            const logoHeight = 20; // Reduced height
-            const logoX = 10; // Keep X position
-            const logoY = 10; // Adjusted Y position to be higher
+            console.log(`%c[generateCommunityServicePdf] Attempting to load logo from: ${unefaImageUrl} and ${fuerzaArmadaImageUrl}`, 'color: #1e88e5;');
+            await Promise.all([
+                new Promise((resolve) => {
+                    unefaImg.onload = () => {
+                        console.log('%c[generateCommunityServicePdf] UNEFA logo loaded successfully.', 'color: #34a853;');
+                        resolve();
+                    };
+                    unefaImg.onerror = () => {
+                        console.warn('%c[generateCommunityServicePdf] ⚠️ Error loading UNEFA logo. Continuing without it.', 'color: #fbbc04;');
+                        resolve(); 
+                    };
+                }),
+                new Promise((resolve) => {
+                    fuerzaArmadaImg.onload = () => {
+                        console.log('%c[generateCommunityServicePdf] Fuerza Armada logo loaded successfully.', 'color: #34a853;');
+                        resolve();
+                    };
+                    fuerzaArmadaImg.onerror = () => {
+                        console.warn('%c[generateCommunityServicePdf] ⚠️ Error loading Fuerza Armada logo. Continuing without it.', 'color: #fbbc04;');
+                        resolve(); 
+                    };
+                })
+            ]);
 
-            if (img.complete && img.naturalWidth !== 0) { 
+            // Ajustar el tamaño y posición de los logos
+            const logoWidth = 25; 
+            const logoHeight = 25; 
+            const logoMargin = 10; // Margen desde los bordes
+            const textStartOffset = logoMargin + logoWidth + 5; // Donde comienza el texto después del primer logo
+            
+            // Dibujar primer logo (Fuerza Armada) a la izquierda
+            if (fuerzaArmadaImg.complete && fuerzaArmadaImg.naturalWidth !== 0) { 
                 const canvas = document.createElement('canvas');
                 const canvasResolutionMultiplier = 4; 
                 canvas.width = logoWidth * canvasResolutionMultiplier;
@@ -1387,48 +1387,65 @@
                 const ctx = canvas.getContext('2d');
                 ctx.fillStyle = '#FFFFFF'; 
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(fuerzaArmadaImg, 0, 0, canvas.width, canvas.height);
                 const imgData = canvas.toDataURL('image/png');
-                doc.addImage(imgData, 'PNG', logoX, logoY, logoWidth, logoHeight); // Use adjusted logoY
-                console.log('%c[generateCommunityServicePdf] Logo dibujado en el PDF con nuevas dimensiones y posición.', 'color: #34a853;');
+                doc.addImage(imgData, 'PNG', logoMargin, yOffset, logoWidth, logoHeight); 
+                console.log('%c[generateCommunityServicePdf] Fuerza Armada logo drawn.', 'color: #34a853;');
             } else {
-                console.warn('%c[generateCommunityServicePdf] ⚠️ No se pudo dibujar el logo en el PDF. Asegúrate de que ../assets/img/unefa.png existe y es accesible.', 'color: #fbbc04;');
+                console.warn('%c[generateCommunityServicePdf] ⚠️ Could not draw Fuerza Armada logo.', 'color: #fbbc04;');
+            }
+
+            // Dibujar segundo logo (UNEFA) a la derecha
+            if (unefaImg.complete && unefaImg.naturalWidth !== 0) { 
+                const canvas = document.createElement('canvas');
+                const canvasResolutionMultiplier = 4; 
+                canvas.width = logoWidth * canvasResolutionMultiplier;
+                canvas.height = logoHeight * canvasResolutionMultiplier;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#FFFFFF'; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(unefaImg, 0, 0, canvas.width, canvas.height);
+                const imgData = canvas.toDataURL('image/png');
+                doc.addImage(imgData, 'PNG', pageWidth - logoMargin - logoWidth, yOffset, logoWidth, logoHeight); 
+                console.log('%c[generateCommunityServicePdf] UNEFA logo drawn.', 'color: #34a853;');
+            } else {
+                console.warn('%c[generateCommunityServicePdf] ⚠️ Could not draw UNEFA logo.', 'color: #fbbc04;');
             }
             
-            // Ajustar el yOffset inicial para el texto del encabezado para que no choque con el logo
-            yOffset = logoY + logoHeight + 5; // Start text below the logo with some padding
-
+            yOffset += 5; // Pequeño margen después de los logos para empezar el texto
+            
             // --- Encabezado ---
+            // Usar Times New Roman o serif para una apariencia más formal
+            doc.setFont('Times', 'Roman'); 
+            doc.setFontSize(9);
+            doc.text('REPÚBLICA BOLIVARIANA DE VENEZUELA', pageWidth / 2, yOffset, { align: 'center' });
+            doc.text('MINISTERIO DEL PODER POPULAR PARA LA DEFENSA', pageWidth / 2, yOffset + 4, { align: 'center' });
+            doc.text('VICEMINISTERIO DE EDUCACIÓN PARA LA DEFENSA', pageWidth / 2, yOffset + 8, { align: 'center' });
+            doc.text('UNIVERSIDAD NACIONAL EXPERIMENTAL POLITÉCNICA', pageWidth / 2, yOffset + 12, { align: 'center' });
+            doc.text('DE LA FUERZA ARMADA NACIONAL BOLIVARIANA', pageWidth / 2, yOffset + 16, { align: 'center' });
             doc.setFontSize(10);
-            doc.text('REPÚBLICA BOLIVARIANA DE VENEZUELA', pageWidth / 2, yOffset + 5, { align: 'center' });
-            doc.text('MINISTERIO DEL PODER POPULAR PARA LA DEFENSA', pageWidth / 2, yOffset + 10, { align: 'center' });
-            doc.text('VICEMINISTERIO DE EDUCACIÓN PARA LA DEFENSA', pageWidth / 2, yOffset + 15, { align: 'center' });
-            doc.text('UNIVERSIDAD NACIONAL EXPERIMENTAL POLITÉCNICA DE LA FUERZA ARMADA NACIONAL BOLIVARIANA', pageWidth / 2, yOffset + 20, { align: 'center' });
-            
-            doc.setFontSize(11);
-            doc.setFont('helvetica', 'bold');
-            doc.text('U.N.E.F.A.', pageWidth / 2, yOffset + 27, { align: 'center' });
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            doc.text('NÚCLEO: LARA BARQUISIMETO', pageWidth / 2, yOffset + 32, { align: 'center' });
-            
-            yOffset += 45; // Espacio después del encabezado
+            doc.setFont('Times', 'Bold');
+            doc.text('U.N.E.F.A.', pageWidth / 2, yOffset + 20, { align: 'center' });
+            doc.setFont('Times', 'Roman');
+            doc.setFontSize(9);
+
+            yOffset += 35; // Espacio después del encabezado
             
             // --- Título del Documento ---
             doc.setFontSize(16);
-            doc.setFont('helvetica', 'bold');
+            doc.setFont('Times', 'Bold');
             doc.setTextColor(42, 62, 97); // Color similar a #2a3e61
             doc.text('COMPROBANTE DE SERVICIO COMUNITARIO', pageWidth / 2, yOffset, { align: 'center' });
             doc.setTextColor(0, 0, 0); // Resetear color
-            doc.setFont('helvetica', 'normal');
+            doc.setFont('Times', 'Roman');
             yOffset += 15;
 
             // --- Datos del Proyecto ---
             doc.setFontSize(12);
-            doc.setFont('helvetica', 'bold');
+            doc.setFont('Times', 'Bold');
             doc.text('Datos del Proyecto', 10, yOffset);
             doc.line(10, yOffset + 1, pageWidth - 10, yOffset + 1); // Línea divisoria
-            doc.setFont('helvetica', 'normal');
+            doc.setFont('Times', 'Roman');
             yOffset += 7;
 
             const projectDetails = [
@@ -1448,10 +1465,10 @@
 
             // --- Datos del Tutor ---
             doc.setFontSize(12);
-            doc.setFont('helvetica', 'bold');
+            doc.setFont('Times', 'Bold');
             doc.text('Datos del Tutor', 10, yOffset);
             doc.line(10, yOffset + 1, pageWidth - 10, yOffset + 1); // Línea divisoria
-            doc.setFont('helvetica', 'normal');
+            doc.setFont('Times', 'Roman');
             yOffset += 7;
 
             doc.text(`Cédula: ${projectData.tutorCedula || 'N/A'}`, 10, yOffset);
@@ -1461,10 +1478,10 @@
 
             // --- Datos de los Integrantes (Tabla) ---
             doc.setFontSize(12);
-            doc.setFont('helvetica', 'bold');
+            doc.setFont('Times', 'Bold');
             doc.text('Datos de los Integrantes', 10, yOffset);
             doc.line(10, yOffset + 1, pageWidth - 10, yOffset + 1); // Línea divisoria
-            doc.setFont('helvetica', 'normal');
+            doc.setFont('Times', 'Roman');
             yOffset += 7;
 
             const tableColumn = ["Cédula", "Nombre Completo", "Carrera del Estudiante"];
@@ -1493,7 +1510,7 @@
                     textColor: 255, 
                     fontStyle: 'bold' 
                 },
-                styles: { fontSize: 10, cellPadding: 2, overflow: 'linebreak' },
+                styles: { fontSize: 10, cellPadding: 2, overflow: 'linebreak', font: 'Times', fontStyle: 'Roman' },
                 columnStyles: {
                     0: { cellWidth: 35 },
                     1: { cellWidth: 70 },
@@ -1525,6 +1542,7 @@
             }
             doc.line(pageWidth / 2 - 40, yOffset, pageWidth / 2 + 40, yOffset); // Línea de firma
             doc.setFontSize(10);
+            doc.setFont('Times', 'Roman');
             doc.text('Firma del Administrador / Jefe de Área Académica', pageWidth / 2, yOffset + 5, { align: 'center' });
 
             // Guardar el PDF

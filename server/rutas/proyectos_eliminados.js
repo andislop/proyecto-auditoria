@@ -14,10 +14,13 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const router = express.Router();
 
-// API: Obtener todos los proyectos eliminados (Servicio Comunitario y Trabajo de Grado)
-router.get('/proyectos-eliminados', async (req, res) => {
+// =======================================================
+// APIs SEPARADAS PARA PROYECTOS ELIMINADOS
+// =======================================================
+
+// API: Obtener proyectos de Servicio Comunitario eliminados
+router.get('/proyectos-eliminados/servicio-comunitario', async (req, res) => {
     try {
-        // Obtener proyectos de Servicio Comunitario eliminados lógicamente
         let { data: servicioComunitarioProjects, error: scError } = await supabase
             .from('servicio_comunitario')
             .select(`
@@ -46,16 +49,25 @@ router.get('/proyectos-eliminados', async (req, res) => {
         const formattedSCProjects = servicioComunitarioProjects.map(project => ({
             id: project.id_servicio,
             tipo_proyecto: 'Servicio Comunitario',
-            periodo: project.periodos?.periodo || 'N/A',
+            periodo: project.periodos?.periodo || '',
             nombre_proyecto: project.proyecto,
-            carrera: project.carreras?.carrera || 'N/A',
+            carrera: project.carreras?.carrera || '',
             tutor: project.tutores ? { cedula: project.tutores.cedula, nombre_completo: project.tutores.nombre_completo } : null,
-            // Los proyectos de servicio comunitario tienen multiples integrantes
-            estudiantes: project.integrantes_servicio_comunitario.map(i => i.estudiantes).filter(Boolean).map(e => ({ cedula: e.cedula, nombre_completo: e.nombre_completo })),
+            estudiantes: project.integrantes_servicio_comunitario.map(i => i.estudiantes).filter(Boolean),
             mensaje_eliminacion: project.mensaje_eliminacion
         }));
 
-        // Obtener proyectos de Trabajo de Grado eliminados lógicamente
+        res.status(200).json(formattedSCProjects);
+
+    } catch (error) {
+        console.error('Error en la ruta /api/proyectos-eliminados/servicio-comunitario:', error.message);
+        res.status(500).json({ error: error.message || 'Error interno del servidor al obtener proyectos de Servicio Comunitario eliminados.' });
+    }
+});
+
+// API: Obtener proyectos de Trabajo de Grado eliminados
+router.get('/proyectos-eliminados/trabajo-de-grado', async (req, res) => {
+    try {
         let { data: trabajoGradoProjects, error: tgError } = await supabase
             .from('trabajo_grado')
             .select(`
@@ -80,16 +92,25 @@ router.get('/proyectos-eliminados', async (req, res) => {
         const formattedTGProjects = trabajoGradoProjects.map(project => ({
             id: project.id_trabajo_grado,
             tipo_proyecto: 'Trabajo de Grado',
-            periodo: project.periodos?.periodo || 'N/A',
+            periodo: project.periodos?.periodo || '',
             nombre_proyecto: project.proyecto, 
-            carrera: project.carreras?.carrera || 'N/A',
+            carrera: project.carreras?.carrera || '',
             tutor: project.tutores ? { cedula: project.tutores.cedula, nombre_completo: project.tutores.nombre_completo } : null,
-            // Los trabajos de grado tienen un solo estudiante
             estudiantes: project.estudiantes ? [{ cedula: project.estudiantes.cedula, nombre_completo: project.estudiantes.nombre_completo }] : [],
             mensaje_eliminacion: project.mensaje_eliminacion
         }));
 
-        // *** NUEVO: Obtener proyectos de Investigación eliminados lógicamente ***
+        res.status(200).json(formattedTGProjects);
+
+    } catch (error) {
+        console.error('Error en la ruta /api/proyectos-eliminados/trabajo-de-grado:', error.message);
+        res.status(500).json({ error: error.message || 'Error interno del servidor al obtener proyectos de Trabajo de Grado eliminados.' });
+    }
+});
+
+// API: Obtener proyectos de Investigación eliminados
+router.get('/proyectos-eliminados/proyectos-investigacion', async (req, res) => {
+    try {
         let { data: proyectosInvestigacion, error: piError } = await supabase
             .from('proyectos_investigacion')
             .select(`
@@ -111,37 +132,75 @@ router.get('/proyectos-eliminados', async (req, res) => {
 
         const formattedPIProjects = proyectosInvestigacion.map(project => ({
             id: project.id_proyecto_investigacion,
-            tipo_proyecto: 'Proyecto de Investigación', // Nuevo tipo
-            periodo: project.periodos?.periodo || 'N/A',
+            tipo_proyecto: 'Proyecto de Investigación', 
+            periodo: project.periodos?.periodo || '',
             nombre_proyecto: project.proyecto, 
-            carrera: project.carreras?.carrera || 'N/A',
-            tutor: null, // Proyectos de Investigación no tienen tutor
+            carrera: project.carreras?.carrera || '',
+            tutor: null, 
             estudiantes: project.estudiantes ? [{ cedula: project.estudiantes.cedula, nombre_completo: project.estudiantes.nombre_completo }] : [],
             mensaje_eliminacion: project.mensaje_eliminacion
         }));
 
-        const allDeletedProjects = [...formattedSCProjects, ...formattedTGProjects, ...formattedPIProjects]; // Unir los tres tipos
-
-        res.status(200).json(allDeletedProjects);
+        res.status(200).json(formattedPIProjects);
 
     } catch (error) {
-        console.error('Error en la ruta /api/proyectos-eliminados:', error.message);
-        res.status(500).json({ error: error.message || 'Error interno del servidor al obtener proyectos eliminados.' });
+        console.error('Error en la ruta /api/proyectos-eliminados/proyectos-investigacion:', error.message);
+        res.status(500).json({ error: error.message || 'Error interno del servidor al obtener proyectos de Investigación eliminados.' });
     }
 });
 
-// API: Restaurar proyecto de Servicio Comunitario (marcar como no eliminado)
+// API: Obtener pasantías eliminadas
+router.get('/proyectos-eliminados/pasantias', async (req, res) => {
+    try {
+        let { data: pasantiasProjects, error: pasError } = await supabase
+            .from('pasantia')
+            .select(`
+                id_pasantia,
+                titulo,
+                estado,
+                eliminado,
+                mensaje_eliminado,
+                carreras:id_carrera(carrera),
+                periodos:id_periodo(periodo),
+                tutores:id_tutor(cedula, nombre_completo),
+                estudiantes:id_estudiante(cedula, nombre_completo)
+            `)
+            .eq('eliminado', true);
+
+        if (pasError) {
+            console.error('Error al obtener pasantías eliminadas:', pasError.message);
+            throw new Error('Error al obtener pasantías eliminadas.');
+        }
+
+        const formattedPasProjects = pasantiasProjects.map(pasantia => ({
+            id: pasantia.id_pasantia,
+            tipo_proyecto: 'Pasantía', 
+            periodo: pasantia.periodos?.periodo || '',
+            nombre_proyecto: pasantia.titulo, 
+            carrera: pasantia.carreras?.carrera || '',
+            tutor: pasantia.tutores ? { cedula: pasantia.tutores.cedula, nombre_completo: pasantia.tutores.nombre_completo } : null,
+            estudiantes: pasantia.estudiantes ? [{ cedula: pasantia.estudiantes.cedula, nombre_completo: pasantia.estudiantes.nombre_completo }] : [],
+            mensaje_eliminado: pasantia.mensaje_eliminado,
+        }));
+
+        res.status(200).json(formattedPasProjects);
+
+    } catch (error) {
+        console.error('Error en la ruta /api/proyectos-eliminados/pasantias:', error.message);
+        res.status(500).json({ error: error.message || 'Error interno del servidor al obtener pasantías eliminadas.' });
+    }
+});
+
+// APIs para Restaurar proyectos (estos se mantienen igual, ya que funcionan por ID y tipo)
 router.put('/proyectos-comunitarios/restaurar/:id', async (req, res) => {
     const { id } = req.params;
-    const { mensajeRestauracion } = req.body; // Opcional
 
     try {
         const { data, error } = await supabase
             .from('servicio_comunitario')
             .update({ 
                 eliminados: false, 
-                mensaje_eliminacion: null, // Limpiar el mensaje de eliminación
-                mensaje_restauracion: mensajeRestauracion || null // Guardar mensaje de restauración
+                mensaje_eliminacion: null, 
             })
             .eq('id_servicio', id);
 
@@ -156,18 +215,15 @@ router.put('/proyectos-comunitarios/restaurar/:id', async (req, res) => {
     }
 });
 
-// API: Restaurar proyecto de Trabajo de Grado (marcar como no eliminado)
 router.put('/trabajos-de-grado/restaurar/:id', async (req, res) => {
     const { id } = req.params;
-    const { mensajeRestauracion } = req.body; // Opcional
 
     try {
         const { data, error } = await supabase
             .from('trabajo_grado')
             .update({ 
                 eliminados: false, 
-                mensaje_eliminacion: null, // Limpiar el mensaje de eliminación
-                mensaje_restauracion: mensajeRestauracion || null // Guardar mensaje de restauración
+                mensaje_eliminacion: null, 
             })
             .eq('id_trabajo_grado', id);
 
@@ -182,18 +238,15 @@ router.put('/trabajos-de-grado/restaurar/:id', async (req, res) => {
     }
 });
 
-// *** NUEVO: API: Restaurar proyecto de Investigación (marcar como no eliminado) ***
 router.put('/proyectos-investigacion/restaurar/:id', async (req, res) => {
     const { id } = req.params;
-    const { mensajeRestauracion } = req.body; // Opcional
 
     try {
         const { data, error } = await supabase
             .from('proyectos_investigacion')
             .update({ 
                 eliminados: false, 
-                mensaje_eliminacion: null, 
-                mensaje_restauracion: mensajeRestauracion || null 
+                mensaje_eliminacion: null
             })
             .eq('id_proyecto_investigacion', id);
 
@@ -204,6 +257,29 @@ router.put('/proyectos-investigacion/restaurar/:id', async (req, res) => {
         res.status(200).json({ message: 'Proyecto de Investigación restaurado exitosamente.' });
     } catch (error) {
         console.error('Error en la ruta PUT /proyectos-investigacion/restaurar:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+});
+
+router.put('/pasantias/restaurar/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const { data, error } = await supabase
+            .from('pasantia')
+            .update({ 
+                eliminado: false, 
+                mensaje_eliminado: null, 
+            })
+            .eq('id_pasantia', id);
+
+        if (error) {
+            console.error('Error al restaurar Pasantía:', error.message);
+            return res.status(500).json({ error: 'Error interno del servidor al restaurar pasantía.' });
+        }
+        res.status(200).json({ message: 'Pasantía restaurada exitosamente.' });
+    } catch (error) {
+        console.error('Error en la ruta PUT /pasantias/restaurar:', error.message);
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });

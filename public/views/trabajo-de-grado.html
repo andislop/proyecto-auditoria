@@ -230,7 +230,7 @@
 					</a>
 					<ul class="list-unstyled full-box">
 						<li>
-							<a href="/servicio-comunitario"><i class="zmdi zmdi-timer zmdi-hc-fw"></i> Servicio Comunitario</a>
+							<a href="/servicio-comunitario"><i class="zmdi zmdi-accounts"></i> Servicio Comunitario</a>
 						</li>
 						<li>
 							<a href="/trabajo-de-grado"><i class="zmdi zmdi-book zmdi-hc-fw"></i> Trabajo de Grado</a>
@@ -239,7 +239,7 @@
 							<a href="/proyectos"><i class="zmdi zmdi-graduation-cap zmdi-hc-fw"></i>Proyectos</a>
 						</li>
 						<li>
-							<a href="salon.html"><i class="zmdi zmdi-font zmdi-hc-fw"></i> Pasantias</a>
+							<a href="/pasantias""><i class="zmdi zmdi-assignment"></i> Pasantias</a>
 						</li>
                         <li>
                             <a href="/proyectos-eliminados"><i class="zmdi zmdi-delete zmdi-hc-fw"></i> Proyectos Eliminados</a>
@@ -273,22 +273,6 @@
 			<ul class="full-box list-unstyled text-right">
 				<li class="pull-left">
 					<a href="#!" class="btn-menu-dashboard"><i class="zmdi zmdi-more-vert"></i></a>
-				</li>
-				<li>
-					<a href="#!" class="btn-Notifications-area">
-						<i class="zmdi zmdi-notifications-none"></i>
-						<span class="badge">7</span>
-					</a>
-				</li>
-				<li>
-					<a href="#!" class="btn-search">
-						<i class="zmdi zmdi-search"></i>
-					</a>
-				</li>
-				<li>
-					<a href="#!" class="btn-modal-help">
-						<i class="zmdi zmdi-help-outline"></i>
-					</a>
 				</li>
 			</ul>
 		</nav>
@@ -530,6 +514,10 @@
 	<script src="./js/ripples.min.js"></script>
 	<script src="./js/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="./js/main.js"></script>
+    <!-- Librerías jsPDF -->
+    <script src="../js/jspdf.umd.min.js"></script>
+    <script src="../js/jspdf.plugin.autotable.min.js"></script>
+
 <script>
         // Referencias a los elementos de la modal personalizada
         const customAlertModal = document.getElementById('customAlertModal');
@@ -654,7 +642,7 @@
                         <td data-label="Acciones">
                             <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar" onclick="openEditDegreeProjectModal('${degreeProject.id_trabajo_grado}')"><i class="zmdi zmdi-edit"></i></a>
                             <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar" onclick="confirmDeleteDegreeProject('${degreeProject.id_trabajo_grado}', '${degreeProject.nombre_proyecto}')"><i class="zmdi zmdi-delete"></i></a>
-                            <a href ="/api/trabajos-de-grado/${degreeProject.id_trabajo_grado}/descargar-pdf" target="_blank" class="btn btn-light btn-raised btn-xs" title="Descargar"><i class="zmdi zmdi-download"></i></a>
+                            <button class="btn btn-light btn-raised btn-xs" title="Descargar" onclick="handleDownloadDegreeProject('${degreeProject.id_trabajo_grado}')"><i class="zmdi zmdi-download"></i></button>
                         </td>
                     `;
 
@@ -1178,6 +1166,224 @@
                     console.error('Error al eliminar lógicamente el trabajo de grado:', error);
                     await showCustomAlert('Error', 'Ocurrió un error de conexión al intentar eliminar el trabajo de grado.');
                 }
+            }
+        }
+
+        // --- GENERACIÓN DE PDF EN EL CLIENTE CON JSPDF ---
+
+        // Helper para cargar una imagen y convertirla a Data URL (Base64)
+        async function getImageDataUrl(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'Anonymous'; // Importante para cargar imágenes desde otros dominios
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    // Para asegurar una mejor calidad al dibujar el SVG en el canvas,
+                    // creamos un canvas con una resolución más alta (ej. 4 veces el tamaño final)
+                    const canvasResolutionMultiplier = 4; 
+                    canvas.width = img.width * canvasResolutionMultiplier;
+                    canvas.height = img.height * canvasResolutionMultiplier;
+                    const ctx = canvas.getContext('2d');
+                    // Dibujar el fondo blanco para asegurar que el SVG tenga un fondo si es transparente
+                    ctx.fillStyle = '#FFFFFF'; 
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.onerror = (error) => {
+                    console.error('Error al cargar la imagen:', url, error);
+                    // Retornar un placeholder o una imagen en blanco si falla la carga
+                    resolve('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='); // Imagen 1x1 transparente
+                };
+                img.src = url;
+            });
+        }
+
+        async function handleDownloadDegreeProject(degreeProjectId) {
+            console.log(`%c[handleDownloadDegreeProject] 🚀 Starting PDF generation for project ID: ${degreeProjectId}`, 'color: #1e88e5; font-weight: bold;');
+            // FIX: Asegurar que jsPDF y autoTable estén realmente disponibles
+            if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined' || typeof window.jspdf.jsPDF.API.autoTable === 'undefined') {
+                console.error('%c[handleDownloadDegreeProject] ❌ jsPDF o autoTable no están completamente cargados o inicializados.', 'color: #ea4335; font-weight: bold;');
+                await showCustomAlert('Error', 'Las librerías necesarias para generar el PDF (jsPDF y AutoTable) aún no están disponibles. Por favor, espera un momento y inténtalo de nuevo.');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            try {
+                // Obtener los datos completos del trabajo de grado desde el backend
+                console.log(`%c[handleDownloadDegreeProject] Calling fetchWithExponentialBackoff for datos-pdf for degree project ID: ${degreeProjectId}.`, 'color: #1e88e5;');
+                const degreeProjectData = await fetchWithExponentialBackoff(`/api/trabajos-de-grado/${degreeProjectId}/datos-pdf`, { method: 'GET' });
+                console.log(`%c[handleDownloadDegreeProject] Result of fetchWithExponentialBackoff:`, 'color: #1e88e5;', degreeProjectData);
+
+                if (!degreeProjectData) {
+                    console.warn('%c[handleDownloadDegreeProject] ⚠️ degreeProjectData is falsy (null or undefined). Showing alert and returning.', 'color: #fbbc04;');
+                    await showCustomAlert('Error', 'No se pudieron obtener los datos del trabajo de grado para generar el PDF.');
+                    return;
+                }
+
+                // --- Configuración del Documento ---
+                const pageWidth = doc.internal.pageSize.getWidth();
+                let yOffset = 10; // Margen superior inicial
+
+                // --- Logos ---
+                const unefaImageUrl = '../assets/img/unefa.png'; 
+                const fuerzaArmadaImageUrl = '../assets/img/fuerza-armada.png'; 
+
+                // Cargar logos
+                const [unefaLogoDataUrl, fuerzaArmadaLogoDataUrl] = await Promise.all([
+                    getImageDataUrl(unefaImageUrl),
+                    getImageDataUrl(fuerzaArmadaImageUrl)
+                ]);
+
+                // Ajustar el tamaño y posición de los logos
+                const logoWidth = 25; 
+                const logoHeight = 25; 
+                const logoMargin = 10; // Margen desde los bordes
+                
+                // Dibujar primer logo (Fuerza Armada) a la izquierda
+                doc.addImage(fuerzaArmadaLogoDataUrl, 'PNG', logoMargin, yOffset, logoWidth, logoHeight); 
+                console.log('%c[handleDownloadDegreeProject] Fuerza Armada logo drawn.', 'color: #34a853;');
+                
+                // Dibujar segundo logo (UNEFA) a la derecha
+                doc.addImage(unefaLogoDataUrl, 'PNG', pageWidth - logoMargin - logoWidth, yOffset, logoWidth, logoHeight); 
+                console.log('%c[handleDownloadDegreeProject] UNEFA logo drawn.', 'color: #34a853;');
+                
+                yOffset += 5; // Pequeño margen después de los logos para empezar el texto
+                
+                // --- Membrete ---
+                doc.setFont('Times', 'Roman'); 
+                doc.setFontSize(9);
+                doc.text('REPÚBLICA BOLIVARIANA DE VENEZUELA', pageWidth / 2, yOffset, { align: 'center' });
+                doc.text('MINISTERIO DEL PODER POPULAR PARA LA DEFENSA', pageWidth / 2, yOffset + 4, { align: 'center' });
+                doc.text('VICEMINISTERIO DE EDUCACIÓN PARA LA DEFENSA', pageWidth / 2, yOffset + 8, { align: 'center' });
+                doc.text('UNIVERSIDAD NACIONAL EXPERIMENTAL POLITÉCNICA', pageWidth / 2, yOffset + 12, { align: 'center' });
+                doc.text('DE LA FUERZA ARMADA NACIONAL BOLIVARIANA', pageWidth / 2, yOffset + 16, { align: 'center' });
+                doc.setFontSize(10);
+                doc.setFont('Times', 'Bold');
+                doc.text('U.N.E.F.A.', pageWidth / 2, yOffset + 20, { align: 'center' });
+                doc.setFont('Times', 'Roman');
+                doc.setFontSize(9);
+                doc.text('NÚCLEO: LARA BARQUISIMETO', pageWidth / 2, yOffset + 24, { align: 'center' });
+
+                yOffset += 40; // Espacio después del membrete
+                
+                // --- Título del Documento ---
+                doc.setFontSize(16);
+                doc.setFont('Times', 'Bold');
+                doc.setTextColor(42, 62, 97); // Color similar a #2a3e61
+                doc.text('COMPROBANTE DE TRABAJO DE GRADO', pageWidth / 2, yOffset, { align: 'center' });
+                doc.setTextColor(0, 0, 0); // Resetear color
+                doc.setFont('Times', 'Roman');
+                yOffset += 15;
+
+                // --- Datos del Proyecto ---
+                doc.setFontSize(12);
+                doc.setFont('Times', 'Bold');
+                doc.text('Datos del Proyecto', 10, yOffset);
+                doc.line(10, yOffset + 1, pageWidth - 10, yOffset + 1); // Línea divisoria
+                doc.setFont('Times', 'Roman');
+                yOffset += 7;
+
+                const projectDetails = [
+                    `Nombre del Proyecto: ${degreeProjectData.nombreProyecto || 'N/A'}`,
+                    `Periodo: ${degreeProjectData.periodo || 'N/A'}`,
+                    `Carrera: ${degreeProjectData.carrera || 'N/A'}`,
+                    `Estado: ${degreeProjectData.estado || 'N/A'}`,
+                    `Fecha: ${degreeProjectData.fecha ? new Date(degreeProjectData.fecha).toLocaleDateString('es-ES') : 'N/A'}`
+                ];
+                projectDetails.forEach(detail => {
+                    doc.text(detail, 10, yOffset);
+                    yOffset += 6;
+                });
+                yOffset += 5; // Espacio adicional
+
+                // --- Datos del Tutor ---
+                doc.setFontSize(12);
+                doc.setFont('Times', 'Bold');
+                doc.text('Datos del Tutor', 10, yOffset);
+                doc.line(10, yOffset + 1, pageWidth - 10, yOffset + 1); // Línea divisoria
+                doc.setFont('Times', 'Roman');
+                yOffset += 7;
+
+                doc.text(`Cédula: ${degreeProjectData.tutorCedula || 'N/A'}`, 10, yOffset);
+                yOffset += 6;
+                doc.text(`Nombre Completo: ${degreeProjectData.tutorNombre || 'N/A'}`, 10, yOffset);
+                yOffset += 10; // Espacio adicional
+
+                // --- Datos del Estudiante (Tabla) ---
+                doc.setFontSize(12);
+                doc.setFont('Times', 'Bold');
+                doc.text('Datos del Estudiante', 10, yOffset);
+                doc.line(10, yOffset + 1, pageWidth - 10, yOffset + 1); // Línea divisoria
+                doc.setFont('Times', 'Roman');
+                yOffset += 7;
+
+                const studentColumns = ["Cédula", "Nombre Completo", "Carrera del Estudiante"];
+                const studentRows = [];
+
+                if (degreeProjectData.estudiante) {
+                    studentRows.push([
+                        degreeProjectData.estudiante.cedula || 'N/A',
+                        degreeProjectData.estudiante.nombreCompleto || 'N/A',
+                        degreeProjectData.estudiante.carreraEstudiante || 'N/A'
+                    ]);
+                } else {
+                    studentRows.push(['', 'No hay estudiante registrado.', '']);
+                }
+
+                // Utiliza doc.autoTable para la tabla
+                doc.autoTable({
+                    head: [studentColumns],
+                    body: studentRows,
+                    startY: yOffset,
+                    theme: 'striped',
+                    headStyles: { 
+                        fillColor: [42, 62, 97], 
+                        textColor: 255, 
+                        fontStyle: 'bold',
+                        font: 'Times' 
+                    },
+                    styles: { fontSize: 10, cellPadding: 2, overflow: 'linebreak', font: 'Times', fontStyle: 'Roman' },
+                    columnStyles: {
+                        0: { cellWidth: 35 },
+                        1: { cellWidth: 70 },
+                        2: { cellWidth: 'auto' }
+                    },
+                    margin: { top: 5, bottom: 5, left: 10, right: 10 },
+                    didDrawPage: function (data) {
+                        if (doc.autoTable.previous) {
+                            yOffset = data.cursor.y; 
+                        }
+                    }
+                });
+                
+                if (doc.autoTable.previous) {
+                    yOffset = doc.autoTable.previous.finalY + 30; // Espacio después de la tabla
+                } else {
+                    yOffset += (studentRows.length * 10) + 30; 
+                }
+                
+                // --- Firma ---
+                if (yOffset > doc.internal.pageSize.height - 50) {
+                    doc.addPage();
+                    yOffset = 30; // Reiniciar yOffset para la nueva página
+                }
+                const signatureLineLength = 80;
+                const signatureX = (pageWidth / 2) - (signatureLineLength / 2);
+                doc.line(signatureX, yOffset, signatureX + signatureLineLength, yOffset); // Línea de firma
+                doc.setFontSize(10);
+                doc.setFont('Times', 'Roman');
+                doc.text('Firma del Administrador / Jefe de Área Académica', pageWidth / 2, yOffset + 5, { align: 'center' });
+
+                // Guardar el PDF
+                doc.save(`Comprobante_Trabajo_de_Grado_${degreeProjectId}.pdf`);
+                console.log('%c[handleDownloadDegreeProject] ✅ PDF generado y guardado exitosamente.', 'color: #34a853; font-weight: bold;');
+
+            } catch (error) {
+                console.error('%c[handleDownloadDegreeProject] ❌ An error occurred during PDF generation (caught by top-level catch):', 'color: #ea4335; font-weight: bold;', error);
+                await showCustomAlert('Error', 'Ocurrió un error al intentar generar el PDF. Revisa la consola para más detalles.');
             }
         }
 
