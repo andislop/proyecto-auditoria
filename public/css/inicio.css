@@ -1,0 +1,311 @@
+        /* Estilos generales para el login */
+        body {
+            /* Fondo azul profundo y elegante */
+            background: linear-gradient(135deg, #0f2027, #0a2a47, #275061); /* Degradado de azules oscuros y profundos */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Evita scroll en el body si no es necesario */
+            font-family: 'Roboto', sans-serif; /* Tipografía Material Design */
+            color: #fff; /* Color de texto general blanco para contraste */
+        }
+
+        /* Contenedor principal del login */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 800px; /* Ancho máximo aún más compacto */
+            min-height: 480px; /* Altura mínima ajustada */
+            background-color: rgba(255, 255, 255, 0.08); /* Fondo semitransparente más sutil */
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px); /* Blur un poco más pronunciado */
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Borde sutil */
+        }
+
+        /* Sección izquierda - Solo el logo UNEFA */
+        .left-panel {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            min-width: 250px; /* Ancho mínimo para el panel del logo */
+            /* CORRECCIÓN: Estilo de la línea separadora aquí */
+            border-right: 1px solid rgba(255, 255, 255, 0.15); /* Línea sutil en el lado derecho */
+            /* NUEVO: La altura del panel izquierdo para que la línea cubra todo */
+            align-self: stretch; /* Se estira para ocupar toda la altura del contenedor padre */
+        }
+
+        .unefa-logo-large {
+            max-width: 200px; /* Logo un poco más pequeño */
+            height: auto;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Eliminamos el .separator, ya que el estilo va en .left-panel */
+        /* .separator { ... } */
+
+        /* Formulario de login - Panel derecho */
+        .login-form-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            min-width: 280px; /* Ancho mínimo para el panel del formulario */
+            /* NUEVO: Añadimos un margen a la izquierda para el espacio de la línea */
+            margin-left: 35px; 
+        }
+
+        .login-title {
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 1.8rem; /* Tamaño de letra más pequeño para "Iniciar Sesión" */
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 1px; /* Espaciado entre letras */
+        }
+
+        /* Estilos para los form-group (Material Design) */
+        .form-group {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 280px; /* Ancho máximo de los campos */
+            position: relative;
+        }
+        /* Contenedor para el campo de contraseña con el ojo */
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* Estilo para el icono del ojo (SVG) */
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #fff; /* Siempre blanco */
+            width: 20px; /* Tamaño del SVG */
+            height: 20px; /* Tamaño del SVG */
+            z-index: 10; /* Asegurar que esté por encima del input */
+            /* Ajuste para que el SVG tenga un color de trazo por defecto */
+            stroke: currentColor;
+        }
+        .toggle-password:hover {
+            opacity: 0.8; /* Ligeramente más tenue al pasar el ratón */
+        }
+
+
+        /* Deshabilita el contorno verde/rojo en los inputs */
+        .form-group .form-control:required:invalid,
+        .form-group .form-control:required:valid {
+            background-image: none !important; /* Elimina la imagen de fondo (checkmark/ex) */
+            border-color: inherit !important; /* Evita que el borde cambie de color */
+            box-shadow: none !important; /* Elimina cualquier sombra */
+        }
+        
+        /* Asegurarse que el borde inferior no cambie al enfocar */
+        .form-group .form-control:focus {
+            border-bottom: 2px solid #00aaff; /* Azul claro más vibrante al enfocar */
+            box-shadow: none;
+        }
+
+        /* CORRECCIÓN FINAL: Color del label en todos los estados a blanco */
+        .form-group .control-label {
+            color: #fff !important; /* Blanco por defecto, forzado con !important */
+            font-size: 0.95rem; /* Tamaño de letra del label un poco más pequeño */
+            position: absolute;
+            top: 10px;
+            left: 0;
+            pointer-events: none;
+            transition: 0.2s ease all;
+            z-index: 1; /* Asegurar que el label esté sobre el input visualmente */
+        }
+
+        .form-group .form-control {
+            background: none;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4); /* Borde inferior más suave */
+            padding: 8px 0;
+            color: #fff;
+            font-size: 1rem; /* Tamaño de letra del input ajustado */
+            width: 100%;
+            transition: 0.2s ease all;
+            box-shadow: none;
+            outline: none;
+        }
+        /* Ajustar padding-right para el input de contraseña para el icono del ojo */
+        #contraseña {
+            padding-right: 35px; /* Espacio para el icono del ojo */
+        }
+
+        /* Mantener el label blanco/claro al enfocar o con contenido (aseguramos con !important) */
+        .form-group .form-control:focus ~ .control-label,
+        .form-group .form-control:not(:placeholder-shown) ~ .control-label,
+        .form-group .form-control:valid ~ .control-label { 
+            top: -15px;
+            font-size: 0.8rem;
+            color: #fff !important; /* Se mantiene blanco al enfocar/contenido, forzado con !important */
+        }
+
+        /* Botón de login */
+        .btn-login {
+            display: block;
+            width: 100%;
+            max-width: 280px; /* Ancho máximo para que coincida con los campos */
+            height: 40px; /* Altura del botón un poco menor */
+            border-radius: 20px; /* Bordes un poco menos redondeados */
+            outline: none;
+            border: none;
+            /* Degradado de azules más consistentes */
+            background-image: linear-gradient(to right, #00aaff, #007bff, #00aaff);
+            background-size: 200%;
+            font-size: 1rem; /* Tamaño de letra del botón ajustado */
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            text-transform: uppercase;
+            margin: 20px 0 15px 0;
+            cursor: pointer;
+            transition: .5s;
+            box-shadow: 0 5px 15px rgba(0, 170, 255, 0.4);
+            padding: 0;
+        }
+
+        .btn-login:hover {
+            background-position: right;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 170, 255, 0.6);
+        }
+
+        /* Enlaces de registro/olvido de contraseña */
+        .login-links a {
+            color: #87ceeb; /* Azul cielo para los enlaces */
+            text-decoration: none;
+            font-size: 0.9rem; /* Tamaño de letra de los enlaces ajustado */
+            transition: 0.3s ease;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .login-links a:hover {
+            color: #00aaff; /* Azul claro más vibrante al pasar el ratón */
+        }
+
+        /* Estilos para la ventana modal personalizada (ya existentes) */
+        .custom-modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            border-radius: 8px;
+            text-align: center;
+            color: #333;
+        }
+
+        .custom-modal-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .custom-modal-body {
+            padding: 10px 0;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .custom-modal-footer {
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+
+        .custom-modal-footer button {
+            background-color: #2a3e61;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal-footer button:hover {
+            background-color: #1a2a44;
+        }
+
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        /* Media Queries para Responsividad */
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column; /* Apilar en pantallas pequeñas */
+                max-width: 95%; /* Ocupar más ancho en móvil */
+                min-height: auto; /* Altura automática */
+                padding: 30px 15px;
+            }
+
+            .left-panel {
+                padding: 10px;
+                border-right: none; /* Elimina la línea en móvil */
+            }
+
+            .unefa-logo-large {
+                max-width: 150px; /* Logo más pequeño en móvil */
+                margin-bottom: 20px;
+            }
+
+            /* Ocultar el separador en móvil (aunque ya no esté el div .separator) */
+            /* Este estilo se mantiene para mayor seguridad si en el futuro se vuelve a añadir un div separador */
+            .separator {
+                display: none; 
+            }
+
+            .login-form-panel {
+                padding: 10px;
+                margin-left: 0; /* Elimina el margen en móvil */
+            }
+
+            .login-title {
+                font-size: 1.6rem; /* Ajustar tamaño del título */
+                margin-bottom: 15px;
+            }
+
+            .form-group, .btn-login, .login-links {
+                max-width: 250px; /* Ajustar el ancho de los campos y botón en móvil */
+            }
+        }

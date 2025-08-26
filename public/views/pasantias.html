@@ -475,7 +475,7 @@
                         <input type="hidden" id="editInternshipId">
 
                         <div class="form-group label-floating">
-                            <label class="control-label" for="internshipPeriod">Periodo</label>
+                            <label class="control-label" for="internshipPeriod"></label>
                             <select class="form-control" id="internshipPeriod">
                                 <!-- Opciones cargadas dinámicamente -->
                             </select>
@@ -498,7 +498,7 @@
                         </div>
 
                         <div class="form-group label-floating">
-                            <label class="control-label" for="internshipCareer">Carrera</label>
+                            <label class="control-label" for="internshipCareer"></label>
                             <select class="form-control" id="internshipCareer">
                                 <!-- Opciones cargadas dinámicamente -->
                             </select>
@@ -506,7 +506,7 @@
                         
                         <!-- Campos para Empresa -->
                         <div class="form-group label-floating">
-                            <label class="control-label" for="internshipCompany">Empresa</label>
+                            <label class="control-label" for="internshipCompany"></label>
                             <select class="form-control" id="internshipCompany">
                                 <!-- Opciones cargadas dinámicamente -->
                             </select>
@@ -593,7 +593,10 @@
         const customAlertInput = document.getElementById('customAlertInput'); // El input/textarea
         const customAlertOkBtn = document.getElementById('customAlertOkBtn');
         const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); // Botón de cancelar
-
+        const cedulaInput = document.getElementById("internshipStudentCedula");
+        const nombreInput = document.getElementById("internshipStudentName");
+        const tutorCedulaInput = document.getElementById("internshipTutorCedula");
+        const tutorNombreInput = document.getElementById("internshipTutorName");
         // Función para mostrar la modal personalizada
         function showCustomAlert(title, message, showInput = false) {
             customAlertTitle.textContent = title;
@@ -637,6 +640,19 @@
                 customAlertCancelBtn.removeEventListener('click', cancelClickHandler); 
             }
         };
+        cedulaInput.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, ""); // Elimina todo lo que no sea dígito
+        });
+        //validar nombre del estudiante pa
+        nombreInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, ""); 
+        });
+        tutorCedulaInput.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, ""); // Elimina todo lo que no sea dígito
+        });
+        tutorNombreInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, ""); 
+        });
 
         const rowsPerPageDesktop = 5;
         const rowsPerPageMobile = 3;
@@ -886,6 +902,7 @@
                 await showCustomAlert('Error', 'Ocurrió un error al cargar los datos de selección. Revisa la consola para más detalles.');
             }
         }
+        
 
         // Función para añadir listeners a los campos de cédula de estudiante y tutor
         function setupCedulaListeners() {
@@ -927,6 +944,7 @@
                 }
             };
         }
+        
 
         // Función genérica para verificar persona por cédula (estudiante o tutor)
         async function checkPersonByCedula(cedulaInput, type, nameClassOrId, isTutor) {

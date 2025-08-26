@@ -35,6 +35,8 @@ router.get('/proyectos-investigacion', async (req, res) => {
                 proyecto,
                 estado,
                 eliminados,
+                id_carrera,
+                id_periodo,
                 mensaje_eliminacion,
                 carreras:id_carrera(carrera),
                 periodos:id_periodo(periodo),

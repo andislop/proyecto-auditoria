@@ -424,7 +424,7 @@
                         <input type="hidden" id="editProjectId">
 
                         <div class="form-group label-floating">
-                            <label class="control-label" for="projectPeriod">Periodo</label>
+                            <label class="control-label" for="projectPeriod"></label>
                             <select class="form-control" id="projectPeriod">
                                 <!-- Opciones cargadas dinámicamente -->
                             </select>
@@ -442,7 +442,7 @@
                         </button>
 
                         <div class="form-group label-floating">
-                            <label class="control-label" for="projectCareer">Carrera</label>
+                            <label class="control-label" for="projectCareer"></label>
                             <select class="form-control" id="projectCareer">
                                 <!-- Opciones cargadas dinámicamente -->
                             </select>
@@ -558,6 +558,8 @@
     const customAlertInput = document.getElementById('customAlertInput'); // El input/textarea
     const customAlertOkBtn = document.getElementById('customAlertOkBtn');
     const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); // Botón de cancelar
+    const tutorNombreInput = document.getElementById("projectTutorName");
+    const tutorCedulaInput = document.getElementById("projectTutorCedula");
 
     // Función para mostrar la modal personalizada
     function showCustomAlert(title, message, showInput = false) {
@@ -602,6 +604,13 @@
             customAlertCancelBtn.removeEventListener('click', cancelClickHandler); 
         }
     };
+
+        tutorCedulaInput.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, ""); 
+        });
+        tutorNombreInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, ""); 
+        });
 
     const rowsPerPageDesktop = 5;
     const rowsPerPageMobile = 3;
@@ -740,7 +749,7 @@
                 updateFloatingLabelsForElement(event.target);
             }
         };
-    }
+    }   
 
     function removeMemberField(button) {
         $(button).closest('.member-input-group').remove();

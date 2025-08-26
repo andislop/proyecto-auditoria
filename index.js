@@ -77,48 +77,119 @@ app.get('/usuarios', async (req, res) => {
 // Ruta de registro de usuarios
 app.post('/api/register', async (req, res) => {
     try {
-        const { correo, contraseña, rol } = req.body;
+        const { cedula, nombreCompleto, correo, contraseña, rol } = req.body;
 
-        // Validación básica
-        if (!correo || !contraseña || !rol) {
-            return res.status(400).json({ error: 'Faltan campos obligatorios: correo, contraseña, rol.' });
+        // --- 1. Validación de campos vacíos ---
+        if (!cedula || !nombreCompleto || !correo || !contraseña || !rol) {
+            return res.status(400).json({ error: 'Faltan campos obligatorios: cédula, nombre completo, correo, contraseña, rol.' });
         }
 
-         // Hashear la contraseña antes de guardarla en la base de datos
-                const hashedPassword = await bcrypt.hash(contraseña, 10); 
+        // --- 2. Validación de formato de Cédula (solo números, 7-10 dígitos) ---
+        const cedulaRegex = /^[0-9]{7,10}$/;
+        if (!cedulaRegex.test(cedula)) {
+            return res.status(400).json({ error: 'Formato de cédula inválido. Debe contener solo números y tener entre 7 y 10 dígitos.' });
+        }
 
-                // Inserta el nuevo usuario en la tabla 'login'
-                // Agregamos .select() para asegurar que nos devuelva los datos del registro
-                const { data, error } = await supabase
-                    .from('login')
-                    .insert([
-                        { correo: correo, contraseña: hashedPassword, rol: rol }
-                    ])
-                    .select(); // <--- AÑADE ESTO: Esto asegura que Supabase devuelva los datos del registro insertado
+        // --- 3. Validación de formato de Nombre Completo (solo letras y espacios) ---
+        const nombreRegex = /^[A-Za-z\sñÑáéíóúÁÉÍÓÚ]+$/;
+        if (!nombreRegex.test(nombreCompleto)) {
+            return res.status(400).json({ error: 'Formato de nombre completo inválido. Debe contener solo letras y espacios.' });
+        }
 
-                if (error) {
-                    // Manejo de errores específicos, por ejemplo, si el correo ya existe
-                    if (error.code === '23505') { // Código de error para violaciones de unicidad en PostgreSQL
-                        return res.status(409).json({ error: 'El correo ya está registrado.' });
-                    }
-                    console.error('Error al registrar usuario en Supabase:', error.message);
-                    return res.status(500).json({ error: 'Error interno del servidor al registrar usuario.' });
-                }
+        // --- 4. Validación de la fortaleza de la Contraseña ---
+        // Al menos 7 caracteres, una mayúscula, una minúscula, un número y un carácter especial.
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{7,}$/;
+        if (!passwordRegex.test(contraseña)) {
+            return res.status(400).json({ error: 'La contraseña debe tener al menos 7 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial (ej. @$!%*?&._-).' });
+        }
 
-                // Verifica si data es null o vacío antes de intentar acceder a data[0]
-                if (!data || data.length === 0) {
-                    console.error('La inserción fue exitosa pero Supabase no devolvió datos.');
-                    return res.status(500).json({ error: 'Registro exitoso pero no se pudieron obtener los datos del usuario.' });
-                }
+        // --- 5. Verificar si la Cédula ya existe en la tabla 'administrador' ---
+        const { data: existingCedula, error: cedulaCheckError } = await supabase
+            .from('administrador')
+            .select('cedula')
+            .eq('cedula', cedula);
 
-                // No devolver la contraseña hasheada en la respuesta
-                res.status(201).json({ message: 'Usuario registrado exitosamente.', user: data[0] });
+        if (cedulaCheckError) {
+            console.error('Error al verificar cédula en Supabase:', cedulaCheckError.message);
+            return res.status(500).json({ error: 'Error interno del servidor al verificar cédula.' });
+        }
+        if (existingCedula && existingCedula.length > 0) {
+            return res.status(409).json({ error: 'Esta cédula ya está registrada en el sistema.' });
+        }
 
-            } catch (error) {
-                console.error('Error en la ruta /api/register:', error.message);
-                res.status(500).json({ error: 'Error interno del servidor.' });
+        // --- 6. Verificar si el Correo ya existe en la tabla 'login' (Supabase ya maneja UNIQUE, pero es bueno tener una verificación previa) ---
+        // Aunque Supabase devolverá un error 23505, esta verificación puede dar un mensaje más directo.
+        const { data: existingCorreoLogin, error: correoLoginCheckError } = await supabase
+            .from('login')
+            .select('correo')
+            .eq('correo', correo);
+
+        if (correoLoginCheckError) {
+            console.error('Error al verificar correo en tabla login (pre-insert):', correoLoginCheckError.message);
+            return res.status(500).json({ error: 'Error interno del servidor al verificar correo.' });
+        }
+        if (existingCorreoLogin && existingCorreoLogin.length > 0) {
+            return res.status(409).json({ error: 'El correo electrónico ya está registrado.' });
+        }
+
+        // --- 7. Hashear la contraseña ---
+        const hashedPassword = await bcrypt.hash(contraseña, 10);
+
+        // --- 8. Insertar en la tabla 'login' ---
+        const { data: loginData, error: loginError } = await supabase
+            .from('login')
+            .insert([
+                { correo: correo, contraseña: hashedPassword, rol: rol }
+            ])
+            .select('id_login');
+
+        if (loginError) {
+            // Este error ya no debería ocurrir si el chequeo previo de correo fue exitoso
+            // pero lo mantenemos para cualquier caso inesperado.
+            if (loginError.code === '23505') {
+                return res.status(409).json({ error: 'El correo electrónico ya está registrado.' });
             }
-        });
+            console.error('Error al registrar usuario en tabla login:', loginError.message);
+            return res.status(500).json({ error: 'Error interno del servidor al registrar usuario en login.' });
+        }
+
+        if (!loginData || loginData.length === 0) {
+            console.error('La inserción en login fue exitosa pero Supabase no devolvió datos.');
+            return res.status(500).json({ error: 'Registro exitoso en login pero no se pudieron obtener los datos.' });
+        }
+
+        const idLogin = loginData[0].id_login;
+
+        // --- 9. Insertar en la tabla 'administrador' ---
+        const { data: adminData, error: adminError } = await supabase
+            .from('administrador')
+            .insert([
+                {
+                    cedula: cedula,
+                    nombre_completo: nombreCompleto,
+                    correo: correo,
+                    id_login: idLogin
+                }
+            ])
+            .select();
+
+        if (adminError) {
+            console.error('Error al registrar administrador en Supabase:', adminError.message);
+            // Si la inserción en 'administrador' falla, se recomienda hacer un "rollback"
+            // eliminando el registro de 'login' para evitar inconsistencias.
+            await supabase.from('login').delete().eq('id_login', idLogin); // ROLLBACK
+            return res.status(500).json({ error: 'Error interno del servidor al registrar administrador. Se ha revertido el registro de usuario.' });
+        }
+
+        res.status(201).json({ message: 'Usuario y administrador registrados exitosamente.', user: loginData[0], admin: adminData[0] });
+
+    } catch (error) {
+        console.error('Error en la ruta /api/register:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+});
+
+
 
 // Ruta de inicio de sesión de usuarios
 app.post('/api/login', async (req, res) => {

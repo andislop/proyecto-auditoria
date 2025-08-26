@@ -321,62 +321,6 @@
 		</div>
 	</section>
 
-	<!-- Notifications area -->
-	<section class="full-box Notifications-area">
-		<div class="full-box Notifications-bg btn-Notifications-area"></div>
-		<div class="full-box Notifications-body">
-			<div class="Notifications-body-title text-titles text-center">
-				Notifications <i class="zmdi zmdi-close btn-Notifications-area"></i>
-			</div>
-			<div class="list-group">
-			  	<div class="list-group-item">
-				    <div class="row-action-primary">
-				      	<i class="zmdi zmdi-alert-triangle"></i>
-				    </div>
-				    <div class="row-content">
-				      	<div class="least-content">17m</div>
-				      	<h4 class="list-group-item-heading">Tile with a label</h4>
-				      	<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p>
-				    </div>
-			  	</div>
-			  	<div class="list-group-separator"></div>
-			  	<div class="list-group-item">
-				    <div class="row-action-primary">
-				      	<i class="zmdi zmdi-alert-octagon"></i>
-				    </div>
-				    <div class="row-content">
-				      	<div class="least-content">15m</div>
-				      	<h4 class="list-group-item-heading">Tile with a label</h4>
-				      	<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p>
-				    </div>
-			  	</div>
-			  	<div class="list-group-separator"></div>
-				<div class="list-group-item">
-				    <div class="row-action-primary">
-				      	<i class="zmdi zmdi-help"></i>
-				    </div>
-				    <div class="row-content">
-				      	<div class="least-content">10m</div>
-				      	<h4 class="list-group-item-heading">Tile with a label</h4>
-				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
-				    </div>
-				</div>
-			  	<div class="list-group-separator"></div>
-			  	<div class="list-group-item">
-				    <div class="row-action-primary">
-				      	<i class="zmdi zmdi-info"></i>
-				    </div>
-				    <div class="row-content">
-				      	<div class="least-content">8m</div>
-				      	<h4 class="list-group-item-heading">Tile with a label</h4>
-				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
-				    </div>
-			  	</div>
-			</div>
-
-		</div>
-	</section>
-
 	<!-- Modal para agregar/editar proyecto de investigación -->
     <div class="modal fade" tabindex="-1" role="dialog" id="addInvestigationProjectModal">
         <div class="modal-dialog" role="document">
@@ -391,7 +335,7 @@
                         <input type="hidden" id="editInvestigationProjectId">
 
                         <div class="form-group label-floating">
-                            <label class="control-label" for="investigationProjectPeriod">Periodo</label>
+                            <label class="control-label" for="investigationProjectPeriod"></label>
                             <select class="form-control" id="investigationProjectPeriod">
                                 <!-- Opciones cargadas dinámicamente -->
                             </select>
@@ -414,7 +358,7 @@
                         </div>
 
                         <div class="form-group label-floating">
-                            <label class="control-label" for="investigationProjectCareer">Carrera</label>
+                            <label class="control-label" for="investigationProjectCareer"></label>
                             <select class="form-control" id="investigationProjectCareer">
                                 <!-- Opciones cargadas dinámicamente -->
                             </select>
@@ -437,25 +381,6 @@
             </div>
         </div>
     </div>
-	<!-- Dialog help -->
-	<div class="modal fade" tabindex="-1" role="dialog" id="Dialog-Help">
-	  	<div class="modal-dialog" role="document">
-		    <div class="modal-content">
-			    <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			    	<h4 class="modal-title">Help</h4>
-			    </div>
-			    <div class="modal-body">
-			        <p>
-			        	Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt beatae esse velit ipsa sunt incidunt aut voluptas, nihil reiciendis mayores eaque hic vitae saepe voluptatibus. Ratione veritatis a unde autem!
-			        </p>
-			    </div>
-		      	<div class="modal-footer">
-		        	<button type="button" class="btn btn-primary btn-raised" data-dismiss="modal"><i class="zmdi zmdi-thumb-up"></i> Ok</button>
-		      	</div>
-		    </div>
-	  	</div>
-	</div>
 
     <!-- Ventana modal personalizada (con campo de mensaje para eliminación) -->
     <div id="customAlertModal" class="custom-modal-overlay">
@@ -495,6 +420,10 @@
         const customAlertInput = document.getElementById('customAlertInput'); // El input/textarea
         const customAlertOkBtn = document.getElementById('customAlertOkBtn');
         const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); // Botón de cancelar
+        const cedulaInput = document.getElementById("investigationProjectStudentCedula");
+        const nombreInput = document.getElementById("investigationProjectStudentName");
+
+
 
         // Función para mostrar la modal personalizada
         function showCustomAlert(title, message, showInput = false) {
@@ -692,7 +621,7 @@
 
                 // Cargar periodos
                 const periodos = await fetchWithExponentialBackoff('/api/periodos', { method: 'GET' });
-                periodSelect.innerHTML = '<option value="">Selecciona un Periodo</option>'; 
+                periodSelect.innerHTML = '<option value="" >Selecciona un Periodo</option>'; 
                 if (periodos) {
                     periodos.forEach(p => {
                         const option = document.createElement('option');
@@ -734,6 +663,14 @@
                 await showCustomAlert('Error', 'Ocurrió un error al cargar los datos de selección.');
             }
         }
+        //validar cédula de estudiante
+        cedulaInput.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, ""); // Elimina todo lo que no sea dígito
+        });
+        //validar nombre del estudiante pa
+        nombreInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, ""); 
+        });
 
         // Función para añadir listeners a los campos de cédula de estudiante
         function setupCedulaListeners() {
@@ -1018,7 +955,15 @@
                     await showCustomAlert("Error", "Por favor, completa todos los campos obligatorios.");
                     return;
                 }
-                
+                if (!/^\d+$/.test(studentCedula)) {
+                    await showCustomAlert("Error", "La cédula solo puede contener números.");
+                    return;
+                }
+                if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(studentName)) {
+                    await showCustomAlert("Error", "El nombre solo puede contener letras y espacios.");
+                    return;
+                }
+                                
                 const projectData = {
                     periodoId: parseInt(periodoId),
                     nombreProyecto: projectName,

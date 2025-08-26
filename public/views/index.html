@@ -1,107 +1,64 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-	<title>Inicio </title>
+	<title>Inicio</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<link rel="stylesheet" href="../css/main.css">
-    <!-- Aseguramos que el archivo bootstrap-icons.css se cargue -->
+    <link rel="stylesheet" href="../css/inicio.css">
     <link rel="stylesheet" href="../css/bootstrap-icons.css">
-    <style>
-        /* Estilos para la ventana modal personalizada */
-        .custom-modal-overlay {
-            display: none; /* Oculto por defecto */
-            position: fixed;
-            z-index: 1000; /* Asegura que esté por encima de todo */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente */
-            justify-content: center;
-            align-items: center;
-        }
-
-        .custom-modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-            animation-name: animatetop;
-            animation-duration: 0.4s;
-            border-radius: 8px;
-            text-align: center;
-            color: #333;
-        }
-
-        .custom-modal-header {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 15px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .custom-modal-body {
-            padding: 10px 0;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        .custom-modal-footer {
-            padding: 10px 0;
-            border-top: 1px solid #eee;
-            margin-top: 15px;
-        }
-
-        .custom-modal-footer button {
-            background-color: #2a3e61; /* Azul oscuro */
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        .custom-modal-footer button:hover {
-            background-color: #1a2a44; /* Azul más oscuro al pasar el ratón */
-        }
-
-        /* Animación de entrada */
-        @keyframes animatetop {
-            from {top: -300px; opacity: 0}
-            to {top: 0; opacity: 1}
-        }
-    </style>
+    <!-- Font Awesome ya no es necesario si usamos SVG, pero lo mantenemos por si lo usas en otro lado -->
+	<script src="https://kit.fontawesome.com/a81368914c.js" crossorigin="anonymous"></script>
 </head>
-<body class="cover" style="background-image: url(../assets/img/loginFont.jpg);">
-	<form action="/home" id="loginForm" method="" autocomplete="off" class="full-box logInForm">
-		<!-- Icono de usuario de Bootstrap Icons -->
-		<p class="text-center text-muted"><i class="bi bi-person-circle bi-5x"></i></p>
-		<p class="text-center text-muted text-uppercase">Inicia sesión con tu cuenta</p>
-	<div class="form-group label-floating">
-		  <label class="control-label" for="correo">Correo</label>
-		  <input class="form-control" id="correo" type="email">
-		  <p class="help-block">Escribe tú Correo</p>
-		</div>
-		<div class="form-group label-floating">
-		  <label class="control-label" for="contraseña">Contraseña</label>
-		  <input class="form-control" id="contraseña" type="password"> <!-- Cambiado a type="password" para seguridad -->
-		  <p class="help-block">Escribe tú contraseña</p>
-		</div>
-		<div class="form-group text-center">
-			<input type="submit" value="Iniciar sesión" class="btn btn-raised btn-login"> <!-- Clase cambiada a btn-login -->
-		</div>
-		<div>
-			<p><a href="/registro">¿No tienes cuenta? Regístrate</a></p>
-		</div>
-	</form>
+<body>
+    <div class="container">
+        <!-- Panel Izquierdo: Solo el Logo UNEFA -->
+        <div class="left-panel">
+            <img src="../assets/img/unefa.png" class="unefa-logo-large" alt="Logo UNEFA">
+        </div>
+
+        <!-- Eliminamos el div .separator ya que el borde va en .left-panel -->
+        <!-- <div class="separator"></div> -->
+
+        <!-- Panel Derecho: Formulario de Login -->
+        <div class="login-form-panel">
+            <h2 class="login-title">Iniciar Sesión</h2>
+            <form id="loginForm" autocomplete="off" novalidate>
+                <!-- Input Correo -->
+                <div class="form-group label-floating">
+                    <label class="control-label" for="correo">Correo</label>
+                    <input class="form-control" id="correo" type="email" required>
+                </div>
+                <!-- End Input Correo -->
+
+                <!-- Input Contraseña -->
+                <div class="form-group label-floating">
+                    <div class="password-container"> <!-- Contenedor para el input y el ojo -->
+                        <label class="control-label" for="contraseña">Contraseña</label>
+                        <input class="form-control" id="contraseña" type="password" required>
+                        <!-- Icono de ojo para alternar visibilidad (SVG en línea) -->
+                        <span class="toggle-password" id="togglePassword">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <!-- End Input Contraseña -->
+
+                <div class="login-links">
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <button type="submit" class="btn btn-login">Login</button>
+
+                <div class="login-links">
+                    <a href="/registro">¿No tienes una cuenta? Regístrate</a>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Ventana modal personalizada -->
     <div id="customAlertModal" class="custom-modal-overlay">
@@ -158,6 +115,36 @@
                     customAlertModal.style.display = 'none';
                 }
             };
+
+            // Lógica para alternar la visibilidad de la contraseña
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('contraseña');
+
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', function() {
+                    // Alternar el tipo de input entre 'password' y 'text'
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    // Cambiar el icono del ojo (ahora un SVG en línea)
+                    const eyeSvg = this.querySelector('svg');
+                    // Alterna el path del ojo abierto/cerrado. Este SVG es solo un ejemplo,
+                    // tendrías que ajustar los paths reales para un ojo abierto y un ojo cerrado.
+                    // Para simplificar, solo rotaremos el ojo o cambiaremos su opacidad como ejemplo.
+                    if (type === 'text') {
+                        // Si se muestra la contraseña, podrías cambiar el SVG o su estilo
+                        eyeSvg.style.transform = 'scale(0.8)'; // Ejemplo visual
+                        eyeSvg.setAttribute('stroke', '#00aaff'); // Cambiar color si se muestra
+                        // O si tienes un SVG de ojo cerrado, reemplazarlo
+                        // eyeSvg.innerHTML = '<path ... ojo cerrado ...>';
+                    } else {
+                        // Si la contraseña está oculta
+                        eyeSvg.style.transform = 'scale(1)';
+                        eyeSvg.setAttribute('stroke', 'currentColor'); // Volver al color original
+                        // eyeSvg.innerHTML = '<path ... ojo abierto ...>';
+                    }
+                });
+            }
 
 
             // Función para manejar el inicio de sesión

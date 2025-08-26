@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Registro de Usuario</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/registro.css">
+    <!-- Aseguramos que el archivo bootstrap-icons.css se cargue -->
+    <link rel="stylesheet" href="../css/bootstrap-icons.css">
+    <!-- Font Awesome para los iconos de usuario y contraseña (mantener por si se usa en main.css o en otro lado) -->
+    <script src="https://kit.fontawesome.com/a81368914c.js" crossorigin="anonymous"></script>
+
+</head>
+<!-- Eliminamos el fondo inline del body para que el CSS defina el background -->
+<body >
+    <div class="container">
+        <!-- Panel Izquierdo: Formulario de Registro -->
+        <div class="left-panel-form">
+            <h2 class="register-title">Crea una nueva cuenta</h2>
+            <form id="registerForm" autocomplete="off" novalidate>
+                <!-- Input Cédula -->
+                <div class="form-group label-floating">
+                    <label class="control-label" for="cedula">Cédula</label>
+                    <input class="form-control" id="cedula" type="text" pattern="[0-9]{7,10}" title="La cédula debe contener solo números (7-10 dígitos)" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                    <p class="help-block">Escribe tu Cédula (solo números, 7-10 dígitos)</p>
+                </div>
+                <!-- Input Nombre Completo -->
+                <div class="form-group label-floating">
+                    <label class="control-label" for="nombre_completo">Nombre Completo</label>
+                    <input class="form-control" id="nombre_completo" type="text" pattern="[A-Za-z\sñÑáéíóúÁÉÍÓÚ]+" title="El nombre completo solo debe contener letras y espacios" required oninput="this.value = this.value.replace(/[^A-Za-z\sñÑáéíóúÁÉÍÓÚ]/g, '');">
+                    <p class="help-block">Escribe tu Nombre Completo (solo letras)</p>
+                </div>
+                <!-- Input Correo -->
+                <div class="form-group label-floating">
+                    <label class="control-label" for="correo">Correo</label>
+                    <input class="form-control" id="correo" type="email" required>
+                    <p class="help-block">Escribe tu Correo</p>
+                </div>
+                <!-- Input Contraseña -->
+                <div class="form-group label-floating">
+                    <div class="password-container"> <!-- Contenedor para el input y el ojo -->
+                        <label class="control-label" for="contraseña">Contraseña</label>
+                        <input class="form-control" id="contraseña" type="password" title="La contraseña debe tener al menos 7 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial." required>
+                        <!-- Icono de ojo para alternar visibilidad (SVG en línea) -->
+                        <span class="toggle-password" id="togglePasswordRegister"> <!-- ID diferente para evitar conflicto -->
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <p class="help-block">Escribe tu contraseña (mínimo 7 caracteres, Mayús, minús, número, especial)</p>
+                </div>
+                
+                <div class="form-group text-center">
+                    <input type="submit" value="Registrarse" class="btn btn-raised btn-register">
+                </div>
+                <div class="register-links">
+                    <p><a href="/">¿Ya tienes cuenta? Inicia sesión</a></p>
+                </div>
+            </form>
+        </div>
+
+        <!-- Panel Derecho: Solo el Logo UNEFA -->
+        <div class="right-panel-logo">
+            <img src="../assets/img/unefa.png" class="unefa-logo-large" alt="Logo UNEFA">
+        </div>
+    </div>
+
+    <!-- Ventana modal personalizada -->
+    <div id="customAlertModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <span id="customAlertTitle"></span>
+            </div>
+            <div class="custom-modal-body">
+                <p id="customAlertMessage"></p>
+            </div>
+            <div class="custom-modal-footer">
+                <button id="customAlertOkBtn">Ok</button>
+            </div>
+        </div>
+    </div>
+
+<!--====== Scripts -->
+<script src="../js/jquery-3.1.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/material.min.js"></script>
+<script src="../js/ripples.min.js"></script>
+<script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="../js/main.js"></script>
+<script>
+    $(document).ready(function() {
+        $.material.init();
+
+        const customAlertModal = document.getElementById('customAlertModal');
+        const customAlertTitle = document.getElementById('customAlertTitle');
+        const customAlertMessage = document.getElementById('customAlertMessage');
+        const customAlertOkBtn = document.getElementById('customAlertOkBtn');
+
+        function showCustomAlert(title, message) {
+            customAlertTitle.textContent = title;
+            customAlertMessage.textContent = message;
+            customAlertModal.style.display = 'flex';
+
+            return new Promise(resolve => {
+                const clickHandler = function() {
+                    customAlertModal.style.display = 'none';
+                    customAlertOkBtn.removeEventListener('click', clickHandler);
+                    resolve(true);
+                };
+                customAlertOkBtn.addEventListener('click', clickHandler);
+            });
+        }
+
+        window.onclick = function(event) {
+            if (event.target == customAlertModal) {
+                customAlertModal.style.display = 'none';
+            }
+        };
+
+        // Lógica para alternar la visibilidad de la contraseña en el formulario de registro
+        const togglePasswordRegister = document.getElementById('togglePasswordRegister');
+        const passwordInputRegister = document.getElementById('contraseña');
+
+        if (togglePasswordRegister && passwordInputRegister) {
+            togglePasswordRegister.addEventListener('click', function() {
+                const type = passwordInputRegister.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInputRegister.setAttribute('type', type);
+                
+                const eyeSvg = this.querySelector('svg');
+                // Para este SVG en línea, no hay un "ojo cerrado" explícito.
+                // Podemos simular un cambio visual o de color.
+                if (type === 'text') {
+                    eyeSvg.style.opacity = '0.7'; // Más tenue cuando está visible
+                    eyeSvg.setAttribute('stroke', '#00aaff'); // Cambiar color al mostrar
+                } else {
+                    eyeSvg.style.opacity = '1'; // Opacidad normal
+                    eyeSvg.setAttribute('stroke', 'currentColor'); // Color original al ocultar
+                }
+            });
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault(); // Siempre prevenir el comportamiento por defecto
+
+            const cedulaInput = document.getElementById('cedula').value.trim();
+            const nombreCompletoInput = document.getElementById('nombre_completo').value.trim();
+            const correoInput = document.getElementById('correo').value.trim();
+            const contraseñaInput = document.getElementById('contraseña').value.trim();
+
+            // 1. Validación de campos vacíos
+            if (!cedulaInput || !nombreCompletoInput || !correoInput || !contraseñaInput) {
+                await showCustomAlert("Alerta", "Por favor, completa todos los campos.");
+                return;
+            }
+
+            // 2. Validación de Cédula (solo números, 7-10 dígitos)
+            const cedulaRegex = /^[0-9]{7,10}$/;
+            if (!cedulaRegex.test(cedulaInput)) {
+                await showCustomAlert("Error de Cédula", "La cédula debe contener solo números y tener entre 7 y 10 dígitos.");
+                return;
+            }
+
+            // 3. Validación de Nombre Completo (solo letras y espacios)
+            const nombreRegex = /^[A-Za-z\sñÑáéíóúÁÉÍÓÚ]+$/;
+            if (!nombreRegex.test(nombreCompletoInput)) {
+                await showCustomAlert("Error de Nombre", "El nombre completo solo debe contener letras y espacios.");
+                return;
+            }
+
+            // 4. Validación de Contraseña (mínimo 7 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 especial)
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{7,}$/;
+            if (!passwordRegex.test(contraseñaInput)) {
+                await showCustomAlert("Error de Contraseña", "La contraseña debe tener al menos 7 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial (ej. @$!%*?&._-).");
+                return;
+            }
+
+            const rol = "Administrador"; // Rol enviado por defecto como "Administrador"
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ cedula: cedulaInput, nombreCompleto: nombreCompletoInput, correo: correoInput, contraseña: contraseñaInput, rol })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    await showCustomAlert("¡Éxito!", result.message || "Usuario registrado exitosamente.")
+                    .then(() => {
+                        window.location.href = '/';
+                    });
+                } else {
+                    // Muestra el error específico del backend
+                    await showCustomAlert("Error", result.error || "No se pudo registrar el usuario. Inténtalo de nuevo.");
+                }
+            } catch (error) {
+                console.error('Error al conectar con el servidor de registro:', error);
+                await showCustomAlert("Error de conexión", "No se pudo conectar con el servidor. Por favor, inténtalo más tarde.");
+            }
+        }
+
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.addEventListener('submit', handleRegister);
+        }
+    });
+</script>
+</body>
+</html>
