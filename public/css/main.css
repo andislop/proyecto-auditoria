@@ -633,7 +633,13 @@ body, html{
 .form-group.is-focused .control-label {
     color: #2a3e61 !important; /* Keep darker blue when focused */
 }
-
+.form-group .control-label-1 {
+    color: #ffffff; /* Darker blue for default label color */
+}
+/* For focused state, ensure it remains the darker blue */
+.form-group.is-focused .control-label-1 {
+    color: #ecedee !important; /* Keep darker blue when focused */
+}
 /* Darker blue for input bottom line when focused */
 .form-group.is-focused .form-control {
     border-color: #2a3e61; /* Darker blue for the border/line */

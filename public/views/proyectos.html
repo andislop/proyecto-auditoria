@@ -140,6 +140,7 @@
                 white-space: normal;
                 text-align: left;
                 word-break: break-word; /* Permite romper palabras largas */
+                overflow-x: auto;
             }
             .table-projects td[data-label="Estudiante"]::before { 
                 top: 10px;
@@ -192,8 +193,8 @@
 			<!-- SideBar User info -->
 			<div class="full-box dashboard-sideBar-UserInfo">
 				<figure class="full-box">
-					<img src="../assets/img/foto.jpg" alt="UserIcon">
-					<figcaption class="text-center text-titles">juancito007</figcaption>
+					<img src="../assets/img/unefa.png" alt="UserIcon">
+					<figcaption class="text-center text-titles" id="user-name">juancito007</figcaption>
 				</figure>
 				<ul class="full-box list-unstyled text-center">
 					<li>
@@ -231,6 +232,9 @@
 						</li>
 						<li>
 							<a href="/pasantias""><i class="zmdi zmdi-assignment"></i> Pasantias</a>
+						</li>
+                        <li>
+							<a href="/bitacora"><i class="zmdi zmdi-bookmark-outline"></i> Bitácora</a>
 						</li>
                         <li>
                             <a href="/proyectos-eliminados"><i class="zmdi zmdi-delete zmdi-hc-fw"></i> Proyectos Eliminados</a>
@@ -422,6 +426,7 @@
         const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); // Botón de cancelar
         const cedulaInput = document.getElementById("investigationProjectStudentCedula");
         const nombreInput = document.getElementById("investigationProjectStudentName");
+        const userName = document.getElementById("user-name");
 
 
 
@@ -459,6 +464,8 @@
                 customAlertCancelBtn.addEventListener('click', cancelClickHandler);
             });
         }
+
+ 
 
         // Para cerrar la modal si se hace clic fuera de ella
         window.onclick = function(event) {

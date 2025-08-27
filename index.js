@@ -4,6 +4,8 @@ import cors from "cors";
 import bcrypt from "bcryptjs";
 import path from "path";
 import { fileURLToPath } from "url";
+import session from 'express-session';
+import auditoriaRoutes, { registrarAuditoria } from './server/rutas/bitacora.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 //Supabase
 import { createClient } from '@supabase/supabase-js'
@@ -13,13 +15,30 @@ app.use(express.json());
 app.use(cors());
 dotenv.config();
 
-//Rutas del backend
-import servicio_comunitario from './server/rutas/servicio-comunitario.js';
-import trabajo_de_grado from './server/rutas/trabajo-de-grado.js';
-import proyectos_eliminados from './server/rutas/proyectos_eliminados.js';
-import proyectos from './server/rutas/proyectos.js';
-import pasantias from './server/rutas/pasantias.js';
-import home from './server/rutas/home.js';
+
+//Configuración del control de sesiones 
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'a-super-secret-key-for-sessions', // Clave secreta para firmar el cookie de sesión. ¡Cámbiala en tu .env!
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 3600000, // 1 hora en milisegundos
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production'
+    }
+}));
+
+
+// =======================================================
+// MIDDLEWARE DE AUTENTICACIÓN
+// =======================================================
+function isAuthenticated(req, res, next) {
+    if (req.session.user) {
+        next();
+    } else {
+        res.redirect('/');
+    }
+}
 
 const PORT = process.env.PORT || 3000;
 const supabaseUrl = process.env.SUPABASE_URL
@@ -38,20 +57,17 @@ app.use(express.static(__dirname + "/public"));
 
 //Rutas
 app.get("/", (req, res) => res.sendFile(__dirname + "/public/views/index.html"));
-app.get("/home", (req, res) => res.sendFile(__dirname + "/public/views/home.html"));
-app.get("/servicio-comunitario", (req, res) => res.sendFile(__dirname + "/public/views/servicio-comunitario.html"));
+app.get("/home", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/home.html"));
+app.get("/servicio-comunitario", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/servicio-comunitario.html"));
+app.get("/proyectos-eliminados", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/proyectos-eliminados.html"));
+app.get("/trabajo-de-grado", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/trabajo-de-grado.html"));
+app.get("/proyectos", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/proyectos.html"));
+app.get("/comprobante-proyecto-investigacion", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/comprobante-proyecto-investigacion.html"));
+app.get("/pasantias", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/pasantias.html"));
+app.get("/bitacora", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/bitacora.html"));
+// Rutas sin autenticación
 app.get("/registro", (req, res) => res.sendFile(__dirname + "/public/views/registro.html"));
-app.get("/proyectos-eliminados", (req, res) => res.sendFile(__dirname + "/public/views/proyectos-eliminados.html"));
-app.get("/trabajo-de-grado", (req, res) => res.sendFile(__dirname + "/public/views/trabajo-de-grado.html"));
-app.get("/proyectos", (req, res) => res.sendFile(__dirname + "/public/views/proyectos.html"));
-app.get("/comprobante-proyecto-investigacion", (req, res) => res.sendFile(__dirname + "/public/views/comprobante-proyecto-investigacion.html"));
-app.get("/pasantias", (req, res) => res.sendFile(__dirname + "/public/views/pasantias.html"));
-app.use('/api', servicio_comunitario);
-app.use('/api', trabajo_de_grado);
-app.use('/api', proyectos_eliminados);
-app.use('/api', proyectos);
-app.use('/api', pasantias);
-app.use('/api', home);
+
 //consulta
 app.get('/usuarios', async (req, res) => {
     try {
@@ -192,43 +208,70 @@ app.post('/api/register', async (req, res) => {
 
 
 // Ruta de inicio de sesión de usuarios
-app.post('/api/login', async (req, res) => {
+app.post("/api/login", async (req, res) => {
     try {
         const { correo, contraseña } = req.body;
 
-        // Validación básica
-        if (!correo || !contraseña) {
-            return res.status(400).json({ error: 'Faltan campos: correo y contraseña.' });
-        }
-
-        // Busca al usuario por correo electrónico en la tabla 'login'
+        // Verifica si el usuario existe en la tabla `login`
         const { data, error } = await supabase
             .from('login')
-            .select('id_login, correo, contraseña, rol') // Selecciona las columnas que necesitas
+            .select(`
+                id_login,
+                correo,
+                contraseña,
+                rol
+            `)
             .eq('correo', correo)
-            .single(); // Espera un solo resultado
+            .single();
 
-        if (error && error.details.includes('0 rows')) {
-            // Si no se encuentra el usuario, Supabase devuelve un error con '0 rows' en details
+        if (error || !data) {
+            // =======================================================
+            // REGISTRO DE AUDITORÍA: Intento de inicio de sesión fallido (usuario no encontrado)
+            // =======================================================
+            await registrarAuditoria({
+                id_login: null, // No hay un id_login válido si el usuario no fue encontrado
+                modulo_afectado: 'Autenticación',
+                accion_realizada: 'Intento de Inicio de Sesión Fallido',
+                descripcion_detallada: `Intento de inicio de sesión con correo "${correo}" fallido: Usuario no encontrado.`,
+            });
             return res.status(401).json({ error: 'Credenciales inválidas.' });
-        } else if (error) {
-            console.error('Error al buscar usuario en Supabase:', error.message);
-            return res.status(500).json({ error: 'Error interno del servidor al iniciar sesión.' });
         }
 
-        if (!data) {
-            return res.status(401).json({ error: 'Credenciales inválidas.' });
-        }
-
-        // Compara la contraseña proporcionada con la contraseña hasheada de la base de datos
+        // Compara la contraseña con la encriptada
         const isPasswordValid = await bcrypt.compare(contraseña, data.contraseña);
 
         if (!isPasswordValid) {
+            // =======================================================
+            // REGISTRO DE AUDITORÍA: Intento de inicio de sesión fallido (contraseña incorrecta)
+            // =======================================================
+            await registrarAuditoria({
+                id_login: data.id_login, // Tenemos el id_login, pero la contraseña falló
+                modulo_afectado: 'Autenticación',
+                accion_realizada: 'Intento de Inicio de Sesión Fallido',
+                descripcion_detallada: `Intento de inicio de sesión para usuario con ID ${data.id_login} y correo "${correo}" fallido: Contraseña incorrecta.`,
+            });
             return res.status(401).json({ error: 'Credenciales inválidas.' });
         }
 
-        // Si las credenciales son válidas, puedes devolver el rol del usuario
-        // y cualquier otra información que necesites en el frontend
+        // =======================================================
+        // CREAMOS LA SESIÓN DEL USUARIO AQUÍ
+        // =======================================================
+        req.session.user = {
+            id: data.id_login,
+            correo: data.correo,
+            rol: data.rol
+        };
+
+        // =======================================================
+        // REGISTRO DE AUDITORÍA: Inicio de sesión exitoso
+        // =======================================================
+        await registrarAuditoria({
+            id_login: data.id_login,
+            modulo_afectado: 'Autenticación',
+            accion_realizada: 'Inicio de Sesión Exitoso',
+            descripcion_detallada: `Usuario con ID ${data.id_login}, correo "${data.correo}" y rol "${data.rol}" inició sesión exitosamente.`,
+        });
+
         res.status(200).json({
             message: 'Inicio de sesión exitoso.',
             user: {
@@ -240,25 +283,117 @@ app.post('/api/login', async (req, res) => {
 
     } catch (error) {
         console.error('Error en la ruta /api/login:', error.message);
+        // =======================================================
+        // REGISTRO DE AUDITORÍA: Error interno del servidor durante el login
+        // (Considera si quieres registrar detalles del error aquí, pero ten cuidado con información sensible)
+        // =======================================================
+        await registrarAuditoria({
+            id_login: null, // No sabemos quién intentó iniciar sesión
+            modulo_afectado: 'Autenticación',
+            accion_realizada: 'Error Interno del Servidor',
+            descripcion_detallada: `Error crítico durante el proceso de login. Mensaje: ${error.message}.`,
+        });
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 
-//Ruta de prueba para traer los estudiantes
-app.get('/api/estudiantes', async (req, res) => {
+// Ruta para cerrar sesión (NUEVO)
+app.post('/api/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ error: "Error al cerrar la sesión." });
+        }
+        res.status(200).json({ message: "Sesión cerrada exitosamente." });
+    });
+});
+
+//Ruta de prueba para traer los administradores
+app.get('/api/administrador', async (req, res) => {
     try{
-        let { data: estudiante, error } = await supabase
-            .from('estudiante')
+        let { data: administrador, error } = await supabase
+            .from('administrador')
             .select('*');
 
         if (error) {
-            console.error('Error al obtener estudiantes de Supabase:', error.message);
-            return res.status(500).json({ error: 'Error interno del servidor al obtener estudiantes.' });
+            console.error('Error al obtener administradores de Supabase:', error.message);
+            return res.status(500).json({ error: 'Error interno del servidor al obtener administradores.' });
         }
 
-        res.status(200).json(estudiante);
+        res.status(200).json(administrador);
     } catch (error) {
-        console.error('Error en la ruta /estudiantes:', error.message);
+        console.error('Error en la ruta /administrador:', error.message);
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
+
+// Ruta para buscar proyectos por cédula
+app.get("/api/buscar-proyectos/:cedula", async (req, res) => {
+    const { cedula } = req.params;
+
+    try {
+        // Servicio Comunitario
+        // Se une a la tabla 'integrantes' y luego a 'estudiante' para filtrar por la cédula.
+        const { data: servicioComunitario, error: scError } = await supabase
+            .from("servicio_comunitario")
+            .select("id_servicio, proyecto, periodos: id_periodo(periodo), integrantes: integrantes!inner(id_estudiante!inner(cedula))")
+            .eq("integrantes.id_estudiante.cedula", cedula);
+
+        if (scError) console.error("Error servicio comunitario:", scError.message);
+
+        // Trabajo de Grado
+        const { data: trabajosGrado, error: tgError } = await supabase
+            .from("trabajo_grado")
+            .select("id_trabajo_grado, proyecto, periodos: id_periodo(periodo), estudiantes: id_estudiante(cedula), tutor:id_tutor(cedula)")
+            .eq("estudiantes.cedula", cedula || "tutor.cedula", cedula);
+            //Acomodar el tema de que no se muestren todos los datos y solo se muestre los datos relacionados
+            //al estudiante o tutor
+
+        if (tgError) console.error("Error trabajo de grado:", tgError.message);
+
+        // Proyectos de Investigación
+        const { data: proyectosInvestigacion, error: piError } = await supabase
+            .from("proyectos_investigacion")
+            .select("id_proyecto_investigacion, proyecto, periodos: id_periodo(periodo), estudiante: id_estudiante(cedula)")
+            .eq("estudiante.cedula", cedula);
+
+        if (piError) console.error("Error proyectos investigación:", piError.message);
+
+        // Pasantías
+        const { data: pasantias, error: paError } = await supabase
+            .from("pasantia")
+            .select("id_pasantia, titulo, periodos: id_periodo(periodo), estudiante: id_estudiante(cedula)")
+            .eq("estudiante.cedula", cedula);
+
+        if (paError) console.error("Error pasantías:", paError.message);
+
+        // Respuesta agrupada
+        res.json({
+            servicioComunitario: servicioComunitario || [],
+            trabajosGrado: trabajosGrado || [],
+            proyectosInvestigacion: proyectosInvestigacion || [],
+            pasantias: pasantias || [],
+        });
+
+    } catch (error) {
+        console.error("Error en /buscar-proyectos:", error.message);
+        res.status(500).json({ error: "Error interno del servidor." });
+    }
+});
+
+
+
+//Otras rutas
+import servicio_comunitario from './server/rutas/servicio-comunitario.js';
+import trabajo_de_grado from './server/rutas/trabajo-de-grado.js';
+import proyectos_eliminados from './server/rutas/proyectos_eliminados.js';
+import proyectos from './server/rutas/proyectos.js';
+import pasantias from './server/rutas/pasantias.js';
+import home from './server/rutas/home.js';
+import bitacora from './server/rutas/bitacora.js'
+app.use('/api', servicio_comunitario);
+app.use('/api', trabajo_de_grado);
+app.use('/api', proyectos_eliminados);
+app.use('/api', proyectos);
+app.use('/api', pasantias);
+app.use('/api', home);
+app.use('/api', bitacora);

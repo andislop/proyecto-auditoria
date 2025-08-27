@@ -6,6 +6,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 // import fs from 'fs'; // Ya no se necesita fs si no leemos imágenes para PDF
 
+// Importa la función de auditoría
+import { registrarAuditoria } from './bitacora.js'; // ASEGÚRATE DE QUE LA RUTA SEA CORRECTA
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -16,10 +19,19 @@ const supabaseKey = process.env.SUPABASE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
     console.error('Error: Las variables de entorno SUPABASE_URL o SUPABASE_KEY no están definidas en trabajo-de-grado.js');
+    process.exit(1);
 }
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const router = express.Router();
+
+// Middleware para obtener el id_login del usuario actual desde la sesión (ejemplo)
+const getUserIdFromSession = (req, res, next) => {
+    req.currentUserIdLogin = req.session?.user?.id || null;
+    next();
+};
+
+router.use(getUserIdFromSession); // Aplica el middleware a todas las rutas de este router
 
 // =======================================================
 // APIs PARA TRABAJO DE GRADO
@@ -135,6 +147,14 @@ router.post('/agregar-trabajo-de-grado', async (req, res) => {
     } = req.body;
 
     if (!periodoId || !nombreProyecto || !cedulaEstudiante || !nombreCompletoEstudiante || !carreraId || !cedulaTutor || !nombreCompletoTutor || !estado || !fecha) { 
+        // REGISTRO DE AUDITORÍA: Intento de agregar trabajo de grado fallido (faltan campos)
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Intento de Agregar Trabajo de Grado Fallido',
+            descripcion_detallada: `Intento fallido de agregar trabajo de grado: Faltan campos obligatorios.`,
+            registro_afectado_id: null,
+        });
         return res.status(400).json({ error: 'Faltan campos obligatorios para el trabajo de grado.' });
     }
 
@@ -237,10 +257,27 @@ router.post('/agregar-trabajo-de-grado', async (req, res) => {
             throw new Error('Error al insertar trabajo de grado.');
         }
 
+        // REGISTRO DE AUDITORÍA: Trabajo de grado agregado exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Agregar Trabajo de Grado',
+            descripcion_detallada: `Se agregó el trabajo de grado "${nombreProyecto}" (ID: ${newTrabajo.id_trabajo_grado}).`,
+            registro_afectado_id: newTrabajo.id_trabajo_grado.toString(),
+        });
+
         res.status(201).json({ message: 'Trabajo de grado agregado exitosamente.', id_trabajo_grado: newTrabajo.id_trabajo_grado });
 
     } catch (error) {
         console.error('Error en la ruta /api/agregar-trabajo-de-grado:', error.message);
+        // REGISTRO DE AUDITORÍA: Error interno al agregar trabajo de grado
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Error al Agregar Trabajo de Grado',
+            descripcion_detallada: `Error interno del servidor al intentar agregar el trabajo de grado. Mensaje: ${error.message}.`,
+            registro_afectado_id: null,
+        });
         res.status(500).json({ error: error.message || 'Error interno del servidor al agregar trabajo de grado.' });
     }
 });
@@ -259,6 +296,14 @@ router.put('/trabajos-de-grado/:id', async (req, res) => {
     } = req.body;
 
     if (!periodoId || !nombreProyecto || !cedulaEstudiante || !nombreCompletoEstudiante || !carreraId || !cedulaTutor || !nombreCompletoTutor || !estado || !fecha) { 
+        // REGISTRO DE AUDITORÍA: Intento de actualizar trabajo de grado fallido (faltan campos)
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Intento de Actualizar Trabajo de Grado Fallido',
+            descripcion_detallada: `Intento fallido de actualizar trabajo de grado ID ${trabajoId}: Faltan campos obligatorios.`,
+            registro_afectado_id: trabajoId.toString(),
+        });
         return res.status(400).json({ error: 'Faltan campos obligatorios para actualizar el trabajo de grado.' });
     }
 
@@ -358,10 +403,27 @@ router.put('/trabajos-de-grado/:id', async (req, res) => {
             throw new Error('Error al actualizar el trabajo de grado.');
         }
 
+        // REGISTRO DE AUDITORÍA: Trabajo de grado actualizado exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Modificar Trabajo de Grado',
+            descripcion_detallada: `Se actualizó el trabajo de grado "${nombreProyecto}" (ID: ${trabajoId}).`,
+            registro_afectado_id: trabajoId.toString(),
+        });
+
         res.status(200).json({ message: 'Trabajo de grado actualizado exitosamente.' });
 
     } catch (error) {
         console.error('Error en la ruta PUT /api/trabajos-de-grado/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error interno al actualizar trabajo de grado
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Error al Modificar Trabajo de Grado',
+            descripcion_detallada: `Error interno del servidor al intentar actualizar el trabajo de grado ID ${trabajoId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: trabajoId.toString(),
+        });
         res.status(500).json({ error: error.message || 'Error interno del servidor al actualizar trabajo de grado.' });
     }
 });
@@ -372,22 +434,49 @@ router.put('/trabajos-de-grado/eliminar-logico/:id', async (req, res) => {
     const { mensajeEliminacion } = req.body;
 
     try {
-        const { error } = await supabase
+        const { error, data: oldTrabajo } = await supabase
             .from('trabajo_grado') 
             .update({
                 eliminados: true,
                 mensaje_eliminacion: mensajeEliminacion || null
             })
-            .eq('id_trabajo_grado', trabajoId); 
+            .eq('id_trabajo_grado', trabajoId)
+            .select('proyecto') // Seleccionar el nombre del proyecto para el log
+            .single();
 
         if (error) {
             console.error('Error al marcar trabajo de grado como eliminado lógicamente:', error.message);
+            // REGISTRO DE AUDITORÍA: Error al intentar eliminar lógicamente trabajo de grado
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Trabajo de Grado',
+                accion_realizada: 'Error al Eliminar Trabajo de Grado (Lógico)',
+                descripcion_detallada: `Error interno del servidor al intentar eliminar lógicamente el trabajo de grado ID ${trabajoId}. Mensaje: ${error.message}.`,
+                registro_afectado_id: trabajoId.toString(),
+            });
             return res.status(500).json({ error: 'Error interno del servidor al eliminar lógicamente el trabajo de grado.' });
         }
+
+        // REGISTRO DE AUDITORÍA: Trabajo de grado eliminado lógicamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Eliminar Trabajo de Grado (Lógico)',
+            descripcion_detallada: `Se eliminó lógicamente el trabajo de grado "${oldTrabajo?.proyecto || 'Desconocido'}" (ID: ${trabajoId}). Mensaje: "${mensajeEliminacion || 'Sin mensaje'}".`,
+            registro_afectado_id: trabajoId.toString(),
+        });
 
         res.status(200).json({ message: 'Trabajo de grado eliminado lógicamente exitosamente.' });
     } catch (error) {
         console.error('Error en la ruta PUT /api/trabajos-de-grado/eliminar-logico/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al eliminar lógicamente trabajo de grado
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Error de Excepción al Eliminar Trabajo de Grado (Lógico)',
+            descripcion_detallada: `Excepción al intentar eliminar lógicamente el trabajo de grado ID ${trabajoId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: trabajoId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
@@ -397,22 +486,49 @@ router.put('/trabajos-de-grado/restaurar/:id', async (req, res) => {
     const trabajoId = req.params.id; 
 
     try {
-        const { error } = await supabase
+        const { error, data: restoredTrabajo } = await supabase
             .from('trabajo_grado') 
             .update({
                 eliminados: false,
                 mensaje_eliminacion: null
             })
-            .eq('id_trabajo_grado', trabajoId); 
+            .eq('id_trabajo_grado', trabajoId)
+            .select('proyecto') // Seleccionar el nombre del proyecto para el log
+            .single();
 
         if (error) {
             console.error('Error al restaurar trabajo de grado:', error.message);
+            // REGISTRO DE AUDITORÍA: Error al intentar restaurar trabajo de grado
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Trabajo de Grado',
+                accion_realizada: 'Error al Restaurar Trabajo de Grado',
+                descripcion_detallada: `Error interno del servidor al intentar restaurar el trabajo de grado ID ${trabajoId}. Mensaje: ${error.message}.`,
+                registro_afectado_id: trabajoId.toString(),
+            });
             return res.status(500).json({ error: 'Error interno del servidor al restaurar el trabajo de grado.' });
         }
+
+        // REGISTRO DE AUDITORÍA: Trabajo de grado restaurado
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Restaurar Trabajo de Grado',
+            descripcion_detallada: `Se restauró el trabajo de grado "${restoredTrabajo?.proyecto || 'Desconocido'}" (ID: ${trabajoId}).`,
+            registro_afectado_id: trabajoId.toString(),
+        });
 
         res.status(200).json({ message: 'Trabajo de grado restaurado exitosamente.' });
     } catch (error) {
         console.error('Error en la ruta PUT /api/trabajos-de-grado/restaurar/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al restaurar trabajo de grado
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Error de Excepción al Restaurar Trabajo de Grado',
+            descripcion_detallada: `Excepción al intentar restaurar el trabajo de grado ID ${trabajoId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: trabajoId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
@@ -437,13 +553,37 @@ router.get('/trabajos-de-grado/:id/datos-pdf', async (req, res) => {
             .single();
 
         if (error && error.details.includes('0 rows')) {
+            // REGISTRO DE AUDITORÍA: Intento de generar PDF fallido (trabajo de grado no encontrado)
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Trabajo de Grado',
+                accion_realizada: 'Intento de Descarga PDF Fallido',
+                descripcion_detallada: `Intento fallido de generar PDF para trabajo de grado ID ${trabajoId}: Trabajo de grado no encontrado.`,
+                registro_afectado_id: trabajoId.toString(),
+            });
             return res.status(404).json({ message: 'Trabajo de grado no encontrado.' });
         } else if (error) {
             console.error('Error al obtener trabajo de grado para PDF:', error.message);
+            // REGISTRO DE AUDITORÍA: Error al obtener datos de trabajo de grado para PDF
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Trabajo de Grado',
+                accion_realizada: 'Error al Descargar PDF',
+                descripcion_detallada: `Error interno del servidor al obtener datos para PDF del trabajo de grado ID ${trabajoId}. Mensaje: ${error.message}.`,
+                registro_afectado_id: trabajoId.toString(),
+            });
             return res.status(500).json({ error: 'Error interno del servidor al obtener datos del trabajo de grado.' });
         }
 
         if (!trabajo) {
+            // REGISTRO DE AUDITORÍA: Intento de generar PDF fallido (trabajo de grado no encontrado, segunda verificación)
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Trabajo de Grado',
+                accion_realizada: 'Intento de Descarga PDF Fallido',
+                descripcion_detallada: `Intento fallido de generar PDF para trabajo de grado ID ${trabajoId}: Trabajo de grado no encontrado (segunda verificación).`,
+                registro_afectado_id: trabajoId.toString(),
+            });
             return res.status(404).json({ message: 'Trabajo de grado no encontrado.' });
         }
 
@@ -463,10 +603,27 @@ router.get('/trabajos-de-grado/:id/datos-pdf', async (req, res) => {
             } : null
         };
 
+        // REGISTRO DE AUDITORÍA: Datos para PDF de trabajo de grado descargados exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Descargar PDF (Datos)',
+            descripcion_detallada: `Se descargaron los datos para el PDF del trabajo de grado "${trabajo.proyecto}" (ID: ${trabajoId}).`,
+            registro_afectado_id: trabajoId.toString(),
+        });
+
         res.status(200).json(responseData);
 
     } catch (error) {
         console.error('Error en la ruta /trabajos-de-grado/:id/datos-pdf:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al generar PDF
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Trabajo de Grado',
+            accion_realizada: 'Error de Excepción al Descargar PDF',
+            descripcion_detallada: `Excepción al intentar generar PDF para trabajo de grado ID ${trabajoId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: trabajoId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor al obtener datos para PDF.' });
     }
 });

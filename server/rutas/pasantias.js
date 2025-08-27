@@ -4,6 +4,9 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Importa la función de auditoría
+import { registrarAuditoria } from './bitacora.js'; // ASEGÚRATE DE QUE LA RUTA SEA CORRECTA
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -14,10 +17,19 @@ const supabaseKey = process.env.SUPABASE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
     console.error('Error: Las variables de entorno SUPABASE_URL o SUPABASE_KEY no están definidas en pasantias.js');
+    process.exit(1);
 }
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const router = express.Router();
+
+// Middleware para obtener el id_login del usuario actual desde la sesión (ejemplo)
+const getUserIdFromSession = (req, res, next) => {
+    req.currentUserIdLogin = req.session?.user?.id || null;
+    next();
+};
+
+router.use(getUserIdFromSession); // Aplica el middleware a todas las rutas de este router
 
 // =======================================================
 // APIs PARA PASANTÍAS
@@ -53,8 +65,8 @@ router.get('/pasantias', async (req, res) => {
             id_pasantia: pasantia.id_pasantia,
             titulo: pasantia.titulo,
             estado: pasantia.estado,
-            fechaInicio: pasantia.fechaInicio, // Corregido: fechainicio (lowercase)
-            fechaFinal: pasantia.fechaFinal, // Corregido: fechafinal (lowercase)
+            fechaInicio: pasantia.fechaInicio,
+            fechaFinal: pasantia.fechaFinal,
             eliminado: pasantia.eliminado,
             mensaje_eliminado: pasantia.mensaje_eliminado,
             periodo: pasantia.periodos ? pasantia.periodos.periodo : null,
@@ -90,8 +102,8 @@ router.get('/pasantias/:id', async (req, res) => {
                 id_pasantia,
                 titulo,
                 estado,
-                fechainicio,
-                fechafinal,
+                fechaInicio,
+                fechaFinal,
                 eliminado,
                 mensaje_eliminado,
                 id_periodo,
@@ -136,6 +148,14 @@ router.post('/agregar-pasantia', async (req, res) => {
     } = req.body;
 
     if (!periodoId || !titulo || !cedulaEstudiante || !nombreCompletoEstudiante || !carreraId || !empresaId || !cedulaTutor || !nombreCompletoTutor || !estado || !fechaInicio || !fechaFinal) {
+        // REGISTRO DE AUDITORÍA: Intento de agregar pasantía fallido (faltan campos)
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Intento de Agregar Pasantía Fallido',
+            descripcion_detallada: `Intento fallido de agregar pasantía: Faltan campos obligatorios.`,
+            registro_afectado_id: null,
+        });
         return res.status(400).json({ error: 'Faltan campos obligatorios para la pasantía.' });
     }
 
@@ -224,8 +244,8 @@ router.post('/agregar-pasantia', async (req, res) => {
                 id_empresa: empresaId,
                 id_tutor: tutorIdToUse,
                 estado: estado,
-                fechaInicio: fechaInicio, // Corregido: fechaInicio (camelCase)
-                fechaFinal: fechaFinal, // Corregido: fechaFinal (camelCase)
+                fechaInicio: fechaInicio,
+                fechaFinal: fechaFinal,
                 eliminado: false,
                 mensaje_eliminado: null
             }])
@@ -237,10 +257,27 @@ router.post('/agregar-pasantia', async (req, res) => {
             throw new Error('Error al insertar pasantía.');
         }
 
+        // REGISTRO DE AUDITORÍA: Pasantía agregada exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Agregar Pasantía',
+            descripcion_detallada: `Se agregó la pasantía "${titulo}" (ID: ${newPasantia.id_pasantia}).`,
+            registro_afectado_id: newPasantia.id_pasantia.toString(),
+        });
+
         res.status(201).json({ message: 'Pasantía agregada exitosamente.', id_pasantia: newPasantia.id_pasantia });
 
     } catch (error) {
         console.error('Error en la ruta /api/agregar-pasantia:', error.message);
+        // REGISTRO DE AUDITORÍA: Error interno al agregar pasantía
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Error al Agregar Pasantía',
+            descripcion_detallada: `Error interno del servidor al intentar agregar la pasantía. Mensaje: ${error.message}.`,
+            registro_afectado_id: null,
+        });
         res.status(500).json({ error: error.message || 'Error interno del servidor al agregar pasantía.' });
     }
 });
@@ -261,6 +298,14 @@ router.put('/pasantias/:id', async (req, res) => {
     } = req.body;
 
     if (!periodoId || !titulo || !cedulaEstudiante || !nombreCompletoEstudiante || !carreraId || !empresaId || !cedulaTutor || !nombreCompletoTutor || !estado || !fechaInicio || !fechaFinal) {
+        // REGISTRO DE AUDITORÍA: Intento de actualizar pasantía fallido (faltan campos)
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Intento de Actualizar Pasantía Fallido',
+            descripcion_detallada: `Intento fallido de actualizar pasantía ID ${pasantiaId}: Faltan campos obligatorios.`,
+            registro_afectado_id: pasantiaId.toString(),
+        });
         return res.status(400).json({ error: 'Faltan campos obligatorios para actualizar la pasantía.' });
     }
 
@@ -349,8 +394,8 @@ router.put('/pasantias/:id', async (req, res) => {
                 id_empresa: empresaId,
                 id_tutor: tutorIdToUse,
                 estado: estado,
-                fechaInicio: fechaInicio, // Corregido: fechaInicio (camelCase)
-                fechaFinal: fechaFinal // Corregido: fechaFinal (camelCase)
+                fechaInicio: fechaInicio,
+                fechaFinal: fechaFinal
             })
             .eq('id_pasantia', pasantiaId);
 
@@ -359,10 +404,27 @@ router.put('/pasantias/:id', async (req, res) => {
             throw new Error('Error al actualizar la pasantía.');
         }
 
+        // REGISTRO DE AUDITORÍA: Pasantía actualizada exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Modificar Pasantía',
+            descripcion_detallada: `Se actualizó la pasantía "${titulo}" (ID: ${pasantiaId}).`,
+            registro_afectado_id: pasantiaId.toString(),
+        });
+
         res.status(200).json({ message: 'Pasantía actualizada exitosamente.' });
 
     } catch (error) {
         console.error('Error en la ruta PUT /api/pasantias/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error interno al actualizar pasantía
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Error al Modificar Pasantía',
+            descripcion_detallada: `Error interno del servidor al intentar actualizar la pasantía ID ${pasantiaId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: pasantiaId.toString(),
+        });
         res.status(500).json({ error: error.message || 'Error interno del servidor al actualizar pasantía.' });
     }
 });
@@ -373,22 +435,49 @@ router.put('/pasantias/eliminar-logico/:id', async (req, res) => {
     const { mensajeEliminacion } = req.body;
 
     try {
-        const { error } = await supabase
+        const { error, data: oldPasantia } = await supabase
             .from('pasantia')
             .update({
                 eliminado: true,
                 mensaje_eliminado: mensajeEliminacion || null
             })
-            .eq('id_pasantia', pasantiaId);
+            .eq('id_pasantia', pasantiaId)
+            .select('titulo') // Seleccionar el título para el log
+            .single();
 
         if (error) {
             console.error('Error al marcar pasantía como eliminada lógicamente:', error.message);
+            // REGISTRO DE AUDITORÍA: Error al intentar eliminar lógicamente pasantía
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Pasantías',
+                accion_realizada: 'Error al Eliminar Pasantía (Lógico)',
+                descripcion_detallada: `Error interno del servidor al intentar eliminar lógicamente la pasantía ID ${pasantiaId}. Mensaje: ${error.message}.`,
+                registro_afectado_id: pasantiaId.toString(),
+            });
             return res.status(500).json({ error: 'Error interno del servidor al eliminar lógicamente la pasantía.' });
         }
+
+        // REGISTRO DE AUDITORÍA: Pasantía eliminada lógicamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Eliminar Pasantía (Lógico)',
+            descripcion_detallada: `Se eliminó lógicamente la pasantía "${oldPasantia?.titulo || 'Desconocido'}" (ID: ${pasantiaId}). Mensaje: "${mensajeEliminacion || 'Sin mensaje'}".`,
+            registro_afectado_id: pasantiaId.toString(),
+        });
 
         res.status(200).json({ message: 'Pasantía eliminada lógicamente exitosamente.' });
     } catch (error) {
         console.error('Error en la ruta PUT /api/pasantias/eliminar-logico/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al eliminar lógicamente pasantía
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Error de Excepción al Eliminar Pasantía (Lógico)',
+            descripcion_detallada: `Excepción al intentar eliminar lógicamente la pasantía ID ${pasantiaId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: pasantiaId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
@@ -398,22 +487,49 @@ router.put('/pasantias/restaurar/:id', async (req, res) => {
     const pasantiaId = req.params.id;
 
     try {
-        const { error } = await supabase
+        const { error, data: restoredPasantia } = await supabase
             .from('pasantia')
             .update({
                 eliminado: false,
                 mensaje_eliminado: null
             })
-            .eq('id_pasantia', pasantiaId);
+            .eq('id_pasantia', pasantiaId)
+            .select('titulo') // Seleccionar el título para el log
+            .single();
 
         if (error) {
             console.error('Error al restaurar pasantía:', error.message);
+            // REGISTRO DE AUDITORÍA: Error al intentar restaurar pasantía
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Pasantías',
+                accion_realizada: 'Error al Restaurar Pasantía',
+                descripcion_detallada: `Error interno del servidor al intentar restaurar la pasantía ID ${pasantiaId}. Mensaje: ${error.error_message}.`,
+                registro_afectado_id: pasantiaId.toString(),
+            });
             return res.status(500).json({ error: 'Error interno del servidor al restaurar la pasantía.' });
         }
+
+        // REGISTRO DE AUDITORÍA: Pasantía restaurada
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Restaurar Pasantía',
+            descripcion_detallada: `Se restauró la pasantía "${restoredPasantia?.titulo || 'Desconocido'}" (ID: ${pasantiaId}).`,
+            registro_afectado_id: pasantiaId.toString(),
+        });
 
         res.status(200).json({ message: 'Pasantía restaurada exitosamente.' });
     } catch (error) {
         console.error('Error en la ruta PUT /pasantias/restaurar/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al restaurar pasantía
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Error de Excepción al Restaurar Pasantía',
+            descripcion_detallada: `Excepción al intentar restaurar la pasantía ID ${pasantiaId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: pasantiaId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
@@ -440,13 +556,37 @@ router.get('/pasantias/:id/datos-pdf', async (req, res) => {
             .single();
 
         if (error && error.details.includes('0 rows')) {
+            // REGISTRO DE AUDITORÍA: Intento de generar PDF fallido (pasantía no encontrada)
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Pasantías',
+                accion_realizada: 'Intento de Descarga PDF Fallido',
+                descripcion_detallada: `Intento fallido de generar PDF para pasantía ID ${pasantiaId}: Pasantía no encontrada.`,
+                registro_afectado_id: pasantiaId.toString(),
+            });
             return res.status(404).json({ message: 'Pasantía no encontrada.' });
         } else if (error) {
             console.error('Error al obtener pasantía para PDF:', error.message);
+            // REGISTRO DE AUDITORÍA: Error al obtener datos de pasantía para PDF
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Pasantías',
+                accion_realizada: 'Error al Descargar PDF',
+                descripcion_detallada: `Error interno del servidor al obtener datos para PDF de la pasantía ID ${pasantiaId}. Mensaje: ${error.message}.`,
+                registro_afectado_id: pasantiaId.toString(),
+            });
             return res.status(500).json({ error: 'Error interno del servidor al obtener datos de la pasantía.' });
         }
 
         if (!pasantia) {
+            // REGISTRO DE AUDITORÍA: Intento de generar PDF fallido (pasantía no encontrada, segunda verificación)
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Pasantías',
+                accion_realizada: 'Intento de Descarga PDF Fallido',
+                descripcion_detallada: `Intento fallido de generar PDF para pasantía ID ${pasantiaId}: Pasantía no encontrada (segunda verificación).`,
+                registro_afectado_id: pasantiaId.toString(),
+            });
             return res.status(404).json({ message: 'Pasantía no encontrada.' });
         }
 
@@ -454,8 +594,8 @@ router.get('/pasantias/:id/datos-pdf', async (req, res) => {
         const responseData = {
             titulo: pasantia.titulo,
             estado: pasantia.estado,
-            fechaInicio: pasantia.fechaInicio, // Corregido: fechaInicio (camelCase)
-            fechaFinal: pasantia.fechaFinal, // Corregido: fechaFinal (camelCase)
+            fechaInicio: pasantia.fechaInicio,
+            fechaFinal: pasantia.fechaFinal,
             periodo: pasantia.periodos ? pasantia.periodos.periodo : null,
             carrera: pasantia.carreras ? pasantia.carreras.carrera : null,
             empresa: pasantia.empresas ? pasantia.empresas.nombre_empresa : null,
@@ -468,10 +608,27 @@ router.get('/pasantias/:id/datos-pdf', async (req, res) => {
             } : null
         };
 
+        // REGISTRO DE AUDITORÍA: Datos para PDF de pasantía descargados exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Descargar PDF (Datos)',
+            descripcion_detallada: `Se descargaron los datos para el PDF de la pasantía "${pasantia.titulo}" (ID: ${pasantiaId}).`,
+            registro_afectado_id: pasantiaId.toString(),
+        });
+
         res.status(200).json(responseData);
 
     } catch (error) {
         console.error('Error en la ruta /pasantias/:id/datos-pdf:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al generar PDF
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Pasantías',
+            accion_realizada: 'Error de Excepción al Descargar PDF',
+            descripcion_detallada: `Excepción al intentar generar PDF para pasantía ID ${pasantiaId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: pasantiaId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor al obtener datos para PDF.' });
     }
 });
@@ -532,7 +689,8 @@ router.get('/empresas', async (req, res) => {
             return res.status(500).json({ error: 'Error interno del servidor.' });
         }
         res.status(200).json(empresas);
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error en la ruta /api/empresas:', error.message);
         res.status(500).json({ error: 'Error interno del servidor.' });
     }

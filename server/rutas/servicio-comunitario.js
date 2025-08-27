@@ -2,9 +2,12 @@ import express from 'express';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import path from 'path'; // Importa path de forma estándar
-import pdf from 'html-pdf';
+import pdf from 'html-pdf'; // Si aún lo utilizas para la generación de PDFs
 import { fileURLToPath } from 'url'; // Necesario para convertir URL a path de sistema de archivos
 import fs from 'fs'; // Importamos el módulo 'fs' para leer archivos
+
+// Importa la función de auditoría
+import { registrarAuditoria } from './bitacora.js'; // ASEGÚRATE DE QUE LA RUTA SEA CORRECTA
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,6 +24,18 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 
 const router = express.Router();
+
+// Middleware para obtener el id_login del usuario actual desde la sesión (ejemplo)
+// Asegúrate de que este middleware o una lógica similar exista en tu app.js/index.js
+// o en un middleware global si el id_login no está disponible en req.session.user.id
+const getUserIdFromSession = (req, res, next) => {
+    // Si usas express-session, el id del usuario debería estar en req.session.user.id
+    // Si no, necesitarás otra forma de obtenerlo (ej. JWT, otra gestión de sesión)
+    req.currentUserIdLogin = req.session?.user?.id || null; 
+    next();
+};
+
+router.use(getUserIdFromSession); // Aplica el middleware a todas las rutas de este router
 
 // =======================================================
 // APIs PARA SERVICIO COMUNITARIO
@@ -232,6 +247,14 @@ router.post('/agregar-proyecto-comunitario', async (req, res) => {
     } = req.body;
 
     if (!periodoId || !nombreProyecto || !carreraId || !comunidad || !cedulaTutor || !nombreCompletoTutor || !fechaInicio || !fechaFinal || !estado || !integrantes || integrantes.length === 0) {
+        // REGISTRO DE AUDITORÍA: Intento de agregar proyecto fallido (faltan campos)
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin, // Usar el ID del usuario de la sesión
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Intento de Agregar Proyecto Fallido',
+            descripcion_detallada: `Intento fallido de agregar proyecto: Faltan campos obligatorios.`,
+            registro_afectado_id: null,
+        });
         return res.status(400).json({ error: 'Faltan campos obligatorios para el proyecto.' });
     }
 
@@ -352,11 +375,28 @@ router.post('/agregar-proyecto-comunitario', async (req, res) => {
                 throw new Error('Error al insertar integrantes del proyecto.');
             }
         }
+        
+        // REGISTRO DE AUDITORÍA: Proyecto de servicio comunitario agregado exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Agregar Proyecto',
+            descripcion_detallada: `Se agregó el proyecto de servicio comunitario "${nombreProyecto}" (ID: ${idServicio}).`,
+            registro_afectado_id: idServicio.toString(),
+        });
 
         res.status(201).json({ message: 'Proyecto agregado exitosamente.', id_servicio: idServicio });
 
     } catch (error) {
         console.error('Error en la ruta /api/agregar-proyecto-comunitario:', error.message);
+        // REGISTRO DE AUDITORÍA: Error interno al agregar proyecto
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Error al Agregar Proyecto',
+            descripcion_detallada: `Error interno del servidor al intentar agregar el proyecto. Mensaje: ${error.message}.`,
+            registro_afectado_id: null,
+        });
         res.status(500).json({ error: error.message || 'Error interno del servidor al agregar proyecto.' });
     }
 });
@@ -377,6 +417,14 @@ router.put('/proyectos-comunitarios/:id', async (req, res) => {
     } = req.body;
 
     if (!periodoId || !nombreProyecto || !carreraId || !comunidad || !cedulaTutor || !nombreCompletoTutor || !fechaInicio || !fechaFinal || !estado || !newIntegrantes || newIntegrantes.length === 0) {
+        // REGISTRO DE AUDITORÍA: Intento de actualizar proyecto fallido (faltan campos)
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Intento de Actualizar Proyecto Fallido',
+            descripcion_detallada: `Intento fallido de actualizar proyecto ID ${projectId}: Faltan campos obligatorios.`,
+            registro_afectado_id: projectId.toString(),
+        });
         return res.status(400).json({ error: 'Faltan campos obligatorios para actualizar el proyecto.' });
     }
 
@@ -498,7 +546,7 @@ router.put('/proyectos-comunitarios/:id', async (req, res) => {
 
                 if (insertStudentError) {
                     console.error('Error al insertar nuevo estudiante durante la edición:', insertStudentError.message);
-                    throw new Error('Error al insertar nuevo estudiante durante la edición.');
+                    throw new Error('Error al insertar nuevo estudiante.');
                 }
                 estudianteId = insertedStudent.id_estudiante;
             } else {
@@ -549,10 +597,27 @@ router.put('/proyectos-comunitarios/:id', async (req, res) => {
             }
         }
 
+        // REGISTRO DE AUDITORÍA: Proyecto de servicio comunitario actualizado exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Modificar Proyecto',
+            descripcion_detallada: `Se actualizó el proyecto de servicio comunitario "${nombreProyecto}" (ID: ${projectId}).`,
+            registro_afectado_id: projectId.toString(),
+        });
+
         res.status(200).json({ message: 'Proyecto actualizado exitosamente.' });
 
     } catch (error) {
         console.error('Error en la ruta PUT /api/proyectos-comunitarios/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error interno al actualizar proyecto
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Error al Modificar Proyecto',
+            descripcion_detallada: `Error interno del servidor al intentar actualizar el proyecto ID ${projectId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: projectId.toString(),
+        });
         res.status(500).json({ error: error.message || 'Error interno del servidor al actualizar proyecto.' });
     }
 });
@@ -563,22 +628,49 @@ router.put('/proyectos-comunitarios/eliminar-logico/:id', async (req, res) => {
     const { mensajeEliminacion } = req.body;
 
     try {
-        const { error } = await supabase
+        const { error, data: oldProject } = await supabase
             .from('servicio_comunitario')
             .update({
                 eliminados: true,
                 mensaje_eliminacion: mensajeEliminacion || null
             })
-            .eq('id_servicio', projectId);
+            .eq('id_servicio', projectId)
+            .select('proyecto') // Seleccionar el nombre del proyecto para el log
+            .single();
 
         if (error) {
             console.error('Error al marcar proyecto como eliminado lógicamente:', error.message);
+            // REGISTRO DE AUDITORÍA: Error al intentar eliminar lógicamente proyecto
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Servicio Comunitario',
+                accion_realizada: 'Error al Eliminar Proyecto (Lógico)',
+                descripcion_detallada: `Error interno del servidor al intentar eliminar lógicamente el proyecto ID ${projectId}. Mensaje: ${error.message}.`,
+                registro_afectado_id: projectId.toString(),
+            });
             return res.status(500).json({ error: 'Error interno del servidor al eliminar lógicamente el proyecto.' });
         }
+        
+        // REGISTRO DE AUDITORÍA: Proyecto de servicio comunitario eliminado lógicamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Eliminar Proyecto (Lógico)',
+            descripcion_detallada: `Se eliminó lógicamente el proyecto "${oldProject?.proyecto || 'Desconocido'}" (ID: ${projectId}). Mensaje: "${mensajeEliminacion || 'Sin mensaje'}".`,
+            registro_afectado_id: projectId.toString(),
+        });
 
         res.status(200).json({ message: 'Proyecto eliminado lógicamente exitosamente.' });
     } catch (error) {
         console.error('Error en la ruta PUT /api/proyectos-comunitarios/eliminar-logico/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al eliminar lógicamente proyecto
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Error de Excepción al Eliminar Proyecto (Lógico)',
+            descripcion_detallada: `Excepción al intentar eliminar lógicamente el proyecto ID ${projectId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: projectId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
@@ -588,22 +680,49 @@ router.put('/proyectos-comunitarios/restaurar/:id', async (req, res) => {
     const projectId = req.params.id;
 
     try {
-        const { error } = await supabase
+        const { error, data: restoredProject } = await supabase
             .from('servicio_comunitario')
             .update({
                 eliminados: false,
                 mensaje_eliminacion: null
             })
-            .eq('id_servicio', projectId);
+            .eq('id_servicio', projectId)
+            .select('proyecto') // Seleccionar el nombre del proyecto para el log
+            .single();
 
         if (error) {
             console.error('Error al restaurar proyecto:', error.message);
+            // REGISTRO DE AUDITORÍA: Error al intentar restaurar proyecto
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Servicio Comunitario',
+                accion_realizada: 'Error al Restaurar Proyecto',
+                descripcion_detallada: `Error interno del servidor al intentar restaurar el proyecto ID ${projectId}. Mensaje: ${error.message}.`,
+                registro_afectado_id: projectId.toString(),
+            });
             return res.status(500).json({ error: 'Error interno del servidor al restaurar el proyecto.' });
         }
+
+        // REGISTRO DE AUDITORÍA: Proyecto de servicio comunitario restaurado
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Restaurar Proyecto',
+            descripcion_detallada: `Se restauró el proyecto de servicio comunitario "${restoredProject?.proyecto || 'Desconocido'}" (ID: ${projectId}).`,
+            registro_afectado_id: projectId.toString(),
+        });
 
         res.status(200).json({ message: 'Proyecto restaurado exitosamente.' });
     } catch (error) {
         console.error('Error en la ruta PUT /api/proyectos-comunitarios/restaurar/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al restaurar proyecto
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Error de Excepción al Restaurar Proyecto',
+            descripcion_detallada: `Excepción al intentar restaurar el proyecto ID ${projectId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: projectId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
@@ -633,13 +752,37 @@ router.get('/proyectos-comunitarios/:id/datos-pdf', async (req, res) => { // Cam
             .single();
 
         if (error && error.details.includes('0 rows')) {
+            // REGISTRO DE AUDITORÍA: Intento de generar PDF fallido (proyecto no encontrado)
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Servicio Comunitario',
+                accion_realizada: 'Intento de Descarga PDF Fallido',
+                descripcion_detallada: `Intento fallido de generar PDF para proyecto ID ${projectId}: Proyecto no encontrado.`,
+                registro_afectado_id: projectId.toString(),
+            });
             return res.status(404).json({ message: 'Proyecto no encontrado.' });
         } else if (error) {
             console.error('Error al obtener proyecto para PDF:', error.message);
+            // REGISTRO DE AUDITORÍA: Error al obtener datos de proyecto para PDF
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Servicio Comunitario',
+                accion_realizada: 'Error al Descargar PDF',
+                descripcion_detallada: `Error interno del servidor al obtener datos para PDF del proyecto ID ${projectId}. Mensaje: ${error.message}.`,
+                registro_afectado_id: projectId.toString(),
+            });
             return res.status(500).json({ error: 'Error interno del servidor al obtener datos del proyecto.' });
         }
 
         if (!project) {
+            // REGISTRO DE AUDITORÍA: Intento de generar PDF fallido (proyecto no encontrado, segunda verificación)
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Servicio Comunitario',
+                accion_realizada: 'Intento de Descarga PDF Fallido',
+                descripcion_detallada: `Intento fallido de generar PDF para proyecto ID ${projectId}: Proyecto no encontrado (segunda verificación).`,
+                registro_afectado_id: projectId.toString(),
+            });
             return res.status(404).json({ message: 'Proyecto no encontrado.' });
         }
 
@@ -666,13 +809,31 @@ router.get('/proyectos-comunitarios/:id/datos-pdf', async (req, res) => { // Cam
             integrantes: formattedIntegrantes
         };
 
+        // REGISTRO DE AUDITORÍA: Datos para PDF de servicio comunitario descargados exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Descargar PDF (Datos)',
+            descripcion_detallada: `Se descargaron los datos para el PDF del proyecto "${project.proyecto}" (ID: ${projectId}).`,
+            registro_afectado_id: projectId.toString(),
+        });
+
         res.status(200).json(responseData);
 
     } catch (error) {
         console.error('Error en la ruta /proyectos-comunitarios/:id/datos-pdf:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al generar PDF
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Servicio Comunitario',
+            accion_realizada: 'Error de Excepción al Descargar PDF',
+            descripcion_detallada: `Excepción al intentar generar PDF para proyecto ID ${projectId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: projectId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor al obtener datos para PDF.' });
     }
 });
 
 
 export default router;
+

@@ -126,11 +126,13 @@
                 color: #555;
                 top: 50%;
                 transform: translateY(-50%);
+                overflow-x: auto;
             }
             .table-projects td[data-label="Acciones"] {
                 padding-top: 10px !important;
                 text-align: center !important;
                 padding-left: 15px !important; 
+                overflow-x: auto;
             }
             .table-projects td[data-label="Acciones"]::before {
                 display: none;
@@ -140,6 +142,13 @@
                 white-space: normal;
                 text-align: left;
                 word-break: break-word; /* Permite romper palabras largas */
+                overflow-x: auto;
+            }
+            .table-projects td[data-label="Tutor"] {
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+                overflow-x: auto;
             }
             .table-projects td[data-label="Integrantes"]::before { 
                 top: 10px;
@@ -221,7 +230,7 @@
 			<!-- SideBar User info -->
 			<div class="full-box dashboard-sideBar-UserInfo">
 				<figure class="full-box">
-					<img src="../assets/img/foto.jpg" alt="UserIcon">
+					<img src="../assets/img/unefa.png" alt="UserIcon">
 					<figcaption class="text-center text-titles">juancito007</figcaption>
 				</figure>
 				<ul class="full-box list-unstyled text-center">
@@ -260,6 +269,9 @@
 						</li>
 						<li>
 							<a href="/pasantias""><i class="zmdi zmdi-assignment"></i> Pasantias</a>
+						</li>
+                        <li>
+							<a href="/bitacora"><i class="zmdi zmdi-bookmark-outline"></i> Bitácora</a>
 						</li>
                         <li>
                             <a href="/proyectos-eliminados"><i class="zmdi zmdi-delete zmdi-hc-fw"></i> Proyectos Eliminados</a>
@@ -481,8 +493,6 @@
                             <label class="control-label" for="projectStatus">Estado</label>
                             <select class="form-control" id="projectStatus">
                                 <option>Pendiente</option>
-                                <option>En Progreso</option>
-                                <option>Finalizado</option>
                                 <option>Aprobado</option>
                                 <option>Reprobado</option>
                             </select>

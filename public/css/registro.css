@@ -119,10 +119,9 @@
         }
 
         /* CORRECCIÓN FINAL: Color del label en todos los estados a blanco */
-        .form-group .control-label {
+        .form-group .control-label-1 {
             color: #fff !important; /* Blanco por defecto, forzado con !important */
             font-size: 0.95rem; /* Tamaño de letra del label un poco más pequeño */
-            position: absolute;
             top: 10px;
             left: 0;
             pointer-events: none;
@@ -148,9 +147,9 @@
         }
 
         /* Mantener el label blanco/claro al enfocar o con contenido (aseguramos con !important) */
-        .form-group .form-control:focus ~ .control-label,
-        .form-group .form-control:not(:placeholder-shown) ~ .control-label,
-        .form-group .form-control:valid ~ .control-label { 
+        .form-group .form-control:focus ~ .control-label-1,
+        .form-group .form-control:not(:placeholder-shown) ~ .control-label-1,
+        .form-group .form-control:valid ~ .control-label-1 { 
             top: -15px;
             font-size: 0.8rem;
             color: #fff !important; /* Se mantiene blanco al enfocar/contenido, forzado con !important */

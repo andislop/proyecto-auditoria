@@ -9,6 +9,98 @@
     <link rel="stylesheet" href="../css/bootstrap-icons.css">
     <!-- Font Awesome ya no es necesario si usamos SVG, pero lo mantenemos por si lo usas en otro lado -->
 	<script src="https://kit.fontawesome.com/a81368914c.js" crossorigin="anonymous"></script>
+
+    <style>
+        /* Nuevos estilos para el modal de búsqueda, para mejorar la visibilidad */
+        #searchProjectModal .custom-modal-content {
+            background: linear-gradient(135deg, #0f2027, #0a2a47, #275061); /* Fondo oscuro para el modal */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            color: #e0e0e0;
+        }
+
+        #searchProjectModal .custom-modal-header {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        #searchProjectModal .custom-modal-body {
+            text-align: center;
+        }
+
+        #searchProjectModal .form-group {
+            margin-bottom: 25px;
+            text-align: center; /* Centra el label y el input dentro del grupo */
+        }
+
+        #searchProjectModal .form-group .control-label-1 {
+            display: block; /* Asegura que el label ocupe toda la anchura */
+            text-align: center; /* Centra el texto del label */
+        }
+        
+        #searchProjectModal .form-control {
+            background-color: transparent; /* Fondo transparente para integrar con el fondo del modal */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Borde del input */
+            color: #fff; /* Texto del input en blanco */
+            padding: 0 15px; /* Ajusta el padding para centrar */
+            font-size: 1rem;
+            max-width: 250px; /* Ancho máximo para el campo */
+            height: 40px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-align: center; /* Centra el texto del input */
+            margin: 0 auto; /* Centra el input */
+        }
+
+        #searchProjectModal .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6); /* Color del placeholder */
+        }
+
+        #searchProjectModal .form-control:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 170, 255, 0.5);
+            border-color: #00aaff;
+        }
+
+        #searchProjectModal .btn-login {
+            width: auto;
+            min-width: 150px;
+            margin: 20px auto 15px; /* Centra el botón */
+            display: block; /* Asegura que el margin auto funcione */
+        }
+        
+        .project-results {
+            margin-top: 20px;
+            text-align: left;
+            padding: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .project-item {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .download-button {
+            background-color: #00aaff;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-button:hover {
+            background-color: #007bff;
+        }
+        
+    </style>
 </head>
 <body>
     <div class="container">
@@ -25,16 +117,16 @@
             <h2 class="login-title">Iniciar Sesión</h2>
             <form id="loginForm" autocomplete="off" novalidate>
                 <!-- Input Correo -->
-                <div class="form-group label-floating">
-                    <label class="control-label" for="correo">Correo</label>
-                    <input class="form-control" id="correo" type="email" required>
+                <div class="form-group label-floating" >
+                    <label class="control-label-1" for="correo">Correo</label>
+                    <input class="form-control" id="correo" type="email" required disable-selected>
                 </div>
                 <!-- End Input Correo -->
 
                 <!-- Input Contraseña -->
                 <div class="form-group label-floating">
                     <div class="password-container"> <!-- Contenedor para el input y el ojo -->
-                        <label class="control-label" for="contraseña">Contraseña</label>
+                        <label class="control-label-1" for="contraseña">Contraseña</label>
                         <input class="form-control" id="contraseña" type="password" required>
                         <!-- Icono de ojo para alternar visibilidad (SVG en línea) -->
                         <span class="toggle-password" id="togglePassword">
@@ -46,21 +138,26 @@
                     </div>
                 </div>
                 <!-- End Input Contraseña -->
+                <button type="submit" class="btn btn-login">Login</button>
+                
 
+                <div class="login-links">
+                    <a href="/registro">¿No tienes una cuenta? Regístrate</a>
+                </div>
+                
                 <div class="login-links">
                     <a href="#">¿Olvidaste tu contraseña?</a>
                 </div>
 
-                <button type="submit" class="btn btn-login">Login</button>
-
+                <!-- Nuevo enlace para buscar proyectos -->
                 <div class="login-links">
-                    <a href="/registro">¿No tienes una cuenta? Regístrate</a>
+                    <a href="#" id="searchProjectLink">Buscar proyecto por cédula</a>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Ventana modal personalizada -->
+    <!-- Ventana modal personalizada para alertas (ya existente) -->
     <div id="customAlertModal" class="custom-modal-overlay">
         <div class="custom-modal-content">
             <div class="custom-modal-header">
@@ -75,14 +172,45 @@
         </div>
     </div>
 
+    <!-- Nuevo modal para la búsqueda de proyectos -->
+    <div id="searchProjectModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <span id="searchProjectTitle">Buscar Proyecto</span>
+            </div>
+            <div class="custom-modal-body">
+                <p>Introduce el número de cédula del tutor o estudiante.</p>
+                <!-- Ajuste en el form-group para centrar correctamente -->
+                <div class="form-group">
+                    <label class="control-label-1" for="cedulaInput">Cédula</label>
+                    <!-- He cambiado el type de 'tel' a 'number' y añadido 'pattern' para validación adicional -->
+                    <input class="form-control" id="cedulaInput" type="number" placeholder="12345678" required pattern="[0-9]*">
+                </div>
+                <button id="resultadosBusqueda" class="btn btn-login">Buscar</button>
+                <div id="projectResults" class="project-results">
+                    <!-- Los resultados de la búsqueda se mostrarán aquí -->
+                </div>
+                <div id="loadingIndicator" style="display: none; text-align: center; color: #174dc0;">
+                    Cargando...
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button id="closeSearchModalBtn">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
 	<!--====== Scripts -->
 	<script src="../js/jquery-3.1.1.min.js"></script>
-	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/bootstrap.mini.js"></script>
 	<script src="../js/material.min.js"></script>
 	<script src="../js/ripples.min.js"></script>
 	<!-- <script src="../js/sweetalert2.min.js"></script> Eliminado SweetAlert2 -->
 	<script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="../js/main.js"></script>
+    <script src="../js/descargas.js"></script>
+    <script src="../js/jspdf.umd.min.js"></script>
+    <script src="../js/jspdf.plugin.autotable.min.js"></script>
 	<script>
         // Envuelve todo el JavaScript personalizado dentro de $(document).ready()
         // Esto asegura que el DOM y todas las librerías (excepto SweetAlert2, que ya no está) estén cargados
@@ -96,6 +224,16 @@
             const customAlertTitle = document.getElementById('customAlertTitle');
             const customAlertMessage = document.getElementById('customAlertMessage');
             const customAlertOkBtn = document.getElementById('customAlertOkBtn');
+            const searchProjectModal = document.getElementById('searchProjectModal');
+            const searchProjectLink = document.getElementById('searchProjectLink');
+            const closeSearchModalBtn = document.getElementById('closeSearchModalBtn');
+            const resultadosBusqueda = document.getElementById('resultadosBusqueda');
+            const cedulaInput = document.getElementById('cedulaInput');
+            const projectResultsDiv = document.getElementById('projectResults');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const projectModal = document.getElementById('projectModal');
+            const closeProjectModalBtn = document.getElementById('closeProjectModal');
+            const modalContentDiv = document.getElementById('modalContent');
 
             // Función para mostrar la modal personalizada
             function showCustomAlert(title, message) {
@@ -211,7 +349,223 @@
             if (loginForm) {
                 loginForm.addEventListener('submit', handleLogin);
             }
-        }); // Cierre de $(document).ready()
+
+            // Lógica del nuevo modal de búsqueda de proyectos
+            searchProjectLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                searchProjectModal.style.display = 'flex';
+                projectResults.innerHTML = ''; // Limpiar resultados anteriores
+                cedulaInput.value = ''; // Limpiar el input
+            });
+
+            closeSearchModalBtn.addEventListener('click', function() {
+                searchProjectModal.style.display = 'none';
+            });
+
+            // Código para asegurar que el input de cédula solo acepte números
+            cedulaInput.addEventListener('input', function(event) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
+        // La función que realiza la búsqueda y actualiza el DOM.
+        async function buscarPorCedula() {
+            const cedula = cedulaInput.value.trim();
+
+            if (!cedula) {
+                projectResultsDiv.innerHTML = "<p class='text-warning text-center mt-6'>Por favor ingresa una cédula.</p>";
+                return;
+            }
+
+            loadingIndicator.style.display = 'block';
+            projectResultsDiv.innerHTML = "";
+
+            try {
+                const response = await fetch(`/api/buscar-proyectos/${cedula}`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    projectResultsDiv.innerHTML = `<p class="text-danger">${data.error || "Error al buscar proyectos."}</p>`;
+                    return;
+                }
+
+                const { servicioComunitario, trabajosGrado, proyectosInvestigacion, pasantias } = data;
+                let html = "";
+
+                // Pasantías
+                if (pasantias && pasantias.length > 0) {
+                    html += `<h5 class="text-xl font-semibold mb-2 mt-4">Pasantías</h5><ul>`;
+                    pasantias.forEach(p => {
+                        html += `
+                            <li>
+                                <div class="flex flex-col">
+                                    <strong>${p.titulo}</strong>
+                                    <span class="text-sm text-gray-300">${p.periodos.periodo}</span>
+                                </div>
+                                <button class="btn btn-sm btn-primary ml-2" onclick="handleDownloadInternship(${p.id_pasantia})">
+                                    Descargar
+                                </button>
+                            </li>`;
+                    });
+                    html += `</ul>`;
+                }
+
+                // Servicio Comunitario
+                if (servicioComunitario && servicioComunitario.length > 0) {
+                    html += `<h5 class="text-xl font-semibold mb-2 mt-4">Servicio Comunitario</h5><ul>`;
+                    servicioComunitario.forEach(p => {
+                        const cedulas = p.integrantes.map(i => i.id_estudiante.cedula).join(', ');
+                        html += `
+                            <li>
+                                <div class="flex flex-col">
+                                    <strong>${p.proyecto}</strong>
+                                    <span class="text-sm text-gray-300">${p.periodos.periodo} - Cédulas: ${cedulas}</span>
+                                </div>
+                                <button class="btn btn-sm btn-primary ml-2" onclick="generateCommunityServicePdf(${p.id_servicio})">
+                                    Descargar
+                                </button>
+                            </li>`;
+                    });
+                    html += `</ul>`;
+                }
+                
+                // Proyectos de Investigación
+                if (proyectosInvestigacion && proyectosInvestigacion.length > 0) {
+                    html += `<h5 class="text-xl font-semibold mb-2 mt-4">Proyectos de Investigación</h5><ul>`;
+                    proyectosInvestigacion.forEach(p => {
+                        html += `
+                            <li>
+                                <div class="flex flex-col">
+                                    <strong>${p.proyecto}</strong>
+                                    <span class="text-sm text-gray-300">${p.periodos.periodo}</span>
+                                </div>
+                                <button class="btn btn-sm btn-primary ml-2" onclick="handleDownloadInvestigationProject(${p.id_proyecto_investigacion})">
+                                    Descargar
+                                </button>
+                            </li>`;
+                    });
+                    html += `</ul>`;
+                }
+
+                // Trabajos de Grado
+                if (trabajosGrado && trabajosGrado.length > 0) {
+                    html += `<h5 class="text-xl font-semibold mb-2 mt-4">Trabajos de Grado</h5><ul>`;
+                    trabajosGrado.forEach(p => {
+                        html += `
+                            <li>
+                                <div class="flex flex-col">
+                                    <strong>${p.proyecto}</strong>
+                                    <span class="text-sm text-gray-300">${p.periodos.periodo}</span>
+                                </div>
+                                <button class="btn btn-sm btn-primary ml-2" onclick="handleDownloadDegreeProject(${p.id_trabajo_grado})">
+                                    Descargar
+                                </button>
+                            </li>`;
+                    });
+                    html += `</ul>`;
+                }
+
+                if (!html) {
+                    html = "<p class='text-warning text-center mt-6'>No se encontraron proyectos asociados a esta cédula.</p>";
+                }
+
+                projectResultsDiv.innerHTML = html;
+
+            } catch (error) {
+                console.error("Error en buscarPorCedula:", error);
+                projectResultsDiv.innerHTML = "<p class='text-danger text-center mt-6'>Error de conexión con el servidor.</p>";
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        // --- Funciones para manejar la descarga de archivos ---
+        // Estas funciones son llamadas por el atributo 'onclick' de los botones.
+        
+        /**
+         * Handles the download for an Internship project.
+         * @param {number} id The unique ID of the internship project.
+         */
+        function handleDownloadInternship(id) {
+            if (!id) {
+                console.error("Error: ID de pasantía no proporcionado.");
+                return;
+            }
+            console.log(`Se ha intentado descargar la Pasantía con ID: ${id}`);
+            // Aquí iría la lógica para llamar a una API que sirva el archivo, por ejemplo:
+            // window.location.href = `/api/download/internship/${id}`;
+        }
+
+        /**
+         * Handles the download for a Community Service project.
+         * @param {number} id The unique ID of the community service project.
+         */
+        function generateCommunityServicePdf(id) {
+            if (!id) {
+                console.error("Error: ID de servicio comunitario no proporcionado.");
+                return;
+            }
+            console.log(`Se ha intentado descargar el Servicio Comunitario con ID: ${id}`);
+            // Aquí iría la lógica para llamar a una API que sirva el archivo.
+        }
+
+        /**
+         * Handles the download for an Investigation project.
+         * @param {number} id The unique ID of the investigation project.
+         */
+        function handleDownloadInvestigationProject(id) {
+            if (!id) {
+                console.error("Error: ID de proyecto de investigación no proporcionado.");
+                return;
+            }
+            console.log(`Se ha intentado descargar el Proyecto de Investigación con ID: ${id}`);
+            // Aquí iría la lógica para llamar a una API que sirva el archivo.
+        }
+
+        /**
+         * Handles the download for a Degree project.
+         * @param {number} id The unique ID of the degree project.
+         */
+        function handleDownloadDegreeProject(id) {
+            if (!id) {
+                console.error("Error: ID de trabajo de grado no proporcionado.");
+                return;
+            }
+            console.log(`Se ha intentado descargar el Trabajo de Grado con ID: ${id}`);
+            // Aquí iría la lógica para llamar a una API que sirva el archivo.
+        }
+
+        // Se asume que el `DOMContentLoaded` está en el ámbito correcto.
+        if (resultadosBusqueda) {
+            resultadosBusqueda.addEventListener('click', function(event) {
+                event.preventDefault(); // Previene el comportamiento por defecto de un botón en un formulario.
+                buscarPorCedula();
+            });
+        }
+
+        if (cedulaInput) {
+            cedulaInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        }
+                // Event listener for the modal close button
+        closeProjectModalBtn.addEventListener('click', () => {
+            projectModal.style.display = 'none';
+        });
+
+        // Prevent modal from closing on outside clicks or 'Esc' key press
+        projectModal.addEventListener('click', (event) => {
+            if (event.target === projectModal) {
+                event.stopPropagation();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === "Escape") {
+                event.stopPropagation();
+            }
+        });
+    });
+ // Cierre de $(document).ready()
 	</script>
 </body>
 </html>

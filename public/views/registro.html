@@ -21,26 +21,26 @@
             <form id="registerForm" autocomplete="off" novalidate>
                 <!-- Input Cédula -->
                 <div class="form-group label-floating">
-                    <label class="control-label" for="cedula">Cédula</label>
+                    <label class="control-label-1" for="cedula">Cédula</label>
                     <input class="form-control" id="cedula" type="text" pattern="[0-9]{7,10}" title="La cédula debe contener solo números (7-10 dígitos)" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                     <p class="help-block">Escribe tu Cédula (solo números, 7-10 dígitos)</p>
                 </div>
                 <!-- Input Nombre Completo -->
                 <div class="form-group label-floating">
-                    <label class="control-label" for="nombre_completo">Nombre Completo</label>
+                    <label class="control-label-1" for="nombre_completo">Nombre Completo</label>
                     <input class="form-control" id="nombre_completo" type="text" pattern="[A-Za-z\sñÑáéíóúÁÉÍÓÚ]+" title="El nombre completo solo debe contener letras y espacios" required oninput="this.value = this.value.replace(/[^A-Za-z\sñÑáéíóúÁÉÍÓÚ]/g, '');">
                     <p class="help-block">Escribe tu Nombre Completo (solo letras)</p>
                 </div>
                 <!-- Input Correo -->
                 <div class="form-group label-floating">
-                    <label class="control-label" for="correo">Correo</label>
+                    <label class="control-label-1" for="correo">Correo</label>
                     <input class="form-control" id="correo" type="email" required>
                     <p class="help-block">Escribe tu Correo</p>
                 </div>
                 <!-- Input Contraseña -->
                 <div class="form-group label-floating">
                     <div class="password-container"> <!-- Contenedor para el input y el ojo -->
-                        <label class="control-label" for="contraseña">Contraseña</label>
+                        <label class="control-label-1" for="contraseña">Contraseña</label>
                         <input class="form-control" id="contraseña" type="password" title="La contraseña debe tener al menos 7 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial." required>
                         <!-- Icono de ojo para alternar visibilidad (SVG en línea) -->
                         <span class="toggle-password" id="togglePasswordRegister"> <!-- ID diferente para evitar conflicto -->

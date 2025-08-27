@@ -2,9 +2,10 @@ import express from 'express';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import path from 'path';
-// import pdf from 'html-pdf'; // Ya no se necesita html-pdf
 import { fileURLToPath } from 'url';
-// import fs from 'fs'; // Ya no se necesita fs si no leemos imágenes para PDF
+
+// Importa la función de auditoría
+import { registrarAuditoria } from './bitacora.js'; // ASEGÚRATE DE QUE LA RUTA SEA CORRECTA
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,10 +17,19 @@ const supabaseKey = process.env.SUPABASE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
     console.error('Error: Las variables de entorno SUPABASE_URL o SUPABASE_KEY no están definidas en proyectos-investigacion.js');
+    process.exit(1); 
 }
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const router = express.Router();
+
+// Middleware para obtener el id_login del usuario actual desde la sesión (ejemplo)
+const getUserIdFromSession = (req, res, next) => {
+    req.currentUserIdLogin = req.session?.user?.id || null; 
+    next();
+};
+
+router.use(getUserIdFromSession); // Aplica el middleware a todas las rutas de este router
 
 // =======================================================
 // APIs PARA PROYECTOS DE INVESTIGACIÓN
@@ -35,50 +45,49 @@ router.get('/proyectos-investigacion', async (req, res) => {
                 proyecto,
                 estado,
                 eliminados,
-                id_carrera,
-                id_periodo,
                 mensaje_eliminacion,
-                carreras:id_carrera(carrera),
-                periodos:id_periodo(periodo),
-                estudiantes:id_estudiante(cedula, nombre_completo, carreras:id_carrera(carrera)) // Se añadió la carrera del estudiante
+                carreras:id_carrera(id_carrera, carrera),
+                periodos:id_periodo(id_periodo, periodo),
+                estudiantes:id_estudiante(id_estudiante, cedula, nombre_completo, id_carrera)
             `)
-            .eq('eliminados', false); // Solo proyectos no eliminados lógicamente
+            .eq('eliminados', false); // Filtrar solo proyectos no eliminados
 
         if (error) {
-            console.error('Error al obtener proyectos de investigación:', error.message);
-            return res.status(500).json({ error: 'Error al obtener proyectos de investigación.' });
+            console.error('Error al obtener proyectos de investigación (Router):', error.message);
+            return res.status(500).json({ error: 'Error interno del servidor al obtener proyectos.' });
         }
 
-        const formattedProjects = proyectos.map(project => {
-            const estudianteDisplay = project.estudiantes ? `${project.estudiantes.cedula} - ${project.estudiantes.nombre_completo}` : 'N/A';
-            const estudianteCarrera = project.estudiantes?.carreras?.carrera || 'N/A';
-
+        const formattedProjects = proyectos.map(proyecto => {
             return {
-                ...project,
-                estudiante: {
-                    cedula: project.estudiantes?.cedula,
-                    nombre_completo: project.estudiantes?.nombre_completo,
-                    carrera: estudianteCarrera // Incluimos la carrera del estudiante
-                },
-                periodo: project.periodos?.periodo,
-                carrera: project.carreras?.carrera, // Carrera del proyecto
-                estudianteDisplay: estudianteDisplay
+                id_proyecto_investigacion: proyecto.id_proyecto_investigacion,
+                periodo: proyecto.periodos ? proyecto.periodos.periodo : null,
+                id_periodo: proyecto.periodos ? proyecto.periodos.id_periodo : null,
+                proyecto: proyecto.proyecto,
+                estudiante: proyecto.estudiantes ? { 
+                    id_estudiante: proyecto.estudiantes.id_estudiante, 
+                    cedula: proyecto.estudiantes.cedula, 
+                    nombre_completo: proyecto.estudiantes.nombre_completo,
+                    id_carrera: proyecto.estudiantes.id_carrera
+                } : null,
+                carrera: proyecto.carreras ? proyecto.carreras.carrera : null,
+                id_carrera: proyecto.carreras ? proyecto.carreras.id_carrera : null,
+                estado: proyecto.estado,
+                eliminados: proyecto.eliminados,
+                mensaje_eliminacion: proyecto.mensaje_eliminacion
             };
         });
 
         res.status(200).json(formattedProjects);
-
     } catch (error) {
-        console.error('Error en la ruta /proyectos-investigacion:', error.message);
+        console.error('Error en la ruta /proyectos-investigacion (Router):', error.message);
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 
-// API: Obtener un proyecto de investigación por ID
-router.get('/proyectos-investigacion/:id', async (req, res) => {
-    const { id } = req.params;
+// API: Obtener proyectos eliminados lógicamente
+router.get('/proyectos-investigacion-eliminados', async (req, res) => {
     try {
-        let { data: proyecto, error } = await supabase
+        let { data: proyectos, error } = await supabase
             .from('proyectos_investigacion')
             .select(`
                 id_proyecto_investigacion,
@@ -86,243 +95,408 @@ router.get('/proyectos-investigacion/:id', async (req, res) => {
                 estado,
                 eliminados,
                 mensaje_eliminacion,
-                id_carrera,
-                id_periodo,
-                id_estudiante,
-                carreras:id_carrera(carrera),
-                periodos:id_periodo(periodo),
-                estudiantes:id_estudiante(cedula, nombre_completo, carreras:id_carrera(carrera)) // Se añadió la carrera del estudiante
+                carreras:id_carrera(id_carrera, carrera),
+                periodos:id_periodo(id_periodo, periodo),
+                estudiantes:id_estudiante(id_estudiante, cedula, nombre_completo, id_carrera)
             `)
-            .eq('id_proyecto_investigacion', id)
-            .single();
+            .eq('eliminados', true); // Solo proyectos eliminados
 
         if (error) {
-            console.error('Error al obtener proyecto de investigación por ID:', error.message);
-            return res.status(404).json({ error: 'Proyecto de investigación no encontrado.' });
+            console.error('Error al obtener proyectos de investigación eliminados (Router):', error.message);
+            return res.status(500).json({ error: 'Error interno del servidor al obtener proyectos eliminados.' });
         }
-        res.status(200).json(proyecto);
+
+        const formattedProjects = proyectos.map(proyecto => {
+            return {
+                id_proyecto_investigacion: proyecto.id_proyecto_investigacion,
+                periodo: proyecto.periodos ? proyecto.periodos.periodo : null,
+                id_periodo: proyecto.periodos ? proyecto.periodos.id_periodo : null,
+                proyecto: proyecto.proyecto,
+                estudiante: proyecto.estudiantes ? { 
+                    id_estudiante: proyecto.estudiantes.id_estudiante, 
+                    cedula: proyecto.estudiantes.cedula, 
+                    nombre_completo: proyecto.estudiantes.nombre_completo,
+                    id_carrera: proyecto.estudiantes.id_carrera
+                } : null,
+                carrera: proyecto.carreras ? proyecto.carreras.carrera : null,
+                id_carrera: proyecto.carreras ? proyecto.carreras.id_carrera : null,
+                estado: proyecto.estado,
+                eliminados: proyecto.eliminados,
+                mensaje_eliminacion: proyecto.mensaje_eliminacion
+            };
+        });
+
+        res.status(200).json(formattedProjects);
     } catch (error) {
-        console.error('Error en la ruta /proyectos-investigacion/:id:', error.message);
+        console.error('Error en la ruta /proyectos-investigacion-eliminados (Router):', error.message);
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 
-
-// API: Agregar un nuevo proyecto de investigación
+// API: Agregar nuevo proyecto de investigación
 router.post('/agregar-proyecto-investigacion', async (req, res) => {
-    const { periodoId, nombreProyecto, estudiante, carreraId, estado } = req.body;
+    const {
+        periodoId,
+        nombreProyecto,
+        estudiante: { cedulaEstudiante, nombreCompletoEstudiante, idEstudiante },
+        carreraId,
+        estado
+    } = req.body;
+
+    if (!periodoId || !nombreProyecto || !cedulaEstudiante || !nombreCompletoEstudiante || !carreraId || !estado) {
+        // REGISTRO DE AUDITORÍA: Intento de agregar proyecto de investigación fallido (faltan campos)
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Intento de Agregar Proyecto Fallido',
+            descripcion_detallada: `Intento fallido de agregar proyecto de investigación: Faltan campos obligatorios.`,
+            registro_afectado_id: null,
+        });
+        return res.status(400).json({ error: 'Faltan campos obligatorios para el proyecto de investigación.' });
+    }
 
     try {
-        // Verificar si el estudiante existe, o crearlo si es necesario (similar a Servicio Comunitario)
-        let idEstudiante = estudiante.idEstudiante; // Usar idEstudiante que viene del frontend
-        if (!idEstudiante) {
-            let { data: existingStudent, error: studentCheckError } = await supabase
-                .from('estudiante') 
-                .select('id_estudiante, nombre_completo') // Agregamos nombre_completo para la verificación
-                .eq('cedula', estudiante.cedulaEstudiante)
+        let studentIdToUse = idEstudiante;
+
+        if (!studentIdToUse) { // Si no viene con ID, buscar o insertar estudiante
+            let { data: existingStudent, error: studentSearchError } = await supabase
+                .from('estudiante')
+                .select('id_estudiante, nombre_completo')
+                .eq('cedula', cedulaEstudiante)
                 .single();
 
-            if (studentCheckError && studentCheckError.code !== 'PGRST116') { // PGRST116: No rows found
-                console.error('Error al buscar estudiante:', studentCheckError.message);
-                throw new Error('Error al verificar estudiante.');
+            if (studentSearchError && !studentSearchError.details.includes('0 rows')) {
+                console.error('Error al buscar estudiante existente:', studentSearchError.message);
+                throw new Error('Error al verificar estudiante existente.');
             }
 
             if (existingStudent) {
-                idEstudiante = existingStudent.id_estudiante;
-                // Si el estudiante existe, actualizar su nombre si ha cambiado
-                if (existingStudent.nombre_completo !== estudiante.nombreCompletoEstudiante) {
+                studentIdToUse = existingStudent.id_estudiante;
+                if (existingStudent.nombre_completo !== nombreCompletoEstudiante) {
                     const { error: updateStudentError } = await supabase
-                        .from('estudiante') 
-                        .update({ nombre_completo: estudiante.nombreCompletoEstudiante })
-                        .eq('id_estudiante', idEstudiante);
+                        .from('estudiante')
+                        .update({ nombre_completo: nombreCompletoEstudiante })
+                        .eq('id_estudiante', studentIdToUse);
                     if (updateStudentError) {
                         console.error('Error al actualizar nombre del estudiante existente:', updateStudentError.message);
                     }
                 }
             } else {
-                const { data: newStudent, error: newStudentError } = await supabase
-                    .from('estudiante') 
-                    .insert([{ cedula: estudiante.cedulaEstudiante, nombre_completo: estudiante.nombreCompletoEstudiante, id_carrera: carreraId }]) // Incluir id_carrera al crear estudiante
+                const { data: newStudent, error: insertStudentError } = await supabase
+                    .from('estudiante')
+                    .insert([{ cedula: cedulaEstudiante, nombre_completo: nombreCompletoEstudiante, id_carrera: carreraId }])
                     .select('id_estudiante')
                     .single();
-                if (newStudentError) {
-                    console.error('Error al crear estudiante:', newStudentError.message);
-                    throw new Error('Error al crear estudiante.');
-                }
-                idEstudiante = newStudent.id_estudiante;
-            }
-        } else {
-            // Si el estudiante ya tiene un ID, verificar si el nombre ha cambiado y actualizarlo
-            const { error: updateStudentError } = await supabase
-                .from('estudiante') 
-                .update({ nombre_completo: estudiante.nombreCompletoEstudiante, id_carrera: carreraId }) // Asegurarse de actualizar la carrera también
-                .eq('id_estudiante', idEstudiante);
 
-            if (updateStudentError) {
-                console.error('Error al actualizar nombre y/o carrera del estudiante:', updateStudentError.message);
-                throw new Error('Error al actualizar nombre y/o carrera del estudiante.');
+                if (insertStudentError) {
+                    console.error('Error al insertar nuevo estudiante:', insertStudentError.message);
+                    throw new Error('Error al insertar nuevo estudiante.');
+                }
+                studentIdToUse = newStudent.id_estudiante;
+            }
+        } else { // Si viene con ID, solo actualizar si el nombre ha cambiado
+            const { data: existingStudent, error: studentFetchError } = await supabase
+                .from('estudiante')
+                .select('nombre_completo')
+                .eq('id_estudiante', studentIdToUse)
+                .single();
+            
+            if (studentFetchError && !studentFetchError.details.includes('0 rows')) {
+                console.error('Error al buscar estudiante por ID existente:', studentFetchError.message);
+                throw new Error('Error al verificar estudiante existente por ID.');
+            }
+            
+            if (existingStudent && existingStudent.nombre_completo !== nombreCompletoEstudiante) {
+                const { error: updateStudentError } = await supabase
+                    .from('estudiante')
+                    .update({ nombre_completo: nombreCompletoEstudiante })
+                    .eq('id_estudiante', studentIdToUse);
+                if (updateStudentError) {
+                    console.error('Error al actualizar nombre del estudiante existente:', updateStudentError.message);
+                }
             }
         }
 
-        // Insertar el nuevo proyecto de investigación
-        const { data, error } = await supabase
+
+        const { data: newProject, error: projectInsertError } = await supabase
             .from('proyectos_investigacion')
-            .insert([
-                {
-                    id_periodo: periodoId,
-                    proyecto: nombreProyecto,
-                    id_estudiante: idEstudiante,
-                    id_carrera: carreraId,
-                    estado: estado,
-                    eliminados: false,
-                    mensaje_eliminacion: null // Asegurar que sea nulo al crear
-                }
-            ])
-            .select('*');
+            .insert([{
+                id_periodo: periodoId,
+                proyecto: nombreProyecto,
+                id_estudiante: studentIdToUse,
+                id_carrera: carreraId,
+                estado: estado,
+                eliminados: false,
+                mensaje_eliminacion: null
+            }])
+            .select('id_proyecto_investigacion')
+            .single();
 
-        if (error) {
-            console.error('Error al agregar proyecto de investigación:', error.message);
-            return res.status(500).json({ error: 'Error interno del servidor al agregar proyecto.' });
+        if (projectInsertError) {
+            console.error('Error al insertar proyecto de investigación:', projectInsertError.message);
+            throw new Error('Error al insertar proyecto de investigación.');
         }
-        res.status(201).json({ message: 'Proyecto de investigación agregado exitosamente.', project: data[0] });
+
+        const idProyectoInvestigacion = newProject.id_proyecto_investigacion;
+
+        // REGISTRO DE AUDITORÍA: Proyecto de investigación agregado exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Agregar Proyecto',
+            descripcion_detallada: `Se agregó el proyecto de investigación "${nombreProyecto}" (ID: ${idProyectoInvestigacion}).`,
+            registro_afectado_id: idProyectoInvestigacion.toString(),
+        });
+
+        res.status(201).json({ message: 'Proyecto de investigación agregado exitosamente.', id_proyecto_investigacion: idProyectoInvestigacion });
 
     } catch (error) {
-        console.error('Error en la ruta POST /agregar-proyecto-investigacion:', error.message);
-        res.status(500).json({ error: error.message || 'Error interno del servidor.' });
+        console.error('Error en la ruta /api/agregar-proyecto-investigacion:', error.message);
+        // REGISTRO DE AUDITORÍA: Error interno al agregar proyecto de investigación
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Error al Agregar Proyecto',
+            descripcion_detallada: `Error interno del servidor al intentar agregar el proyecto de investigación. Mensaje: ${error.message}.`,
+            registro_afectado_id: null,
+        });
+        res.status(500).json({ error: error.message || 'Error interno del servidor al agregar proyecto de investigación.' });
     }
 });
 
-// API: Actualizar un proyecto de investigación
+// API: Actualizar un proyecto de investigación existente
 router.put('/proyectos-investigacion/:id', async (req, res) => {
-    const { id } = req.params;
-    const { periodoId, nombreProyecto, estudiante, carreraId, estado } = req.body;
+    const projectId = req.params.id;
+    const {
+        periodoId,
+        nombreProyecto,
+        estudiante: { cedulaEstudiante, nombreCompletoEstudiante, idEstudiante },
+        carreraId,
+        estado
+    } = req.body;
+
+    if (!periodoId || !nombreProyecto || !cedulaEstudiante || !nombreCompletoEstudiante || !carreraId || !estado) {
+        // REGISTRO DE AUDITORÍA: Intento de actualizar proyecto de investigación fallido (faltan campos)
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Intento de Actualizar Proyecto Fallido',
+            descripcion_detallada: `Intento fallido de actualizar proyecto de investigación ID ${projectId}: Faltan campos obligatorios.`,
+            registro_afectado_id: projectId.toString(),
+        });
+        return res.status(400).json({ error: 'Faltan campos obligatorios para actualizar el proyecto de investigación.' });
+    }
 
     try {
-        // Verificar si el estudiante existe, o crearlo si es necesario
-        let idEstudiante = estudiante.idEstudiante; // Usar idEstudiante que viene del frontend
-        if (!idEstudiante) {
-            let { data: existingStudent, error: studentCheckError } = await supabase
-                .from('estudiante') 
-                .select('id_estudiante, nombre_completo') // Agregamos nombre_completo para la verificación
-                .eq('cedula', estudiante.cedulaEstudiante)
+        let studentIdToUse = idEstudiante;
+
+        if (!studentIdToUse) { // Si no viene con ID, buscar o insertar estudiante
+            let { data: existingStudent, error: studentSearchError } = await supabase
+                .from('estudiante')
+                .select('id_estudiante, nombre_completo')
+                .eq('cedula', cedulaEstudiante)
                 .single();
 
-            if (studentCheckError && studentCheckError.code !== 'PGRST116') { // PGRST116: No rows found
-                console.error('Error al buscar estudiante:', studentCheckError.message);
-                throw new Error('Error al verificar estudiante.');
+            if (studentSearchError && !studentSearchError.details.includes('0 rows')) {
+                console.error('Error al buscar estudiante existente:', studentSearchError.message);
+                throw new Error('Error al verificar estudiante existente.');
             }
 
             if (existingStudent) {
-                idEstudiante = existingStudent.id_estudiante;
-                // Si el estudiante existe, actualizar su nombre si ha cambiado
-                if (existingStudent.nombre_completo !== estudiante.nombreCompletoEstudiante) {
+                studentIdToUse = existingStudent.id_estudiante;
+                if (existingStudent.nombre_completo !== nombreCompletoEstudiante) {
                     const { error: updateStudentError } = await supabase
-                        .from('estudiante') 
-                        .update({ nombre_completo: estudiante.nombreCompletoEstudiante })
-                        .eq('id_estudiante', idEstudiante);
+                        .from('estudiante')
+                        .update({ nombre_completo: nombreCompletoEstudiante })
+                        .eq('id_estudiante', studentIdToUse);
                     if (updateStudentError) {
                         console.error('Error al actualizar nombre del estudiante existente:', updateStudentError.message);
                     }
                 }
             } else {
-                const { data: newStudent, error: newStudentError } = await supabase
-                    .from('estudiante') 
-                    .insert([{ cedula: estudiante.cedulaEstudiante, nombre_completo: estudiante.nombreCompletoEstudiante, id_carrera: carreraId }]) // Incluir id_carrera al crear estudiante
+                const { data: newStudent, error: insertStudentError } = await supabase
+                    .from('estudiante')
+                    .insert([{ cedula: cedulaEstudiante, nombre_completo: nombreCompletoEstudiante, id_carrera: carreraId }])
                     .select('id_estudiante')
                     .single();
-                if (newStudentError) {
-                    console.error('Error al crear estudiante:', newStudentError.message);
-                    throw new Error('Error al crear estudiante.');
-                }
-                idEstudiante = newStudent.id_estudiante;
-            }
-        } else {
-            // Si el estudiante ya tiene un ID, verificar si el nombre ha cambiado y actualizarlo
-            const { error: updateStudentError } = await supabase
-                .from('estudiante') 
-                .update({ nombre_completo: estudiante.nombreCompletoEstudiante, id_carrera: carreraId }) // Asegurarse de actualizar la carrera también
-                .eq('id_estudiante', idEstudiante);
 
-            if (updateStudentError) {
-                console.error('Error al actualizar nombre y/o carrera del estudiante:', updateStudentError.message);
-                throw new Error('Error al actualizar nombre y/o carrera del estudiante.');
+                if (insertStudentError) {
+                    console.error('Error al insertar nuevo estudiante:', insertStudentError.message);
+                    throw new Error('Error al insertar nuevo estudiante.');
+                }
+                studentIdToUse = newStudent.id_estudiante;
+            }
+        } else { // Si viene con ID, solo actualizar si el nombre ha cambiado
+            const { data: existingStudent, error: studentFetchError } = await supabase
+                .from('estudiante')
+                .select('nombre_completo')
+                .eq('id_estudiante', studentIdToUse)
+                .single();
+            
+            if (studentFetchError && !studentFetchError.details.includes('0 rows')) {
+                console.error('Error al buscar estudiante por ID existente:', studentFetchError.message);
+                throw new Error('Error al verificar estudiante existente por ID.');
+            }
+            
+            if (existingStudent && existingStudent.nombre_completo !== nombreCompletoEstudiante) {
+                const { error: updateStudentError } = await supabase
+                    .from('estudiante')
+                    .update({ nombre_completo: nombreCompletoEstudiante })
+                    .eq('id_estudiante', studentIdToUse);
+                if (updateStudentError) {
+                    console.error('Error al actualizar nombre del estudiante existente:', updateStudentError.message);
+                }
             }
         }
 
-        // Actualizar el proyecto de investigación
-        const { data, error } = await supabase
+        const { error: projectUpdateError } = await supabase
             .from('proyectos_investigacion')
             .update({
                 id_periodo: periodoId,
                 proyecto: nombreProyecto,
-                id_estudiante: idEstudiante,
+                id_estudiante: studentIdToUse,
                 id_carrera: carreraId,
                 estado: estado
             })
-            .eq('id_proyecto_investigacion', id)
-            .select('*');
+            .eq('id_proyecto_investigacion', projectId);
 
-        if (error) {
-            console.error('Error al actualizar proyecto de investigación:', error.message);
-            return res.status(500).json({ error: 'Error interno del servidor al actualizar proyecto.' });
+        if (projectUpdateError) {
+            console.error('Error al actualizar proyecto de investigación:', projectUpdateError.message);
+            throw new Error('Error al actualizar proyecto de investigación.');
         }
-        res.status(200).json({ message: 'Proyecto de investigación actualizado exitosamente.', project: data[0] });
+
+        // REGISTRO DE AUDITORÍA: Proyecto de investigación actualizado exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Modificar Proyecto',
+            descripcion_detallada: `Se actualizó el proyecto de investigación "${nombreProyecto}" (ID: ${projectId}).`,
+            registro_afectado_id: projectId.toString(),
+        });
+
+        res.status(200).json({ message: 'Proyecto de investigación actualizado exitosamente.' });
 
     } catch (error) {
-        console.error('Error en la ruta PUT /proyectos-investigacion/:id:', error.message);
-        res.status(500).json({ error: error.message || 'Error interno del servidor.' });
+        console.error('Error en la ruta PUT /api/proyectos-investigacion/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error interno al actualizar proyecto de investigación
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Error al Modificar Proyecto',
+            descripcion_detallada: `Error interno del servidor al intentar actualizar el proyecto de investigación ID ${projectId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: projectId.toString(),
+        });
+        res.status(500).json({ error: error.message || 'Error interno del servidor al actualizar proyecto de investigación.' });
     }
 });
 
-// API: Eliminación lógica de un proyecto de investigación
+// API: Eliminar lógicamente un proyecto de investigación (marcarlo como eliminado)
 router.put('/proyectos-investigacion/eliminar-logico/:id', async (req, res) => {
-    const { id } = req.params;
+    const projectId = req.params.id;
     const { mensajeEliminacion } = req.body;
 
     try {
-        const { data, error } = await supabase
+        const { error, data: oldProject } = await supabase
             .from('proyectos_investigacion')
-            .update({ eliminados: true, mensaje_eliminacion: mensajeEliminacion || null })
-            .eq('id_proyecto_investigacion', id);
+            .update({
+                eliminados: true,
+                mensaje_eliminacion: mensajeEliminacion || null
+            })
+            .eq('id_proyecto_investigacion', projectId)
+            .select('proyecto') // Seleccionar el nombre del proyecto para el log
+            .single();
 
         if (error) {
-            console.error('Error al eliminar lógicamente el proyecto de investigación:', error.message);
-            return res.status(500).json({ error: 'Error interno del servidor al eliminar lógicamente el proyecto.' });
+            console.error('Error al marcar proyecto de investigación como eliminado lógicamente:', error.message);
+            // REGISTRO DE AUDITORÍA: Error al intentar eliminar lógicamente proyecto
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Proyectos de Investigación',
+                accion_realizada: 'Error al Eliminar Proyecto (Lógico)',
+                descripcion_detallada: `Error interno del servidor al intentar eliminar lógicamente el proyecto de investigación ID ${projectId}. Mensaje: ${error.message}.`,
+                registro_afectado_id: projectId.toString(),
+            });
+            return res.status(500).json({ error: 'Error interno del servidor al eliminar lógicamente el proyecto de investigación.' });
         }
+        
+        // REGISTRO DE AUDITORÍA: Proyecto de investigación eliminado lógicamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Eliminar Proyecto (Lógico)',
+            descripcion_detallada: `Se eliminó lógicamente el proyecto de investigación "${oldProject?.proyecto || 'Desconocido'}" (ID: ${projectId}). Mensaje: "${mensajeEliminacion || 'Sin mensaje'}".`,
+            registro_afectado_id: projectId.toString(),
+        });
+
         res.status(200).json({ message: 'Proyecto de investigación eliminado lógicamente exitosamente.' });
     } catch (error) {
-        console.error('Error en la ruta PUT /proyectos-investigacion/eliminar-logico:', error.message);
+        console.error('Error en la ruta PUT /api/proyectos-investigacion/eliminar-logico/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al eliminar lógicamente proyecto
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Error de Excepción al Eliminar Proyecto (Lógico)',
+            descripcion_detallada: `Excepción al intentar eliminar lógicamente el proyecto de investigación ID ${projectId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: projectId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 
-// API: Restaurar proyecto de investigación (marcar como no eliminado)
+// API: Restaurar un proyecto eliminado lógicamente (marcarlo como no eliminado)
 router.put('/proyectos-investigacion/restaurar/:id', async (req, res) => {
-    const { id } = req.params;
-    const { mensajeRestauracion } = req.body; // Opcional
+    const projectId = req.params.id;
 
     try {
-        const { data, error } = await supabase
+        const { error, data: restoredProject } = await supabase
             .from('proyectos_investigacion')
-            .update({ 
-                eliminados: false, 
-                mensaje_eliminacion: null, // Limpiar el mensaje de eliminación
-                // mensaje_restauracion: mensajeRestauracion || null // Guardar mensaje de restauración - No existe en la tabla
+            .update({
+                eliminados: false,
+                mensaje_eliminacion: null
             })
-            .eq('id_proyecto_investigacion', id);
+            .eq('id_proyecto_investigacion', projectId)
+            .select('proyecto') // Seleccionar el nombre del proyecto para el log
+            .single();
 
         if (error) {
             console.error('Error al restaurar proyecto de investigación:', error.message);
-            return res.status(500).json({ error: 'Error interno del servidor al restaurar proyecto.' });
+            // REGISTRO DE AUDITORÍA: Error al intentar restaurar proyecto
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Proyectos de Investigación',
+                accion_realizada: 'Error al Restaurar Proyecto',
+                descripcion_detallada: `Error interno del servidor al intentar restaurar el proyecto de investigación ID ${projectId}. Mensaje: ${error.message}.`,
+                registro_afectado_id: projectId.toString(),
+            });
+            return res.status(500).json({ error: 'Error interno del servidor al restaurar el proyecto de investigación.' });
         }
+
+        // REGISTRO DE AUDITORÍA: Proyecto de investigación restaurado
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Restaurar Proyecto',
+            descripcion_detallada: `Se restauró el proyecto de investigación "${restoredProject?.proyecto || 'Desconocido'}" (ID: ${projectId}).`,
+            registro_afectado_id: projectId.toString(),
+        });
+
         res.status(200).json({ message: 'Proyecto de investigación restaurado exitosamente.' });
     } catch (error) {
-        console.error('Error en la ruta PUT /proyectos-investigacion/restaurar:', error.message);
+        console.error('Error en la ruta PUT /api/proyectos-investigacion/restaurar/:id:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al restaurar proyecto
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Error de Excepción al Restaurar Proyecto',
+            descripcion_detallada: `Excepción al intentar restaurar el proyecto de investigación ID ${projectId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: projectId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 
-// API: Obtener datos específicos para generar el PDF de un proyecto de investigación
+
+// API: Obtener datos de un proyecto de investigación para PDF
 router.get('/proyectos-investigacion/:id/datos-pdf', async (req, res) => {
     const projectId = req.params.id;
 
@@ -340,13 +514,37 @@ router.get('/proyectos-investigacion/:id/datos-pdf', async (req, res) => {
             .single();
 
         if (error && error.details.includes('0 rows')) {
+            // REGISTRO DE AUDITORÍA: Intento de generar PDF fallido (proyecto no encontrado)
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Proyectos de Investigación',
+                accion_realizada: 'Intento de Descarga PDF Fallido',
+                descripcion_detallada: `Intento fallido de generar PDF para proyecto de investigación ID ${projectId}: Proyecto no encontrado.`,
+                registro_afectado_id: projectId.toString(),
+            });
             return res.status(404).json({ message: 'Proyecto de investigación no encontrado.' });
         } else if (error) {
             console.error('Error al obtener proyecto de investigación para PDF:', error.message);
+            // REGISTRO DE AUDITORÍA: Error al obtener datos de proyecto para PDF
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Proyectos de Investigación',
+                accion_realizada: 'Error al Descargar PDF',
+                descripcion_detallada: `Error interno del servidor al obtener datos para PDF del proyecto de investigación ID ${projectId}. Mensaje: ${error.message}.`,
+                registro_afectado_id: projectId.toString(),
+            });
             return res.status(500).json({ error: 'Error interno del servidor al obtener datos del proyecto de investigación.' });
         }
 
         if (!project) {
+            // REGISTRO DE AUDITORÍA: Intento de generar PDF fallido (proyecto no encontrado, segunda verificación)
+            await registrarAuditoria({
+                id_login: req.currentUserIdLogin,
+                modulo_afectado: 'Proyectos de Investigación',
+                accion_realizada: 'Intento de Descarga PDF Fallido',
+                descripcion_detallada: `Intento fallido de generar PDF para proyecto de investigación ID ${projectId}: Proyecto no encontrado (segunda verificación).`,
+                registro_afectado_id: projectId.toString(),
+            });
             return res.status(404).json({ message: 'Proyecto de investigación no encontrado.' });
         }
 
@@ -363,13 +561,29 @@ router.get('/proyectos-investigacion/:id/datos-pdf', async (req, res) => {
             } : null
         };
 
+        // REGISTRO DE AUDITORÍA: Datos para PDF de proyecto de investigación descargados exitosamente
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Descargar PDF (Datos)',
+            descripcion_detallada: `Se descargaron los datos para el PDF del proyecto de investigación "${project.proyecto}" (ID: ${projectId}).`,
+            registro_afectado_id: projectId.toString(),
+        });
+
         res.status(200).json(responseData);
 
     } catch (error) {
         console.error('Error en la ruta /proyectos-investigacion/:id/datos-pdf:', error.message);
+        // REGISTRO DE AUDITORÍA: Error de excepción al generar PDF
+        await registrarAuditoria({
+            id_login: req.currentUserIdLogin,
+            modulo_afectado: 'Proyectos de Investigación',
+            accion_realizada: 'Error de Excepción al Descargar PDF',
+            descripcion_detallada: `Excepción al intentar generar PDF para proyecto de investigación ID ${projectId}. Mensaje: ${error.message}.`,
+            registro_afectado_id: projectId.toString(),
+        });
         res.status(500).json({ error: 'Error interno del servidor al obtener datos para PDF.' });
     }
 });
-
 
 export default router;
