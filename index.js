@@ -13,48 +13,38 @@ import { createClient } from '@supabase/supabase-js'
 const app = express();
 app.use(express.json());
 dotenv.config();
-
-
-//Configuración del control de sesiones 
+// Configuración de CORS
 const allowedOrigins = [
-    'http://localhost:3000', // Para desarrollo local
-    'https://proyecto-auditoria.vercel.app' // Reemplaza con tu dominio real de Vercel para el frontend
+  'http://localhost:3000',          // Desarrollo local
+  /^https:\/\/.*\.vercel\.app$/     // Producción y previews de Vercel
 ];
 
 app.use(cors({
-    origin: function (origin, callback) {
-        // Permitir solicitudes sin origen (como de herramientas Postman/curl o para archivos estáticos)
-        if (!origin) return callback(null, true);
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
 
-        // Verifica si el origen está en la lista de permitidos directamente
-        if (allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
-
-        // Verifica si el origen coincide con un patrón regex (para Vercel preview deployments)
-        for (let i = 0; i < allowedOrigins.length; i++) {
-            if (allowedOrigins[i] instanceof RegExp && allowedOrigins[i].test(origin)) {
-                return callback(null, true);
-            }
-        }
-
-        const msg = 'La política de CORS para este sitio no permite el acceso desde el Origen especificado.';
-        return callback(new Error(msg), false);
-    },
-    credentials: true, // Esto es crucial para permitir que las cookies se envíen
-    optionsSuccessStatus: 200 // Algunas versiones de navegadores pueden necesitar esto
-}));
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'a-super-secret-key-for-sessions', // Clave secreta para firmar el cookie de sesión. ¡Cámbiala en tu .env!
-    resave: false, // Evita que la sesión se guarde si no se modificó
-    saveUninitialized: false, // Evita que se guarden sesiones sin inicializar
-    cookie: {
-        maxAge: 3600000, // Duración del cookie de sesión en milisegundos (1 hora)
-        httpOnly: true, // Previene el acceso de JavaScript a la cookie
-        // secure: true si se está en producción (HTTPS), false en desarrollo (HTTP)
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // 'none' para cross-site en prod, 'lax' para mismo sitio en dev
+    if (allowedOrigins.some(o => (o instanceof RegExp ? o.test(origin) : o === origin))) {
+      return callback(null, true);
     }
+
+    const msg = 'La política de CORS no permite el acceso desde este origen.';
+    return callback(new Error(msg), false);
+  },
+  credentials: true,               // 🔑 Necesario para enviar cookies
+  optionsSuccessStatus: 200
+}));
+
+// Configuración de sesiones
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'a-super-secret-key-for-sessions',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 3600000,                // 1 hora
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // HTTPS en Vercel
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  }
 }));
 
 
