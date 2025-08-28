@@ -244,11 +244,8 @@ app.post("/api/login", async (req, res) => {
             .single();
 
         if (error || !data) {
-            // =======================================================
-            // REGISTRO DE AUDITORÍA: Intento de inicio de sesión fallido (usuario no encontrado)
-            // =======================================================
             await registrarAuditoria({
-                id_login: null, // No hay un id_login válido si el usuario no fue encontrado
+                id_login: null,
                 modulo_afectado: 'Autenticación',
                 accion_realizada: 'Intento de Inicio de Sesión Fallido',
                 descripcion_detallada: `Intento de inicio de sesión con correo "${correo}" fallido: Usuario no encontrado.`,
@@ -260,11 +257,8 @@ app.post("/api/login", async (req, res) => {
         const isPasswordValid = await bcrypt.compare(contraseña, data.contraseña);
 
         if (!isPasswordValid) {
-            // =======================================================
-            // REGISTRO DE AUDITORÍA: Intento de inicio de sesión fallido (contraseña incorrecta)
-            // =======================================================
             await registrarAuditoria({
-                id_login: data.id_login, // Tenemos el id_login, pero la contraseña falló
+                id_login: data.id_login,
                 modulo_afectado: 'Autenticación',
                 accion_realizada: 'Intento de Inicio de Sesión Fallido',
                 descripcion_detallada: `Intento de inicio de sesión para usuario con ID ${data.id_login} y correo "${correo}" fallido: Contraseña incorrecta.`,
@@ -282,8 +276,19 @@ app.post("/api/login", async (req, res) => {
         };
 
         // =======================================================
-        // REGISTRO DE AUDITORÍA: Inicio de sesión exitoso
+        // 🔹 Enviamos cookie manual adicional
         // =======================================================
+        res.cookie("userSession", JSON.stringify({
+            id: data.id_login,
+            correo: data.correo,
+            rol: data.rol
+        }), {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // true en vercel
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 3600000 // 1 hora
+        });
+
         await registrarAuditoria({
             id_login: data.id_login,
             modulo_afectado: 'Autenticación',
@@ -302,12 +307,8 @@ app.post("/api/login", async (req, res) => {
 
     } catch (error) {
         console.error('Error en la ruta /api/login:', error.message);
-        // =======================================================
-        // REGISTRO DE AUDITORÍA: Error interno del servidor durante el login
-        // (Considera si quieres registrar detalles del error aquí, pero ten cuidado con información sensible)
-        // =======================================================
         await registrarAuditoria({
-            id_login: null, // No sabemos quién intentó iniciar sesión
+            id_login: null,
             modulo_afectado: 'Autenticación',
             accion_realizada: 'Error Interno del Servidor',
             descripcion_detallada: `Error crítico durante el proceso de login. Mensaje: ${error.message}.`,
@@ -315,6 +316,7 @@ app.post("/api/login", async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
+
 
 // Ruta para cerrar sesión (NUEVO)
 app.post('/api/logout', (req, res) => {
