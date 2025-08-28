@@ -100,17 +100,12 @@ app.use(express.static(__dirname + "/public"));
 
 //Rutas
 app.get("/", (req, res) => res.sendFile(__dirname + "/public/views/index.html"));
-app.get("/home", isAuthenticated,(req, res) => {
-    const cookie = req.cookies.userSession;
-    if (!cookie) {
-        return res.redirect("/login");
-    }
-    const user = JSON.parse(cookie);
+app.get("/home", requireLogin, (req, res) => {
 
     // Renderizas tu página home con los datos del usuario
     res.sendFile(path.join(__dirname, "/public/views/home.html"));
 });
-app.get("/servicio-comunitario", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/servicio-comunitario.html"));
+app.get("/servicio-comunitario", requireLogin, (req, res) => res.sendFile(__dirname + "/public/views/servicio-comunitario.html"));
 app.get("/proyectos-eliminados", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/proyectos-eliminados.html"));
 app.get("/trabajo-de-grado", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/trabajo-de-grado.html"));
 app.get("/proyectos", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/proyectos.html"));
