@@ -71,7 +71,7 @@ function requireLogin(req, res, next) {
 
     try {
         const user = JSON.parse(cookie);
-        req.user = user; // 🔥 así puedes usar req.user en tus rutas
+        req.session.user = user; // 🔥 así puedes usar req.user en tus rutas
         next();
     } catch (err) {
         console.error("Error parseando cookie:", err.message);
