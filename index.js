@@ -62,6 +62,27 @@ function isAuthenticated(req, res, next) {
     }
 }
 
+// middleware/auth.js
+function requireLogin(req, res, next) {
+    const cookie = req.cookies.userSession;
+    if (!cookie) {
+        return res.status(401).json({ error: "No autorizado. Inicia sesión." });
+    }
+
+    try {
+        const user = JSON.parse(cookie);
+        req.user = user; // 🔥 así puedes usar req.user en tus rutas
+        next();
+    } catch (err) {
+        console.error("Error parseando cookie:", err.message);
+        return res.status(400).json({ error: "Sesión inválida. Vuelve a iniciar sesión." });
+    }
+}
+
+
+
+
+
 const PORT = process.env.PORT || 3000;
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_KEY
@@ -79,7 +100,7 @@ app.use(express.static(__dirname + "/public"));
 
 //Rutas
 app.get("/", (req, res) => res.sendFile(__dirname + "/public/views/index.html"));
-app.get("/home", (req, res) => {
+app.get("/home", isAuthenticated,(req, res) => {
     const cookie = req.cookies.userSession;
     if (!cookie) {
         return res.redirect("/login");
