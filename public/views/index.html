@@ -310,7 +310,7 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({ correo, contraseña }),
-                        credentials: true
+                        credentials: 'include'
                     });
 
                     const result = await response.json();
