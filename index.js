@@ -18,7 +18,7 @@ dotenv.config();
 //Configuración del control de sesiones 
 const allowedOrigins = [
     'http://localhost:3000', // Para desarrollo local
-    'https://proyecto-auditoria.vercel.app' // Reemplaza con tu dominio real de Vercel para el frontend
+    'https://proyecto-auditoria.vercel.app/' // Reemplaza con tu dominio real de Vercel para el frontend
 ];
 
 app.use(cors({
