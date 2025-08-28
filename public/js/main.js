@@ -13,36 +13,69 @@ $(document).ready(function(){
     });
 
     // Función para el botón de salida (logout)
-    $('.btn-exit-system').on('click', function(){
-        console.log("Clic detectado en el botón de salida."); // Mensaje inicial
+  // Asegúrate de que este código se coloque en tu main.js
 
-        swal({
-            title: 'Are you sure?',
-            text: "The current session will be closed",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#03A9F4',
-            cancelButtonColor: '#F44336',
-            confirmButtonText: '<i class="zmdi zmdi-run"></i> Yes, Exit!',
-            cancelButtonText: '<i class="zmdi zmdi-close-circle"></i> No, Cancel!',
-            // --- Opciones para evitar cierres accidentales ---
-            allowOutsideClick: false, // Evita cerrar el SweetAlert al hacer clic fuera
-            allowEscapeKey: false,   // Evita cerrar el SweetAlert al presionar la tecla Escape
-            // ------------------------------------------------
-        }).then(function (result) {
-            console.log("Resultado del SweetAlert:", result); // Muestra el objeto 'result' completo
+// Asegúrate de que este código se coloque en tu main.js
 
-            // 'result.value' es true si el botón de confirmar fue presionado en SweetAlert2
-            if (result.value) {
-                console.log("Confirmación de salida recibida. Redirigiendo a /..."); // Mensaje antes de redirigir
-                window.location.href = "/"; // Redirige a la raíz del sitio (index.html, o lo que tu backend sirva para '/')
-            } else {
-                console.log("Cancelación de salida o clic fuera del SweetAlert."); // Mensaje si se cancela
+		$(document).ready(function() {
+
+
+            // ** Lógica para cerrar sesión **
+            const logoutButton = document.getElementById('logoutBtn');
+            const customConfirmModal = document.getElementById('customConfirmModal');
+            const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+            const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+
+            // Función para mostrar el modal personalizado
+            function showCustomConfirmModal() {
+                customConfirmModal.classList.add('active');
             }
-        }).catch(function(error) {
-            console.error("Error en el SweetAlert:", error); // Captura posibles errores en el SweetAlert
+
+            // Función para ocultar el modal personalizado
+            function hideCustomConfirmModal() {
+                customConfirmModal.classList.remove('active');
+            }
+
+            // Event listener para el botón de cerrar sesión
+            logoutButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Evita la redirección inmediata del <a>
+                showCustomConfirmModal();
+            });
+
+            // Event listener para el botón "Sí, cerrar sesión" del modal
+            confirmLogoutBtn.addEventListener('click', async function() {
+                hideCustomConfirmModal(); // Oculta el modal
+
+                try {
+                    const response = await fetch('/api/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        // Si el backend confirma el cierre de sesión, redirige
+                        window.location.href = '/'; // Redirige a la página de inicio/login
+                    } else {
+                        // Manejar errores si el servidor responde con un status diferente de 200
+                        const errorData = await response.json();
+                        // Si SweetAlert2 no está cargado, usamos el alert nativo.
+                        // Lo importante es que aquí ya no hay un Swal.fire para evitar el doble modal
+                        console.error('Error al cerrar sesión:', errorData.message);
+                        alert('Error al cerrar sesión: ' + (errorData.message || 'Hubo un problema.'));
+                    }
+                } catch (error) {
+                    console.error('Error de red al intentar cerrar sesión:', error);
+                    alert('Error de conexión al cerrar sesión. Inténtalo de nuevo.');
+                }
+            });
+
+            // Event listener para el botón "Cancelar" del modal
+            cancelLogoutBtn.addEventListener('click', function() {
+                hideCustomConfirmModal(); // Simplemente oculta el modal
         });
-    });
+    }); 
 
     // Función para el menú del dashboard
     $('.btn-menu-dashboard').on('click', function(){

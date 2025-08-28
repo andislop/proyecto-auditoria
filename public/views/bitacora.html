@@ -25,6 +25,94 @@
             color: white;
             vertical-align: middle;
         }
+                                   /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
+        .custom-modal-overlag {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlag.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-contento {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-modal-overlag.active .custom-modal-content {
+            transform: translateY(0);
+        }
+
+        .custom-modal-contento h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .custom-modal-contento p {
+            margin-bottom: 25px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .custom-modal-botones {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .custom-modal-botones button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .custom-modal-botones button.confirm {
+            background-color: #f44336; /* Rojo para confirmar */
+            color: white;
+        }
+
+        .custom-modal-botones button.cancel {
+            background-color: #ccc; /* Gris para cancelar */
+            color: #333;
+        }
+
+        .custom-modal-botones button:hover {
+            transform: translateY(-2px);
+        }
+
+        .custom-modal-botones button.confirm:hover {
+            background-color: #d32f2f;
+        }
+
+        .custom-modal-botones button.cancel:hover {
+            background-color: #bbb;
+        }
+
 
         /* Estilos para las filas al pasar el ratón (hover) */
         .table-audit-logs tbody tr:hover {
@@ -143,7 +231,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/" class="btn-exit-system">
+                        <a href="#" class="btn-exit-system" id="logoutBtn">
                             <i class="zmdi zmdi-power"></i>
                         </a>
                     </li>
@@ -324,6 +412,18 @@
             </div>
         </div>
     </div>
+            <!-- Custom Modal for Confirmation (Alternative to SweetAlert2 if not working) -->
+    <div id="customConfirmModal" class="custom-modal-overlag">
+        <div class="custom-modal-contento">
+            <h2>¿Estás seguro?</h2>
+            <p>¿Realmente quieres cerrar sesión?</p>
+            <div class="custom-modal-botones">
+                <button class="confirm" id="confirmLogoutBtn">Sí, cerrar sesión</button>
+                <button class="cancel" id="cancelLogoutBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
 
     <!--====== Scripts -->
     <script src="./js/jquery-3.1.1.min.js"></script>
@@ -402,8 +502,6 @@
             try {
                 const logs = await fetchWithExponentialBackoff('/api/bitacora', {
                     method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mensajeRestauracion: mensajeRestauracion }),
                     credentials: 'include'
                 });
 
