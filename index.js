@@ -18,18 +18,28 @@ dotenv.config();
 //Configuración del control de sesiones 
 const allowedOrigins = [
     'http://localhost:3000', // Para desarrollo local
-    'https://proyecto-auditoria.vercel.app/' // Reemplaza con tu dominio real de Vercel para el frontend
+    'https://proyecto-auditoria.vercel.app' // Reemplaza con tu dominio real de Vercel para el frontend
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
         // Permitir solicitudes sin origen (como de herramientas Postman/curl o para archivos estáticos)
         if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'La política de CORS para este sitio no permite el acceso desde el Origen especificado.';
-            return callback(new Error(msg), false);
+
+        // Verifica si el origen está en la lista de permitidos directamente
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
         }
-        return callback(null, true);
+
+        // Verifica si el origen coincide con un patrón regex (para Vercel preview deployments)
+        for (let i = 0; i < allowedOrigins.length; i++) {
+            if (allowedOrigins[i] instanceof RegExp && allowedOrigins[i].test(origin)) {
+                return callback(null, true);
+            }
+        }
+
+        const msg = 'La política de CORS para este sitio no permite el acceso desde el Origen especificado.';
+        return callback(new Error(msg), false);
     },
     credentials: true, // Esto es crucial para permitir que las cookies se envíen
     optionsSuccessStatus: 200 // Algunas versiones de navegadores pueden necesitar esto
