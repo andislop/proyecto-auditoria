@@ -1329,12 +1329,14 @@
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(internshipData),
+                        credentials: 'include'
                     });
                 } else {
                     response = await fetchWithExponentialBackoff('/api/agregar-pasantia', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(internshipData),
+                        credentials: 'include'
                     });
                 }
                 
@@ -1381,7 +1383,8 @@
                     const response = await fetchWithExponentialBackoff(`/api/pasantias/eliminar-logico/${internshipId}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion })
+                        body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion }),
+                        credentials: 'include'
                     });
 
                     if (response && response.message) {

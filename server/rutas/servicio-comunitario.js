@@ -25,17 +25,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const router = express.Router();
 
-// Middleware para obtener el id_login del usuario actual desde la sesión (ejemplo)
-// Asegúrate de que este middleware o una lógica similar exista en tu app.js/index.js
-// o en un middleware global si el id_login no está disponible en req.session.user.id
-const getUserIdFromSession = (req, res, next) => {
-    // Si usas express-session, el id del usuario debería estar en req.session.user.id
-    // Si no, necesitarás otra forma de obtenerlo (ej. JWT, otra gestión de sesión)
-    req.currentUserIdLogin = req.session?.user?.id || null; 
-    next();
-};
 
-router.use(getUserIdFromSession); // Aplica el middleware a todas las rutas de este router
 
 // =======================================================
 // APIs PARA SERVICIO COMUNITARIO

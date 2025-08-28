@@ -1259,12 +1259,14 @@
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(projectData),
+                    credentials: 'include'
                 });
             } else {
                 response = await fetchWithExponentialBackoff('/api/agregar-proyecto-comunitario', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(projectData),
+                    credentials: 'include'
                 });
             }
             
@@ -1314,7 +1316,8 @@
                 const response = await fetchWithExponentialBackoff(`/api/proyectos-comunitarios/eliminar-logico/${projectId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion })
+                    body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion }),
+                    credentials: 'include'
                 });
 
                 if (response && response.message) {

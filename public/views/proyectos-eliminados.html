@@ -858,7 +858,8 @@
                     const response = await fetchWithExponentialBackoff(endpoint, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ mensajeRestauracion: mensajeRestauracion })
+                        body: JSON.stringify({ mensajeRestauracion: mensajeRestauracion }),
+                        credentials: 'include'
                     });
 
                     if (response && response.message) {

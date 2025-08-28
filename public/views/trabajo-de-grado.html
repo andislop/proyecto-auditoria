@@ -1122,12 +1122,14 @@
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(degreeProjectData),
+                        credentials: 'include'
                     });
                 } else {
                     response = await fetchWithExponentialBackoff('/api/agregar-trabajo-de-grado', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(degreeProjectData),
+                        credentials: 'include'
                     });
                 }
                 
@@ -1174,7 +1176,8 @@
                     const response = await fetchWithExponentialBackoff(`/api/trabajos-de-grado/eliminar-logico/${degreeProjectId}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion })
+                        body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion }),
+                        credentials: 'include'
                     });
 
                     if (response && response.message) {

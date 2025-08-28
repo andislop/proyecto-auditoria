@@ -23,13 +23,6 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const router = express.Router();
 
-// Middleware para obtener el id_login del usuario actual desde la sesión (ejemplo)
-const getUserIdFromSession = (req, res, next) => {
-    req.currentUserIdLogin = req.session?.user?.id || null; 
-    next();
-};
-
-router.use(getUserIdFromSession); // Aplica el middleware a todas las rutas de este router
 
 // =======================================================
 // APIs PARA PROYECTOS DE INVESTIGACIÓN

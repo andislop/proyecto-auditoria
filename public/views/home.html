@@ -10,6 +10,94 @@
         .tile-title {
             background-color: #4285f4 !important; /* Azul de Google, puedes ajustarlo */
         }
+
+        /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-modal-overlay.active .custom-modal-content {
+            transform: translateY(0);
+        }
+
+        .custom-modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .custom-modal-content p {
+            margin-bottom: 25px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .custom-modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .custom-modal-buttons button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .custom-modal-buttons button.confirm {
+            background-color: #f44336; /* Rojo para confirmar */
+            color: white;
+        }
+
+        .custom-modal-buttons button.cancel {
+            background-color: #ccc; /* Gris para cancelar */
+            color: #333;
+        }
+
+        .custom-modal-buttons button:hover {
+            transform: translateY(-2px);
+        }
+
+        .custom-modal-buttons button.confirm:hover {
+            background-color: #d32f2f;
+        }
+
+        .custom-modal-buttons button.cancel:hover {
+            background-color: #bbb;
+        }
     </style>
 </head>
 <body>
@@ -34,7 +122,8 @@
 						</a>
 					</li>
 					<li>
-						<a href="/" class="btn-exit-system" id="logoutBtn">
+						<!-- Modificamos el href para que no redirija directamente -->
+						<a href="#" class="btn-exit-system" id="logoutBtn">
 							<i class="zmdi zmdi-power"></i>
 						</a>
 					</li>
@@ -166,13 +255,30 @@
 		</div>
 	</section>
 
+    <!-- Custom Modal for Confirmation (Alternative to SweetAlert2 if not working) -->
+    <div id="customConfirmModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <h2>¿Estás seguro?</h2>
+            <p>¿Realmente quieres cerrar sesión?</p>
+            <div class="custom-modal-buttons">
+                <button class="confirm" id="confirmLogoutBtn">Sí, cerrar sesión</button>
+                <button class="cancel" id="cancelLogoutBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
 	<!--====== Scripts -->
 	<script src="../js/jquery-3.1.1.min.js"></script>
-	<script src="../js/sweetalert2.min.js"></script>
+	<!-- Quitamos SweetAlert2 de aquí si no lo estás usando para otra cosa, o si su lógica de logout está interfiriendo -->
+	<!-- <script src="../js/sweetalert2.min.js"></script> -->
 	<script src="../js/bootstrap.min.js"></script>
 	<script src="../js/material.min.js"></script>
 	<script src="../js/ripples.min.js"></script>
 	<script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<!-- Es probable que la lógica de cierre de sesión duplicada esté en main.js. -->
+	<!-- Si no necesitas otras funcionalidades de main.js o puedes refactorizarlo, -->
+	<!-- podrías considerar no cargarlo o modificarlo. Por ahora, dejaremos solo -->
+	<!-- la lógica en este archivo para el logout. -->
 	<script src="../js/main.js"></script>
 	<script>
 		$.material.init();
@@ -224,6 +330,62 @@
 
 		$(document).ready(function() {
             loadDashboardCounts(); // Cargar los conteos al cargar la página
+
+            // ** Lógica para cerrar sesión **
+            const logoutButton = document.getElementById('logoutBtn');
+            const customConfirmModal = document.getElementById('customConfirmModal');
+            const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+            const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+
+            // Función para mostrar el modal personalizado
+            function showCustomConfirmModal() {
+                customConfirmModal.classList.add('active');
+            }
+
+            // Función para ocultar el modal personalizado
+            function hideCustomConfirmModal() {
+                customConfirmModal.classList.remove('active');
+            }
+
+            // Event listener para el botón de cerrar sesión
+            logoutButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Evita la redirección inmediata del <a>
+                showCustomConfirmModal();
+            });
+
+            // Event listener para el botón "Sí, cerrar sesión" del modal
+            confirmLogoutBtn.addEventListener('click', async function() {
+                hideCustomConfirmModal(); // Oculta el modal
+
+                try {
+                    const response = await fetch('/api/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        // Si el backend confirma el cierre de sesión, redirige
+                        window.location.href = '/'; // Redirige a la página de inicio/login
+                    } else {
+                        // Manejar errores si el servidor responde con un status diferente de 200
+                        const errorData = await response.json();
+                        // Si SweetAlert2 no está cargado, usamos el alert nativo.
+                        // Lo importante es que aquí ya no hay un Swal.fire para evitar el doble modal
+                        console.error('Error al cerrar sesión:', errorData.message);
+                        alert('Error al cerrar sesión: ' + (errorData.message || 'Hubo un problema.'));
+                    }
+                } catch (error) {
+                    console.error('Error de red al intentar cerrar sesión:', error);
+                    alert('Error de conexión al cerrar sesión. Inténtalo de nuevo.');
+                }
+            });
+
+            // Event listener para el botón "Cancelar" del modal
+            cancelLogoutBtn.addEventListener('click', function() {
+                hideCustomConfirmModal(); // Simplemente oculta el modal
+            });
         });
 	</script>
 </body>
