@@ -6,12 +6,15 @@ import path from "path";
 import { fileURLToPath } from "url";
 import session from 'express-session';
 import auditoriaRoutes, { registrarAuditoria } from './server/rutas/bitacora.js'
+import cookieParser from 'cookie-parser';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 //Supabase
 import { createClient } from '@supabase/supabase-js'
 //servidor
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
+
 dotenv.config();
 // Configuración de CORS
 const allowedOrigins = [
@@ -76,7 +79,16 @@ app.use(express.static(__dirname + "/public"));
 
 //Rutas
 app.get("/", (req, res) => res.sendFile(__dirname + "/public/views/index.html"));
-app.get("/home", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/home.html"));
+app.get("/home", (req, res) => {
+    const cookie = req.cookies.userSession;
+    if (!cookie) {
+        return res.redirect("/login");
+    }
+    const user = JSON.parse(cookie);
+
+    // Renderizas tu página home con los datos del usuario
+    res.sendFile(path.join(__dirname, "/public/views/home.html"));
+});
 app.get("/servicio-comunitario", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/servicio-comunitario.html"));
 app.get("/proyectos-eliminados", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/proyectos-eliminados.html"));
 app.get("/trabajo-de-grado", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/trabajo-de-grado.html"));
@@ -86,6 +98,22 @@ app.get("/pasantias", isAuthenticated, (req, res) => res.sendFile(__dirname + "/
 app.get("/bitacora", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/bitacora.html"));
 // Rutas sin autenticación
 app.get("/registro", (req, res) => res.sendFile(__dirname + "/public/views/registro.html"));
+
+
+app.get("/api/me", (req, res) => {
+    try {
+        const cookie = req.cookies.userSession;
+        if (!cookie) {
+            return res.status(401).json({ error: "No hay sesión activa" });
+        }
+
+        const user = JSON.parse(cookie);
+        return res.json({ user });
+    } catch (error) {
+        console.error("Error en /api/me:", error.message);
+        return res.status(500).json({ error: "Error interno" });
+    }
+});
 
 //consulta
 app.get('/usuarios', async (req, res) => {

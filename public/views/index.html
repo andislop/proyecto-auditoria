@@ -285,65 +285,81 @@
             }
 
 
-            // Función para manejar el inicio de sesión
-            async function handleLogin(event) {
-                event.preventDefault(); // Prevenir el envío del formulario por defecto
+// Función para manejar el inicio de sesión
+async function handleLogin(event) {
+    event.preventDefault(); // Prevenir el envío del formulario por defecto
 
-                const correoInput = document.getElementById('correo').value;
-                const contraseñaInput = document.getElementById('contraseña').value;
+    const correoInput = document.getElementById('correo').value;
+    const contraseñaInput = document.getElementById('contraseña').value;
 
-                // Validación básica de campos
-                if (!correoInput || !contraseñaInput) {
-                    showCustomAlert("Alerta", "Por favor, completa todos los campos.");
-                    return;
-                }
+    // Validación básica de campos
+    if (!correoInput || !contraseñaInput) {
+        showCustomAlert("Alerta", "Por favor, completa todos los campos.");
+        return;
+    }
 
-                const correo = correoInput.trim();
-                const contraseña = contraseñaInput.trim();
+    const correo = correoInput.trim();
+    const contraseña = contraseñaInput.trim();
 
+    try {
+        // Petición POST a tu API de login
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ correo, contraseña }),
+            credentials: 'include' // 🔑 Importante para que guarde la cookie de sesión
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            // Inicio de sesión exitoso
+            showCustomAlert("¡Éxito!", result.message || "Inicio de sesión exitoso.");
+
+            // Pequeño retardo para que el usuario vea la alerta antes de redirigir
+            setTimeout(async () => {
                 try {
-                    // Realiza la petición POST a tu API de login
-                    // ¡IMPORTANTE!: Cambia 'http://localhost:3001' por la URL de tu backend real
-                    const response = await fetch('/api/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ correo, contraseña }),
-                        credentials: 'include'
-                    });
+                    // Verificamos la sesión con el backend
+                    const check = await fetch("/api/me", { credentials: "include" });
+                    if (check.ok) {
+                        const data = await check.json();
+                        console.log("✅ Usuario logueado:", data.user);
 
-                    const result = await response.json();
-
-                    if (response.ok) { // Si la respuesta HTTP es 200 OK
-                        // Inicio de sesión exitoso
-                        showCustomAlert("¡Éxito!", result.message || "Inicio de sesión exitoso.");
-                        // Usamos un pequeño retardo para que el usuario vea la alerta antes de redirigir
-                        setTimeout(() => {
-                            // Aquí puedes redirigir al usuario según su rol o a la página principal
-                            if (result.user && result.user.rol) {
-                                if (result.user.rol === 'Administrador') {
-                                    window.location.href = '/home'; // Redirigir al dashboard de administrador
-                                } else if (result.user.rol === 'Tutor') {
-                                    window.location.href = '/tutor-dashboard'; // Redirigir al dashboard del tutor
-                                } else if (result.user.rol === 'Estudiante') {
-                                    window.location.href = '/student-dashboard'; // Redirigir al dashboard del estudiante
-                                } else {
-                                    window.location.href = '/default-dashboard'; // Redirigir a un dashboard por defecto si el rol no coincide
-                                }
+                        // Redirección según el rol del usuario
+                        if (data.user && data.user.rol) {
+                            if (data.user.rol === 'Administrador') {
+                                window.location.href = '/home';
+                            } else if (data.user.rol === 'Tutor') {
+                                window.location.href = '/tutor-dashboard';
+                            } else if (data.user.rol === 'Estudiante') {
+                                window.location.href = '/student-dashboard';
                             } else {
-                                window.location.href = '/home'; // Redirigir por defecto si no hay rol o usuario en la respuesta
+                                window.location.href = '/default-dashboard';
                             }
-                        }, 1500); // Redirige después de 1.5 segundos
+                        } else {
+                            // Si no hay rol, redirigir al home por defecto
+                            window.location.href = '/home';
+                        }
                     } else {
-                        // Error en el inicio de sesión (ej. credenciales inválidas, error del servidor)
-                        showCustomAlert("Error", result.error || "Error al iniciar sesión. Inténtalo de nuevo.");
+                        showCustomAlert("Error", "Error validando la sesión.");
                     }
-                } catch (error) {
-                    console.error('Error al conectar con el servidor de login:', error);
-                    showCustomAlert("Error de conexión", "No se pudo conectar con el servidor. Por favor, inténtalo más tarde.");
+                } catch (err) {
+                    console.error("Error validando la sesión:", err);
+                    showCustomAlert("Error", "Hubo un problema validando la sesión.");
                 }
-            }
+            }, 1500); // Esperar 1.5s antes de redirigir
+        } else {
+            // Error en el login (credenciales inválidas o servidor)
+            showCustomAlert("Error", result.error || "Error al iniciar sesión. Inténtalo de nuevo.");
+        }
+    } catch (error) {
+        console.error('Error al conectar con el servidor de login:', error);
+        showCustomAlert("Error de conexión", "No se pudo conectar con el servidor. Por favor, inténtalo más tarde.");
+    }
+}
+
 
             // Asigna el manejador de eventos al formulario de login
             const loginForm = document.getElementById('loginForm');
