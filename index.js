@@ -106,12 +106,12 @@ app.get("/home", requireLogin, (req, res) => {
     res.sendFile(path.join(__dirname, "/public/views/home.html"));
 });
 app.get("/servicio-comunitario", requireLogin, (req, res) => res.sendFile(__dirname + "/public/views/servicio-comunitario.html"));
-app.get("/proyectos-eliminados", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/proyectos-eliminados.html"));
-app.get("/trabajo-de-grado", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/trabajo-de-grado.html"));
-app.get("/proyectos", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/proyectos.html"));
-app.get("/comprobante-proyecto-investigacion", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/comprobante-proyecto-investigacion.html"));
-app.get("/pasantias", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/pasantias.html"));
-app.get("/bitacora", isAuthenticated, (req, res) => res.sendFile(__dirname + "/public/views/bitacora.html"));
+app.get("/proyectos-eliminados", requireLogin, (req, res) => res.sendFile(__dirname + "/public/views/proyectos-eliminados.html"));
+app.get("/trabajo-de-grado", requireLogin, (req, res) => res.sendFile(__dirname + "/public/views/trabajo-de-grado.html"));
+app.get("/proyectos", requireLogin, (req, res) => res.sendFile(__dirname + "/public/views/proyectos.html"));
+app.get("/comprobante-proyecto-investigacion", requireLogin, (req, res) => res.sendFile(__dirname + "/public/views/comprobante-proyecto-investigacion.html"));
+app.get("/pasantias", requireLogin, (req, res) => res.sendFile(__dirname + "/public/views/pasantias.html"));
+app.get("/bitacora", requireLogin, (req, res) => res.sendFile(__dirname + "/public/views/bitacora.html"));
 // Rutas sin autenticación
 app.get("/registro", (req, res) => res.sendFile(__dirname + "/public/views/registro.html"));
 
