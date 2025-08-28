@@ -400,8 +400,13 @@
         // Función para cargar los registros de auditoría desde la API
         async function loadAuditLogs() {
             try {
-                const logs = await fetchWithExponentialBackoff('/api/bitacora', { method: 'GET' });
-                
+                const logs = await fetchWithExponentialBackoff('/api/bitacora', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensajeRestauracion: mensajeRestauracion }),
+                    credentials: 'include'
+                });
+
                 allAuditLogs = logs.map((log, index) => ({
                     ...log,
                     originalN: index + 1, // Número original para mantener el orden
