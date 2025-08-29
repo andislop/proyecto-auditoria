@@ -498,42 +498,53 @@
         }
 
         // Función para cargar los registros de auditoría desde la API
-        async function loadAuditLogs() {
+// Función para cargar los registros de auditoría desde la API
+async function loadAuditLogs() {
+    try {
+        const logs = await fetchWithExponentialBackoff('/api/bitacora', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        allAuditLogs = logs.map((log, index) => {
+            let fechaCaracas = "Fecha inválida";
+
             try {
-                const logs = await fetchWithExponentialBackoff('/api/bitacora', {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-
-            allAuditLogs = logs.map((log, index) => {
-                const fechaUTC = new Date(log.fecha_hora);
-
-                // 🔥 convertir siempre a Caracas
-                const fechaCaracas = new Intl.DateTimeFormat('es-VE', {
-                    timeZone: 'America/Caracas',
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false
-                }).format(fechaUTC);
-
-                return {
-                    ...log,
-                    originalN: index + 1,
-                    fecha_hora_local: fechaCaracas,  // ahora ya tienes la hora correcta
-                    searchableText: `${log.nombre_usuario} ${log.modulo_afectado} ${log.accion_realizada} ${log.descripcion_detallada}`.toLowerCase()
-                };
-            });
-                applyFilters(); // Aplica los filtros iniciales al cargar
-                $.material.init(); // Inicializa Material Design después de cargar los datos
-            } catch (error) {
-                console.error('%c[loadAuditLogs] ❌ Error al cargar los registros de auditoría:', 'color: #ea4335; font-weight: bold;', error);
-                showCustomAlert('Error', 'Ocurrió un error al cargar los registros de auditoría. Revisa la consola.');
+                const fechaUTC = new Date(log.fecha_hora); // lo que viene de la BD
+                if (!isNaN(fechaUTC.getTime())) {
+                    fechaCaracas = new Intl.DateTimeFormat('es-VE', {
+                        timeZone: 'America/Caracas',
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    }).format(fechaUTC);
+                } else {
+                    console.warn("[loadAuditLogs] Fecha inválida detectada en log:", log.fecha_hora);
+                }
+            } catch (err) {
+                console.error("[loadAuditLogs] Error convirtiendo fecha:", log.fecha_hora, err);
             }
-        }
+
+            return {
+                ...log,
+                originalN: index + 1, // Número original para mantener el orden
+                fecha_hora_local: fechaCaracas, // 👈 usar siempre esta en la tabla
+                searchableText: `${log.nombre_usuario} ${log.modulo_afectado} ${log.accion_realizada} ${log.descripcion_detallada}`.toLowerCase()
+            };
+        });
+
+        applyFilters(); // Aplica los filtros iniciales al cargar
+        $.material.init(); // Inicializa Material Design después de cargar los datos
+    } catch (error) {
+        console.error('%c[loadAuditLogs] ❌ Error al cargar los registros de auditoría:', 'color: #ea4335; font-weight: bold;', error);
+        showCustomAlert('Error', 'Ocurrió un error al cargar los registros de auditoría. Revisa la consola.');
+    }
+}
+
 
         // Función para aplicar los filtros
         function applyFilters() {
