@@ -40,7 +40,6 @@ export async function registrarAuditoria(logData) {
 
     const final_id_login = id_login;
 
-
     if (!modulo_afectado || !accion_realizada) {
         console.error('Error: Faltan campos obligatorios para registrar auditoría (modulo_afectado, accion_realizada).', logData);
         return false;
@@ -71,36 +70,14 @@ export async function registrarAuditoria(logData) {
             console.log(`[Auditoría] id_login es nulo o 0. Se registrará como: ${nombre_usuario_a_registrar}`);
         }
 
-        // PASO 2: Insertar el log en la tabla 'bitacora' con el nombre de usuario obtenido
-        // Forma más robusta de obtener la fecha y hora en la zona horaria de Venezuela
-        const venezuelaDate = new Date().toLocaleString('en-US', {
-            timeZone: 'America/Caracas',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false // Usar formato de 24 horas para toISOString
-        });
-        
-        // Convertir la cadena formateada a un objeto Date nuevamente para toISOString
-        // Nota: Asegúrate de que el formato de 'venezuelaDate' sea parseable por new Date()
-        // Una forma más directa de obtener un ISO string con la zona horaria correcta
-        const now = new Date();
-        const offset = now.getTimezoneOffset() * 60000; // Offset en milisegundos de la zona horaria local a UTC
-        const venezuelaOffset = -4 * 60 * 60 * 1000; // Offset de Venezuela (UTC-4) en milisegundos
-
-        // Calculamos la hora UTC y luego le aplicamos el offset de Venezuela
-        const utcTime = now.getTime() + offset; // Hora actual en UTC en milisegundos
-        const venezuelaLocalTime = new Date(utcTime + venezuelaOffset);
-
-
+        // PASO 2: Insertar el log en la tabla 'bitacora'
+        // Se utiliza new Date().toISOString() para obtener la fecha y hora actual del servidor en formato UTC.
+        // Este es el formato universal correcto para guardar fechas en una base de datos.
         const { data, error } = await supabase
             .from('bitacora')
             .insert([
                 {
-                    fecha_hora: venezuelaLocalTime.toISOString(), // Convertimos a formato ISO
+                    fecha_hora: new Date().toISOString(),
                     id_login: final_id_login,
                     nombre_usuario: nombre_usuario_a_registrar,
                     modulo_afectado: modulo_afectado,
@@ -114,7 +91,7 @@ export async function registrarAuditoria(logData) {
             console.error('[Auditoría] Error al insertar log de auditoría en Supabase:', error);
             return false;
         }
-        console.log(`[Auditoría] Log registrado exitosamente. Usuario: ${nombre_usuario_a_registrar}, id_login: ${final_id_login}, Fecha: ${venezuelaLocalTime.toISOString()}`);
+        console.log(`[Auditoría] Log registrado exitosamente. Usuario: ${nombre_usuario_a_registrar}, id_login: ${final_id_login}, Fecha: ${new Date().toISOString()}`);
         return true;
     } catch (error) {
         console.error('[Auditoría] Excepción al registrar auditoría:', error);
