@@ -547,36 +547,48 @@ async function loadAuditLogs() {
 
 
         // Función para aplicar los filtros
-        function applyFilters() {
-            const startDate = filterStartDateInput.value ? new Date(filterStartDateInput.value) : null;
-            const endDate = filterEndDateInput.value ? new Date(filterEndDateInput.value) : null;
-            const userFilter = filterUserInput.value.toLowerCase();
-            const moduleFilter = filterModuleSelect.value.toLowerCase();
-            const actionFilter = filterActionSelect.value.toLowerCase();
-            const searchGeneral = searchLogInput.value.toLowerCase();
+function applyFilters() {
+    const startDate = filterStartDateInput.value ? new Date(filterStartDateInput.value) : null;
+    const endDate = filterEndDateInput.value ? new Date(filterEndDateInput.value) : null;
+    const userFilter = filterUserInput.value.toLowerCase();
+    const moduleFilter = filterModuleSelect.value.toLowerCase();
+    const actionFilter = filterActionSelect.value.toLowerCase();
+    const searchGeneral = searchLogInput.value.toLowerCase();
 
-            filteredAuditLogs = allAuditLogs.filter(log => {
-                const logDate = new Date(log.fecha_hora); // Usar log.fecha_hora de la API
+    filteredAuditLogs = allAuditLogs.filter(log => {
+        const logDate = new Date(log.fecha_hora);
 
-                // Ajustar la fecha fin para incluir todo el día
-                let adjustedEndDate = endDate;
-                if (adjustedEndDate) {
-                    adjustedEndDate.setHours(23, 59, 59, 999);
-                }
-
-                const matchesDate = (!startDate || logDate >= startDate) && (!adjustedEndDate || logDate <= adjustedEndDate);
-                const matchesUser = !userFilter || log.nombre_usuario.toLowerCase().includes(userFilter); // Usar log.nombre_usuario
-                const matchesModule = !moduleFilter || log.modulo_afectado.toLowerCase() === moduleFilter; // Usar log.modulo_afectado
-                const matchesAction = !actionFilter || log.accion_realizada.toLowerCase() === actionFilter; // Usar log.accion_realizada
-                const matchesGeneral = !searchGeneral || log.searchableText.includes(searchGeneral);
-
-                return matchesDate && matchesUser && matchesModule && matchesAction && matchesGeneral;
-            });
-
-            currentPage = 1; // Reiniciar paginación al aplicar filtros
-            displayLogs();
-            setupPagination();
+        // 💡 NUEVA LÓGICA: Comparar solo el día de la fecha sin importar la hora
+        const logDateOnly = new Date(logDate.getFullYear(), logDate.getMonth(), logDate.getDate());
+        
+        let matchesDate = true;
+        
+        if (startDate) {
+            const startOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+            if (logDateOnly < startOnly) {
+                matchesDate = false;
+            }
         }
+        
+        if (endDate) {
+            const endOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+            if (logDateOnly > endOnly) {
+                matchesDate = false;
+            }
+        }
+
+        const matchesUser = !userFilter || log.nombre_usuario.toLowerCase().includes(userFilter);
+        const matchesModule = !moduleFilter || (log.modulo_afectado && log.modulo_afectado.toLowerCase() === moduleFilter);
+        const matchesAction = !actionFilter || (log.accion_realizada && log.accion_realizada.toLowerCase() === actionFilter);
+        const matchesGeneral = !searchGeneral || log.searchableText.includes(searchGeneral);
+
+        return matchesDate && matchesUser && matchesModule && matchesAction && matchesGeneral;
+    });
+
+    currentPage = 1;
+    displayLogs();
+    setupPagination();
+}
 
         // Función para limpiar todos los filtros
         function clearFilters() {
