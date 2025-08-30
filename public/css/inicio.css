@@ -141,6 +141,7 @@
             transition: 0.2s ease all;
             box-shadow: none;
             outline: none;
+            justify-content: center;
         }
         /* Ajustar padding-right para el input de contraseña para el icono del ojo */
         #contraseña {

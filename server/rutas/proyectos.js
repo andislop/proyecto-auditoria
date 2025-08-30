@@ -43,7 +43,8 @@ router.get('/proyectos-investigacion', async (req, res) => {
                 periodos:id_periodo(id_periodo, periodo),
                 estudiantes:id_estudiante(id_estudiante, cedula, nombre_completo, id_carrera)
             `)
-            .eq('eliminados', false); // Filtrar solo proyectos no eliminados
+            .eq('eliminados', false) // Filtrar solo proyectos no eliminados
+            .order('id_proyecto_investigacion', { ascending: true });
 
         if (error) {
             console.error('Error al obtener proyectos de investigación (Router):', error.message);

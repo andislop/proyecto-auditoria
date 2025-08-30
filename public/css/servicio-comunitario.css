@@ -1,0 +1,296 @@
+        /* Estilos para la ventana modal personalizada */
+        .custom-modal-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 9999; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); 
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            border-radius: 8px;
+            text-align: center;
+            color: #333;
+        }
+
+        .custom-modal-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .custom-modal-body {
+            padding: 10px 0;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+                                   /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
+        .custom-modal-overlag {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlag.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-contento {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-modal-overlag.active .custom-modal-content {
+            transform: translateY(0);
+        }
+
+        .custom-modal-contento h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .custom-modal-contento p {
+            margin-bottom: 25px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .custom-modal-botones {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .custom-modal-botones button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .custom-modal-botones button.confirm {
+            background-color: #f44336; /* Rojo para confirmar */
+            color: white;
+        }
+
+        .custom-modal-botones button.cancel {
+            background-color: #ccc; /* Gris para cancelar */
+            color: #333;
+        }
+
+        .custom-modal-botones button:hover {
+            transform: translateY(-2px);
+        }
+
+        .custom-modal-botones button.confirm:hover {
+            background-color: #d32f2f;
+        }
+
+        .custom-modal-botones button.cancel:hover {
+            background-color: #bbb;
+        }
+
+        /* Estilos para el campo de mensaje en la alerta personalizada */
+        .custom-modal-body textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical; 
+        }
+
+        .custom-modal-footer {
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+
+        .custom-modal-footer button {
+            background-color: #2a3e61; 
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal-footer button:hover {
+            background-color: #1a2a44; 
+        }
+
+        /* Animación de entrada */
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        /* Responsive Table Styles for mobile */
+        @media (max-width: 767px) {
+            .table-responsive {
+                border: none;
+            }
+            .table-projects thead {
+                display: none;
+            }
+            .table-projects, .table-projects tbody, .table-projects tr, .table-projects td {
+                display: block;
+                width: 100%;
+            }
+            .table-projects tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 10px;
+                background-color: #fff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .table-projects td {
+                text-align: right;
+                padding-left: 50% !important;
+                position: relative;
+                border: none;
+            }
+            .table-projects td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #555;
+                top: 50%;
+                transform: translateY(-50%);
+                overflow-x: auto;
+            }
+            .table-projects td[data-label="Acciones"] {
+                padding-top: 10px !important;
+                text-align: center !important;
+                padding-left: 15px !important; 
+                overflow-x: auto;
+            }
+            .table-projects td[data-label="Acciones"]::before {
+                display: none;
+            }
+            /* Estilo para que el contenido de Integrantes no se recorte en móvil */
+            .table-projects td[data-label="Integrantes"] { 
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+                overflow-x: auto;
+            }
+            .table-projects td[data-label="Tutor"] {
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+                overflow-x: auto;
+            }
+            .table-projects td[data-label="Integrantes"]::before { 
+                top: 10px;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilos específicos para la gestión de integrantes */
+        .member-input-group { 
+            display: flex;
+            flex-wrap: wrap; 
+            align-items: center;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 8px 12px;
+            margin-bottom: 5px; 
+            border-radius: 5px;
+            position: relative; 
+        }
+        .member-input-group .form-group {
+            flex-grow: 1;
+            margin-bottom: 0; 
+            padding-right: 10px; 
+        }
+        .member-input-group .col-xs-12 {
+            width: 100%; 
+        }
+        .member-input-group .col-sm-6 {
+            width: 50%; 
+        }
+        .remove-member-btn { 
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-left: auto; 
+            flex-shrink: 0; 
+        }
+        .remove-member-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Estilo para la celda de Integrantes en la tabla principal */
+        .table-projects td[data-label="Integrantes"] {
+            text-align: left; 
+            white-space: normal; 
+            word-break: break-word; 
+            min-width: 180px; 
+        }
+
+        /* Ajustes para la visualización del tutor en el modal */
+        .tutor-input-group .form-group {
+            margin-bottom: 0;
+            padding-right: 10px;
+        }
+        .tutor-input-group .col-xs-12, .tutor-input-group .col-sm-6 {
+            margin-bottom: 15px; 
+        }

@@ -1,0 +1,140 @@
+        /* Estilos generales para el contenido de la página */
+        .page-content {
+            padding: 20px;
+        }
+
+        /* Contenedor del formulario - se ajusta a la pantalla */
+        .form-container {
+            max-width: 600px; /* Ancho máximo para pantallas grandes */
+            /* Ajustamos el margen superior para que baje un poco más y se vea más centrado */
+            margin: 50px auto 20px auto; /* Centrar el contenedor, 50px de margen superior */
+            background-color: #f2f2f2;
+            padding: 30px;
+            border-radius: 8px;
+            /* Añadimos una sombra más pronunciada para un efecto más bonito */
+            box-shadow: 0 0 15px 16px rgba(0,0,0,0.2);
+            border: 2px solid #0056b3; /* Borde azul un poco más oscuro, similar al de cerrar sesión */
+            box-sizing: border-box; /* Incluir padding y borde en el ancho total */
+        }
+
+        /* Ajustes para dispositivos más pequeños */
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 20px 10px; /* Reducir el margen en pantallas pequeñas */
+                padding: 20px; /* Reducir el padding en pantallas pequeñas */
+            }
+        }
+
+        /* Estilos para los grupos de formulario */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+                /* Estilo para el icono del ojo (SVG) */
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #5763d1; /* Siempre blanco */
+            width: 20px; /* Tamaño del SVG */
+            height: 20px; /* Tamaño del SVG */
+            z-index: 10; /* Asegurar que esté por encima del input */
+            /* Ajuste para que el SVG tenga un color de trazo por defecto */
+            stroke: currentColor;
+        }
+        .toggle-password:hover {
+            opacity: 0.8; /* Ligeramente más tenue al pasar el ratón */
+        }
+
+        /* Estilos para las etiquetas */
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Estilos para los campos de entrada de texto */
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Para que el padding no aumente el ancho */
+            font-size: 16px;
+        }
+
+        /* Estilos para los botones */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Añadimos transición para la sombra */
+        }
+
+        /* Botón de Guardar Cambios - azul más oscuro (similar al de cerrar sesión) */
+        .btn-primaria {
+            background-color: #0056b3; /* Azul más oscuro, similar al de cerrar sesión */
+            color: white;
+            border: 1px solid #0056b3;
+            margin-right: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Sombra para el botón */
+        }
+
+        .btn-primaria:hover {
+            background-color: #003f80; /* Un azul aún más oscuro al pasar el ratón */
+            border-color: #003f80;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Sombra más grande al pasar el ratón */
+        }
+
+        /* Botón de Cancelar - gris o un color neutro */
+        .btn-default {
+            background-color: #6c757d; /* Gris para el botón de cancelar */
+            color: white;
+            border: 1px solid #6c757d;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Sombra para el botón */
+        }
+
+        .btn-default:hover {
+            background-color: #5a6268; /* Un gris un poco más oscuro al pasar el ratón */
+            border-color: #5a6268;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Sombra más grande al pasar el ratón */
+        }
+
+        /* Centrar los botones */
+        .text-center {
+            text-align: center;
+        }
+
+        /* Estilos para los mensajes personalizados */
+        .custom-message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+            text-align: center;
+            max-width: 80%;
+            border: 2px solid;
+        }
+        .custom-message-box.success { border-color: #28a745; color: #28a745; }
+        .custom-message-box.danger { border-color: #dc3545; color: #dc3545; }
+        .close-message-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .close-message-btn:hover {
+            background-color: #0056b3;
+        }

@@ -5,14 +5,42 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/home.css">
     <style>
-        /* Nuevo estilo para el color azul de la cabecera del tile */
-        .tile-title {
-            background-color: #4285f4 !important; /* Azul de Google, puedes ajustarlo */
+        /* Agregamos la fuente Roboto para que coincida con el resto del diseño */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        body, .modal-content, .custom-modal-content {
+            font-family: 'Roboto', sans-serif;
         }
 
-        /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
-        .custom-modal-overlay {
+        .modal {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            text-align: center;
+        }
+        .custom-modal-overlag {
             position: fixed;
             top: 0;
             left: 0;
@@ -28,12 +56,57 @@
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
-        .custom-modal-overlay.active {
+        .custom-modal-overlag.active {
             opacity: 1;
             visibility: visible;
         }
+        .custom-modal-overlag.active .custom-modal-content {
+            transform: translateY(0);
+        }
+        @keyframes animatetop {
+            from { top: -300px; opacity: 0 }
+            to { top: 0; opacity: 1 }
+        }
 
-        .custom-modal-content {
+        .modal h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .modal p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+                .custom-modal-botones {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .custom-modal-botones button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .custom-modal-botones button.confirm {
+            background-color: #f44336; /* Rojo para confirmar */
+            color: white;
+        }
+
+        .custom-modal-botones button.cancel {
+            background-color: #ccc; /* Gris para cancelar */
+            color: #333;
+        }
+
+        .custom-modal-botones button:hover {
+            transform: translateY(-2px);
+        }
+        .custom-modal-contento {
             background: #fff;
             padding: 25px;
             border-radius: 8px;
@@ -44,59 +117,141 @@
             transform: translateY(-20px);
             transition: transform 0.3s ease;
         }
-
-        .custom-modal-overlay.active .custom-modal-content {
-            transform: translateY(0);
-        }
-
-        .custom-modal-content h2 {
+        .custom-modal-contento h2 {
             margin-top: 0;
             margin-bottom: 15px;
             font-size: 1.5em;
             color: #333;
         }
 
-        .custom-modal-content p {
+        .custom-modal-contento p {
             margin-bottom: 25px;
             color: #555;
             line-height: 1.5;
         }
 
-        .custom-modal-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .custom-modal-buttons button {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-
-        .custom-modal-buttons button.confirm {
-            background-color: #f44336; /* Rojo para confirmar */
-            color: white;
-        }
-
-        .custom-modal-buttons button.cancel {
-            background-color: #ccc; /* Gris para cancelar */
-            color: #333;
-        }
-
-        .custom-modal-buttons button:hover {
-            transform: translateY(-2px);
-        }
-
-        .custom-modal-buttons button.confirm:hover {
+        .custom-modal-botones button.confirm:hover {
             background-color: #d32f2f;
         }
 
-        .custom-modal-buttons button.cancel:hover {
+        .custom-modal-botones button.cancel:hover {
             background-color: #bbb;
+        }
+
+        .modal .flex.justify-end.gap-4 {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Colores y estilos de los botones actualizados */
+        .btn-reject {
+            background-color: #e0e0e0;
+            color: #4a4a4a;
+        }
+        .btn-reject:hover {
+            background-color: #c0c0c0;
+        }
+
+        .btn-accept {
+            background-color: #007BFF;
+            color: white;
+        }
+        .btn-accept:hover {
+            background-color: #0056b3;
+        }
+        
+        /* Estilos generales de los botones */
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .rounded-full { border-radius: 9999px; }
+        .transition-colors { transition-property: background-color, border-color, color, fill, stroke; }
+        .duration-200 { transition-duration: 200ms; }
+
+        /* Estilos del custom modal para el logout */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s;
+            z-index: 1050;
+        }
+        
+        .custom-modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .custom-modal-content {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 350px;
+        }
+        
+        .custom-modal-buttons {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: space-around;
+            gap: 1rem;
+        }
+        
+        .custom-modal-buttons button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .custom-modal-buttons .confirm {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .custom-modal-buttons .cancel {
+            background-color: #bdc3c7;
+            color: #333;
+        }
+        
+        .notification-section-title {
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            background-color: #f1f1f1;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+            color: #555;
+            text-transform: uppercase;
+        }
+        .list-group-separator {
+            border: 0;
+            border-top: 1px solid #e0e0e0;
+            margin: 0;
+        }
+        .reject-action-btn {
+            background-color: #e0e0e0;
+            color: #4a4a4a;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            border: none;
+            cursor: pointer;
+            transition-duration: 200ms;
+        }
+        .reject-action-btn:hover {
+            background-color: #c0c0c0;
         }
     </style>
 </head>
@@ -113,11 +268,11 @@
 			<div class="full-box dashboard-sideBar-UserInfo">
 				<figure class="full-box">
 					<img src="../assets/img/unefa.png" alt="UserIcon">
-					<figcaption class="text-center text-titles">juancito007</figcaption>
+					<figcaption class="text-center text-titles" id="sidebarUserName"></figcaption>
 				</figure>
 				<ul class="full-box list-unstyled text-center">
 					<li>
-						<a href="#!">
+						<a href="/editar-perfil">
 							<i class="zmdi zmdi-settings"></i>
 						</a>
 					</li>
@@ -167,7 +322,7 @@
 					</a>
 					<ul class="list-unstyled full-box">
 						<li>
-							<a href="admin.html"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
+							<a href="/admin"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
 						</li>
 						<li>
 							<a href="teacher.html"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Teacher</a>
@@ -181,6 +336,7 @@
 		</div>
 	</section>
 
+
 	<!-- Content page-->
 	<section class="full-box dashboard-contentPage">
 		<!-- NavBar -->
@@ -188,6 +344,12 @@
 			<ul class="full-box list-unstyled text-right">
 				<li class="pull-left">
 					<a href="#!" class="btn-menu-dashboard"><i class="zmdi zmdi-more-vert"></i></a>
+				</li>
+                <li>
+					<a href="#!" class="btn-Notifications-area">
+						<i class="zmdi zmdi-notifications-none"></i>
+						<span class="badge" id="notificationCount"></span>
+					</a>
 				</li>
 			</ul>
 		</nav>
@@ -254,13 +416,60 @@
             </div>
 		</div>
 	</section>
+	<!-- Notifications area -->
+	<section class="full-box Notifications-area" id="notificationsArea">
+		<div class="full-box Notifications-bg btn-Notifications-area"></div>
+		<div class="full-box Notifications-body">
+			<div class="Notifications-body-title text-titles text-center">
+				Notificaciones <i class="zmdi zmdi-close btn-Notifications-area" id="closeNotifications"></i>
+			</div>
+            <h4 class="notification-section-title">Solicitudes Pendientes</h4>
+			<div class="list-group" id="pendingList">
+			  	<!-- Solicitudes pendientes se inyectarán aquí -->
+			</div>
+            <h4 class="notification-section-title mt-4">Usuarios Rechazados</h4>
+			<div class="list-group" id="rejectedList">
+                <!-- Usuarios rechazados se inyectarán aquí -->
+            </div>
+		</div>
+	</section>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-lg font-bold mb-4">Solicitud de Acceso</h2>
+            <div id="modal-content-data">
+                <!-- Data will be injected here -->
+            </div>
+            <div class="flex justify-end gap-4 mt-6">
+                <!-- Se cambian los estilos de los botones a la nueva paleta de colores -->
+                <button id="rejectBtn" class="btn-reject font-bold py-2 px-4 rounded-full transition-colors duration-200">Rechazar</button>
+                <button id="acceptBtn" class="btn-accept font-bold py-2 px-4 rounded-full transition-colors duration-200">Aceptar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reactivation Confirmation Modal -->
+    <div id="reactivationModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-lg font-bold mb-4">Confirmar Reactivación</h2>
+            <div id="reactivation-modal-content">
+                <!-- Data will be injected here -->
+            </div>
+            <div class="flex justify-end gap-4 mt-6">
+                <button id="cancelReactivationBtn" class="btn-reject font-bold py-2 px-4 rounded-full transition-colors duration-200">Cancelar</button>
+                <button id="confirmReactivationBtn" class="btn-accept font-bold py-2 px-4 rounded-full transition-colors duration-200">Reactivar</button>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Custom Modal for Confirmation (Alternative to SweetAlert2 if not working) -->
-    <div id="customConfirmModal" class="custom-modal-overlay">
-        <div class="custom-modal-content">
+    <div id="customConfirmModal" class="custom-modal-overlag">
+        <div class="custom-modal-contento">
             <h2>¿Estás seguro?</h2>
             <p>¿Realmente quieres cerrar sesión?</p>
-            <div class="custom-modal-buttons">
+            <div class="custom-modal-botones">
                 <button class="confirm" id="confirmLogoutBtn">Sí, cerrar sesión</button>
                 <button class="cancel" id="cancelLogoutBtn">Cancelar</button>
             </div>
@@ -282,26 +491,85 @@
 	<script src="../js/main.js"></script>
 	<script>
 		$.material.init();
+        // user-utils.js
 
-        // Función auxiliar para manejar reintentos con backoff exponencial
-        async function fetchWithExponentialBackoff(url, options = {}, retries = 3, delay = 1000) {
-            try {
-                const response = await fetch(url, options);
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-                }
-                return await response.json();
-            } catch (error) {
-                if (retries > 0) {
-                    // console.warn(`Intento fallido para ${url}. Reintentando en ${delay / 1000}s...`);
-                    await new Promise(res => setTimeout(res, delay));
-                    return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
-                } else {
-                    throw error;
-                }
-            }
+/**
+ * Función de utilidad para realizar fetch con retroceso exponencial.
+ * @param {string} url - La URL a la que se realizará la solicitud.
+ * @param {Object} options - Opciones para la solicitud fetch (método, headers, etc.).
+ * @param {number} retries - Número de reintentos en caso de fallo.
+ * @param {number} delay - Retraso inicial en milisegundos para el retroceso exponencial.
+ * @returns {Promise<Object|null>} - La respuesta JSON de la API o null si falla.
+ */
+async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
+    try {
+        const response = await fetch(url, options);
+        // Manejar respuestas 204 y 304 sin cuerpo
+        if (response.status === 204 || response.status === 304) {
+            console.log(`Respuesta ${response.status}. Sin contenido para procesar.`);
+            return null;
         }
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.warn(`Recurso no encontrado: ${url}`);
+                return null;
+            }
+            throw new Error(`Error HTTP! estado: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        if (retries > 0) {
+            console.warn(`Error en fetch, reintentando en ${delay}ms... (${retries} reintentos restantes)`, error);
+            await new Promise(res => setTimeout(res, delay));
+            return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
+        } else {
+            console.error('Se agotaron los reintentos. Falló la solicitud:', url, error);
+            throw error;
+        }
+    }
+}
+
+/**
+ * Carga el nombre del usuario autenticado y lo muestra en el sidebar.
+ * Ahora usa /api/me para obtener el id_login y luego /api/user-profile/:id_login
+ * para obtener el nombre completo.
+ * @param {string} elementId - El ID del elemento HTML donde se mostrará el nombre.
+ */
+async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
+    const userNameElement = document.getElementById(elementId);
+    if (!userNameElement) {
+        console.error(`Elemento con ID '${elementId}' no encontrado.`);
+        return;
+    }
+    userNameElement.textContent = 'Cargando...'; // Texto provisional
+
+    try {
+        const meResponse = await fetchWithExponentialBackoff(`/api/me`, { method: 'GET', credentials: 'include' });
+
+        if (!meResponse || !meResponse.user || !meResponse.user.id) {
+            userNameElement.textContent = 'Usuario Desconocido';
+            console.warn('No se pudo obtener el id desde /api/me. Respuesta:', meResponse);
+            return;
+        }
+
+        const id_login = meResponse.user.id; // 👈 aquí usas "id"
+
+
+
+        // 2. Obtener el perfil
+        const profileResponse = await fetchWithExponentialBackoff(`/api/user-profile/${id_login}`, { method: 'GET', credentials: 'include' });
+
+        if (profileResponse && profileResponse.nombre_completo) {
+            userNameElement.textContent = profileResponse.nombre_completo;
+        } else {
+            userNameElement.textContent = 'Usuario Desconocido';
+        }
+
+    } catch (error) {
+        console.error('Error al cargar el nombre del usuario autenticado:', error);
+        userNameElement.textContent = 'Error al cargar nombre';
+    }
+}
 
         // Función para cargar los conteos dinámicamente
         async function loadDashboardCounts() {
@@ -327,8 +595,265 @@
                 // Opcional: mostrar un mensaje de error en la UI si es necesario
             }
         }
+        // Constantes que referencian los elementos HTML de las notificaciones
+const notificationCount = document.getElementById('notificationCount');
+const pendingList = document.getElementById('pendingList');
+const rejectedList = document.getElementById('rejectedList');
+const confirmationModal = document.getElementById('confirmationModal');
+const modalContentData = document.getElementById('modal-content-data');
+const acceptBtn = document.getElementById('acceptBtn');
+const rejectBtn = document.getElementById('rejectBtn');
+
+// Nuevas constantes para el modal de reactivación
+const reactivationModal = document.getElementById('reactivationModal');
+const reactivationModalContent = document.getElementById('reactivation-modal-content');
+const confirmReactivationBtn = document.getElementById('confirmReactivationBtn');
+const cancelReactivationBtn = document.getElementById('cancelReactivationBtn');
+
+
+let selectedUserId = null;
+
+// Función asíncrona principal para obtener y mostrar todos los tipos de usuarios
+async function fetchAndRenderAllUsers() {
+    // Muestra un estado de carga en el contador
+    notificationCount.textContent = '...';
+    pendingList.innerHTML = `<div class="p-4 text-center text-gray-500">Cargando solicitudes pendientes...</div>`;
+    rejectedList.innerHTML = `<div class="p-4 text-center text-gray-500">Cargando usuarios rechazados...</div>`;
+
+    try {
+        const [pendingUsers, rejectedUsers] = await Promise.all([
+            fetchWithExponentialBackoff('/api/usuarios_pendientes', { method: 'GET', credentials: 'include' }),
+            fetchWithExponentialBackoff('/api/usuarios_rechazados', { method: 'GET', credentials: 'include' })
+        ]);
+
+        // Actualiza el contador de notificaciones con la cantidad de usuarios pendientes
+        notificationCount.textContent = pendingUsers ? pendingUsers.length : 0;
+        
+        // Renderiza las solicitudes pendientes
+        renderUsers(pendingUsers, pendingList, 'pending');
+
+        // Renderiza los usuarios rechazados
+        renderUsers(rejectedUsers, rejectedList, 'rejected');
+
+    } catch (error) {
+        console.error('Error al cargar usuarios:', error);
+        notificationCount.textContent = 0;
+        pendingList.innerHTML = `<div class="p-4 text-center text-red-500">Error al cargar solicitudes pendientes.</div>`;
+        rejectedList.innerHTML = `<div class="p-4 text-center text-red-500">Error al cargar usuarios rechazados.</div>`;
+    }
+}
+
+// Función para renderizar una lista de usuarios en el DOM
+function renderUsers(users, listElement, type) {
+    listElement.innerHTML = '';
+    if (!users || users.length === 0) {
+        listElement.innerHTML = `
+            <div class="p-4 text-center text-gray-500">
+                No hay usuarios en esta categoría.
+            </div>
+        `;
+        return;
+    }
+
+    users.forEach((user, index) => {
+        const userItem = document.createElement('div');
+        userItem.className = 'list-group-item';
+        
+        const nombre = user.nombre_completo || 'Nombre no disponible';
+        const correo = user.correo;
+        userItem.dataset.userId = user.id_login;
+
+        let contentHTML;
+        if (type === 'pending') {
+            contentHTML = `
+                <div class="row-action-primary">
+                    <i class="zmdi zmdi-account"></i>
+                </div>
+                <div class="row-content">
+                    <h4 class="list-group-item-heading">${nombre}</h4>
+                    <p class="list-group-item-text">${correo}</p>
+                </div>
+            `;
+        } else if (type === 'rejected') {
+            contentHTML = `
+                <div class="row-action-primary">
+                    <i class="zmdi zmdi-account"></i>
+                </div>
+                <div class="row-content">
+                    <h4 class="list-group-item-heading">${nombre}</h4>
+                    <p class="list-group-item-text">${correo}</p>
+                    <div class="mt-2 text-right">
+                        <button class="reject-action-btn reactivate-btn">Reactivar</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        userItem.innerHTML = contentHTML;
+        listElement.appendChild(userItem);
+
+        // Añade un separador si no es el último elemento
+        if (index < users.length - 1) {
+            const separator = document.createElement('hr');
+            separator.className = 'list-group-separator';
+            listElement.appendChild(separator);
+        }
+    });
+}
+
+// Función para mostrar el modal de confirmación
+function showConfirmationModal(nombre, correo, userId) {
+    modalContentData.innerHTML = `
+        <h3 class="font-semibold text-lg">${nombre}</h3>
+        <p class="text-gray-600">${correo}</p>
+        <p class="mt-4">¿Deseas permitir el acceso a este usuario?</p>
+    `;
+    selectedUserId = userId;
+    confirmationModal.style.display = 'flex';
+}
+
+// Función para ocultar el modal
+function hideConfirmationModal() {
+    confirmationModal.style.display = 'none';
+    selectedUserId = null;
+}
+
+// Manejador de eventos para cerrar el modal al hacer clic fuera de él
+window.addEventListener('click', (event) => {
+    if (event.target === confirmationModal) {
+        hideConfirmationModal();
+    }
+});
+
+// Manejador de eventos para abrir el modal al hacer clic en una solicitud pendiente
+pendingList.addEventListener('click', (event) => {
+    const item = event.target.closest('.list-group-item');
+    if (item) {
+        const userId = item.dataset.userId;
+        const nombre = item.querySelector('.list-group-item-heading').textContent;
+        const correo = item.querySelector('.list-group-item-text').textContent;
+        
+        showConfirmationModal(nombre, correo, userId);
+    }
+});
+
+// Manejador de eventos para los botones del modal
+acceptBtn.addEventListener('click', async () => {
+    if (selectedUserId) {
+        try {
+            // Llama a la API para aceptar el usuario usando la nueva ruta
+            const response = await fetch(`/api/accept_user/${selectedUserId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                console.log(`Usuario con ID ${selectedUserId} aceptado correctamente.`);
+                fetchAndRenderAllUsers(); // Vuelve a cargar todas las listas
+            } else {
+                console.error('Error al aceptar usuario.');
+            }
+        } catch (error) {
+            console.error('Error de red al aceptar usuario:', error);
+        } finally {
+            hideConfirmationModal();
+        }
+    }
+});
+
+rejectBtn.addEventListener('click', async () => {
+    if (selectedUserId) {
+        try {
+            // Llama a la API para rechazar el usuario usando la nueva ruta
+            const response = await fetch(`/api/reject_user/${selectedUserId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                console.log(`Usuario con ID ${selectedUserId} rechazado correctamente.`);
+                fetchAndRenderAllUsers(); // Vuelve a cargar todas las listas
+            } else {
+                console.error('Error al rechazar usuario.');
+            }
+        } catch (error) {
+            console.error('Error de red al rechazar usuario:', error);
+        } finally {
+            hideConfirmationModal();
+        }
+    }
+});
+
+
+// Lógica del nuevo modal de reactivación
+const showReactivationModal = (nombre, correo, userId) => {
+    reactivationModalContent.innerHTML = `
+        <h3 class="font-semibold text-lg">${nombre}</h3>
+        <p class="text-gray-600">${correo}</p>
+        <p class="mt-4">¿Deseas reactivar a este usuario?</p>
+    `;
+    selectedUserId = userId;
+    reactivationModal.style.display = 'flex';
+};
+
+const hideReactivationModal = () => {
+    reactivationModal.style.display = 'none';
+    selectedUserId = null;
+};
+
+// Manejador de eventos para el botón de "Reactivar" en la lista de rechazados
+rejectedList.addEventListener('click', (event) => {
+    const btn = event.target.closest('.reactivate-btn');
+    if (btn) {
+        const item = btn.closest('.list-group-item');
+        const userId = item.dataset.userId;
+        const nombre = item.querySelector('.list-group-item-heading').textContent;
+        const correo = item.querySelector('.list-group-item-text').textContent;
+        
+        showReactivationModal(nombre, correo, userId);
+    }
+});
+
+// Manejador de eventos para los botones del modal de reactivación
+confirmReactivationBtn.addEventListener('click', async () => {
+    if (selectedUserId) {
+        try {
+            // Usa la misma API de aceptar para reactivar
+            const response = await fetch(`/api/accept_user/${selectedUserId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                console.log(`Usuario con ID ${selectedUserId} reactivado correctamente.`);
+                fetchAndRenderAllUsers(); // Refresca las listas
+            } else {
+                console.error('Error al reactivar usuario.');
+            }
+        } catch (error) {
+            console.error('Error de red al reactivar usuario:', error);
+        } finally {
+            hideReactivationModal();
+        }
+    }
+});
+
+cancelReactivationBtn.addEventListener('click', () => {
+    hideReactivationModal();
+});
+
 
 		$(document).ready(function() {
+            // Configura la carga inicial y la actualización periódica de las notificaciones cada 60 segundos.
+            fetchAndRenderAllUsers(); 
+            setInterval(fetchAndRenderAllUsers, 60000);
+            loadAuthenticatedUserName();
             loadDashboardCounts(); // Cargar los conteos al cargar la página
 
             // ** Lógica para cerrar sesión **

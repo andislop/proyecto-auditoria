@@ -50,7 +50,7 @@ async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 50
 
             try {
                 console.log(`%c[handleDownloadInternship] Calling fetchWithExponentialBackoff for datos-pdf for internship ID: ${internshipId}.`, 'color: #1e88e5;');
-                const internshipData = await fetchWithExponentialBackoff(`/api/pasantias/${internshipId}/datos-pdf`, { method: 'GET' });
+                const internshipData = await fetchWithExponentialBackoff(`/api/publicas/pasantias/${internshipId}/datos-pdf`, { method: 'GET' });
                 console.log(`%c[handleDownloadInternship] Result of fetchWithExponentialBackoff:`, 'color: #1e88e5;', internshipData);
 
                 if (!internshipData) {
@@ -240,7 +240,7 @@ async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 50
 
         try {
             console.log(`%c[generateCommunityServicePdf] Calling fetchWithExponentialBackoff for datos-pdf for project ID: ${projectId}.`, 'color: #1e88e5;');
-            const projectData = await fetchWithExponentialBackoff(`/api/proyectos-comunitarios/${projectId}/datos-pdf`, { method: 'GET' });
+            const projectData = await fetchWithExponentialBackoff(`/api/publicas/proyectos-comunitarios/${projectId}/datos-pdf`, { method: 'GET' });
             console.log(`%c[generateCommunityServicePdf] Result of fetchWithExponentialBackoff:`, 'color: #1e88e5;', projectData);
 
             if (!projectData) {
@@ -484,7 +484,7 @@ async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 50
 
             try {
                 console.log(`%c[handleDownloadInvestigationProject] Calling fetchWithExponentialBackoff for datos-pdf for project ID: ${projectId}.`, 'color: #1e88e5;');
-                const projectData = await fetchWithExponentialBackoff(`/api/proyectos-investigacion/${projectId}/datos-pdf`, { method: 'GET' });
+                const projectData = await fetchWithExponentialBackoff(`/api/publicas/proyectos-investigacion/${projectId}/datos-pdf`, { method: 'GET' });
                 console.log(`%c[handleDownloadInvestigationProject] Result of fetchWithExponentialBackoff:`, 'color: #1e88e5;', projectData);
 
                 if (!projectData) {
@@ -661,7 +661,7 @@ async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 50
             try {
                 // Obtener los datos completos del trabajo de grado desde el backend
                 console.log(`%c[handleDownloadDegreeProject] Calling fetchWithExponentialBackoff for datos-pdf for degree project ID: ${degreeProjectId}.`, 'color: #1e88e5;');
-                const degreeProjectData = await fetchWithExponentialBackoff(`/api/trabajos-de-grado/${degreeProjectId}/datos-pdf`, { method: 'GET' });
+                const degreeProjectData = await fetchWithExponentialBackoff(`/api/publicas/trabajos-de-grado/${degreeProjectId}/datos-pdf`, { method: 'GET' });
                 console.log(`%c[handleDownloadDegreeProject] Result of fetchWithExponentialBackoff:`, 'color: #1e88e5;', degreeProjectData);
 
                 if (!degreeProjectData) {

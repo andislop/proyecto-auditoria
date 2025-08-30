@@ -1,0 +1,199 @@
+        /* Estilos personalizados para la bitácora y la tabla responsive */
+        .filter-section {
+            background-color: #f2f2f2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .filter-section .form-group {
+            margin-bottom: 10px;
+        }
+
+        /* Estilos para el encabezado de la tabla (TH) */
+        .table-audit-logs thead th {
+            background-color: #2a3e61; /* Color de fondo similar a tu imagen */
+            color: white;
+            vertical-align: middle;
+        }
+                                   /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
+        .custom-modal-overlag {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlag.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-contento {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-modal-overlag.active .custom-modal-content {
+            transform: translateY(0);
+        }
+
+        .custom-modal-contento h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .custom-modal-contento p {
+            margin-bottom: 25px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .custom-modal-botones {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .custom-modal-botones button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .custom-modal-botones button.confirm {
+            background-color: #f44336; /* Rojo para confirmar */
+            color: white;
+        }
+
+        .custom-modal-botones button.cancel {
+            background-color: #ccc; /* Gris para cancelar */
+            color: #333;
+        }
+
+        .custom-modal-botones button:hover {
+            transform: translateY(-2px);
+        }
+
+        .custom-modal-botones button.confirm:hover {
+            background-color: #d32f2f;
+        }
+
+        .custom-modal-botones button.cancel:hover {
+            background-color: #bbb;
+        }
+
+
+        /* Estilos para las filas al pasar el ratón (hover) */
+        .table-audit-logs tbody tr:hover {
+            background-color: #cfe2ff; /* Azul claro para el hover, como lo indicaste */
+            cursor: pointer;
+            color: #000; /* Texto oscuro para contrastar con el fondo azul */
+        }
+        /* El estilo para 'selected' lo mantengo por si más adelante quieres alguna funcionalidad de selección */
+        .table-audit-logs tbody tr.selected {
+            background-color: #cfe2ff; /* Azul claro para la selección */
+            color: #000; /* Texto oscuro para contrastar */
+        }
+
+        /* Estilos para la tabla completa: curvatura y líneas separadoras */
+        .table-responsive {
+            border-radius: 8px; /* Curvatura para la tabla completa */
+            overflow: hidden; /* Asegura que la curvatura se aplique bien */
+            border: 1px solid #dee2e6; /* Borde general para la tabla */
+        }
+
+        .table-audit-logs {
+            border-collapse: separate; /* Necesario para border-spacing */
+            border-spacing: 0; /* Elimina espacio extra entre celdas */
+            width: 100%; /* Asegura que la tabla ocupe todo el espacio */
+            margin-bottom: 0; /* Elimina margen inferior extra */
+        }
+
+        .table-audit-logs th,
+        .table-audit-logs td {
+            border-bottom: 1px solid #dee2e6; /* Líneas separadoras horizontales */
+            border-right: 1px solid #dee2e6; /* Líneas separadoras verticales */
+            padding: 8px; /* Espaciado interno de las celdas */
+        }
+
+        .table-audit-logs th:last-child,
+        .table-audit-logs td:last-child {
+            border-right: none; /* Elimina el borde derecho de la última columna */
+        }
+
+        .table-audit-logs tbody tr:last-child td {
+            border-bottom: none; /* Elimina el borde inferior de la última fila */
+        }
+
+
+        /* Responsive Table Styles for mobile - Copiado de servicio-comunitarioo.txt */
+        @media (max-width: 767px) {
+            .table-responsive {
+                border: none; /* En móvil, eliminamos el borde general del contenedor */
+            }
+            .table-audit-logs thead {
+                display: none;
+            }
+            .table-audit-logs, .table-audit-logs tbody, .table-audit-logs tr, .table-audit-logs td {
+                display: block;
+                width: 100%;
+            }
+            .table-audit-logs tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 10px;
+                background-color: #fff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .table-audit-logs td {
+                text-align: right;
+                padding-left: 50% !important;
+                position: relative;
+                border: none; /* En móvil, las celdas no tienen bordes individuales */
+            }
+            .table-audit-logs td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #555;
+                top: 50%;
+                transform: translateY(-50%);
+                overflow-x: auto;
+            }
+            .table-audit-logs td[data-label="Acciones"] { /* Si tuvieras acciones, ajustarías aquí */
+                padding-top: 10px !important;
+                text-align: center !important;
+                padding-left: 15px !important; 
+                overflow-x: auto;
+            }
+            .table-audit-logs td[data-label="Acciones"]::before {
+                display: none;
+            }
+        }

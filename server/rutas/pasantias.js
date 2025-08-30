@@ -111,7 +111,8 @@ router.get('/pasantias/:id', async (req, res) => {
                 estudiantes:id_estudiante(cedula, nombre_completo, carreras:id_carrera(carrera))
             `)
             .eq('id_pasantia', id)
-            .single();
+            .single()
+            .order('id_pasantia', { ascending: true });
 
         if (error && error.details.includes('0 rows')) {
             return res.status(404).json({ message: 'Pasantía no encontrada.' });

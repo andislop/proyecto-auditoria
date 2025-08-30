@@ -47,6 +47,18 @@ app.use(cors({
 // Middleware de autenticación JWT
 function requireLogin(req, res, next) {
     const token = req.cookies.acceso_token; // Leer la cookie que contiene el JWT
+    if (/^\/api\/publicas\/proyectos-comunitarios\/\d+\/datos-pdf$/.test(req.path)) {
+    return next();
+  }
+    if (/^\/api\/publicas\/proyectos-investigacion\/\d+\/datos-pdf$/.test(req.path)) {
+        return next();
+    }
+    if (/^\/api\/publicas\/pasantias\/\d+\/datos-pdf$/.test(req.path)) {
+        return next();
+    }
+    if (/^\/api\/publicas\/trabajos-de-grado\/\d+\/datos-pdf$/.test(req.path)) {
+        return next();
+    }
 
     if (!token) {
         console.log('[requireLogin] No se encontró token, redirigiendo a /');
@@ -97,7 +109,7 @@ app.use(express.static(__dirname + "/public"));
 
 // Rutas
 app.get("/", (req, res) => res.sendFile(__dirname + "/public/views/index.html"));
-
+app.use('/api', publicas);
 // =======================================================
 // RUTAS PROTEGIDAS CON requireLogin y getUserIdFromSession
 // =======================================================
@@ -112,7 +124,8 @@ app.get("/proyectos", requireLogin, getUserIdFromSession, (req, res) => res.send
 app.get("/comprobante-proyecto-investigacion", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/comprobante-proyecto-investigacion.html"));
 app.get("/pasantias", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/pasantias.html"));
 app.get("/bitacora", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/bitacora.html"));
-
+app.get("/editar-perfil", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/editar-perfil.html"));
+app.get("/admin", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/admin.html"));
 // Rutas sin autenticación (registro y búsqueda)
 app.get("/registro", (req, res) => res.sendFile(__dirname + "/public/views/registro.html"));
 
@@ -204,7 +217,7 @@ app.post('/api/register', async (req, res) => {
         const { data: loginData, error: loginError } = await supabase
             .from('login')
             .insert([
-                { correo: correo, contraseña: hashedPassword, rol: rol }
+                { correo: correo, contraseña: hashedPassword, rol: rol, estado_login: 'Pendiente' }
             ])
             .select('id_login');
 
@@ -249,7 +262,157 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
+// Esta es la función corregida para tu servidor Node.js.
+const ID_ADMIN_PRINCIPAL = parseInt(process.env.ff2); // Reemplaza con el ID real del administrador principal
+app.get('/api/usuarios_pendientes', requireLogin, getUserIdFromSession, async (req, res) => {
+try {
+    // Consulta la tabla 'login' en Supabase y hace un JOIN IZQUIERDO (left join) con la tabla 'administrador'.
+    // Esto asegura que todos los usuarios pendientes sean devueltos, incluso si no tienen una entrada en la tabla 'administrador'.
+    const currentUserId = req.currentUserIdLogin;
 
+        // VERIFICACIÓN CLAVE: Si el ID del usuario actual no coincide con el del administrador principal,
+        // devolvemos un arreglo vacío y terminamos la ejecución.
+        if (currentUserId !== ID_ADMIN_PRINCIPAL) {
+            console.log(`Acceso denegado a usuarios pendientes para el usuario ${currentUserId}`);
+            return res.status(200).json([]);
+        }
+
+    const { data, error } = await supabase
+        .from('login')
+        .select('id_login, correo, administrador!left(nombre_completo)')
+        .eq('estado_login', 'Pendiente');
+
+    if (error) {
+        console.error('Error al obtener usuarios pendientes:', error.message);
+        return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+
+    // --- Paso de depuración: Imprime los datos originales para verificar la estructura ---
+    // ----------------------------------------------------------------------------------
+
+    // Formatea los datos para que el nombre completo sea una propiedad de primer nivel.
+    // Se usa el operador de encadenamiento opcional (?.) para evitar errores si 'administrador' es nulo.
+    const formattedData = data.map(user => {
+        // Accede al primer elemento del array `administrador` antes de obtener `nombre_completo`
+        const nombreCompleto = user.administrador && user.administrador.length > 0
+            ? user.administrador[0].nombre_completo
+            : 'Nombre no disponible';
+
+        return {
+            id_login: user.id_login,
+            correo: user.correo,
+            nombre_completo: nombreCompleto,
+        };
+    });
+
+    // Envía la lista de usuarios formateada como respuesta.
+    res.status(200).json(formattedData);
+} catch (error) {
+    console.error('Error en la ruta /api/usuarios_pendientes:', error.message);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+}
+});
+
+app.get('/api/usuarios_rechazados', requireLogin, getUserIdFromSession, async (req, res) => {
+try {
+    // Consulta la tabla 'login' en Supabase y hace un JOIN IZQUIERDO (left join) con la tabla 'administrador'.
+    // Esto asegura que todos los usuarios rechazados sean devueltos, incluso si no tienen una entrada en la tabla 'administrador'.
+     const currentUserId = req.currentUserIdLogin;
+
+        // VERIFICACIÓN CLAVE: Si el ID del usuario actual no coincide con el del administrador principal,
+        // devolvemos un arreglo vacío y terminamos la ejecución.
+        if (currentUserId !== ID_ADMIN_PRINCIPAL) {
+            console.log(`Acceso denegado a usuarios pendientes para el usuario ${currentUserId}`);
+            return res.status(200).json([]);
+        }
+    const { data, error } = await supabase
+        .from('login')
+        .select('id_login, correo, administrador!left(nombre_completo)')
+        .eq('estado_login', 'Rechazado');
+
+    if (error) {
+        console.error('Error al obtener usuarios rechazados:', error.message);
+        return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+
+    // --- Paso de depuración: Imprime los datos originales para verificar la estructura ---
+    // ----------------------------------------------------------------------------------
+
+    // Formatea los datos para que el nombre completo sea una propiedad de primer nivel.
+    if (error) {
+        console.error('Error al obtener usuarios rechazados:', error.message);
+        return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+
+    // --- Paso de depuración: Imprime los datos originales para verificar la estructura ---
+    // ----------------------------------------------------------------------------------
+
+    // Formatea los datos para que el nombre completo sea una propiedad de primer nivel.
+    // Se usa el operador de encadenamiento opcional (?.) para evitar errores si 'administrador' es nulo.
+    const formattedData = data.map(user => {
+        // Accede al primer elemento del array `administrador` antes de obtener `nombre_completo`
+        const nombreCompleto = user.administrador && user.administrador.length > 0
+            ? user.administrador[0].nombre_completo
+            : 'Nombre no disponible';
+
+        return {
+            id_login: user.id_login,
+            correo: user.correo,
+            nombre_completo: nombreCompleto,
+        };
+    });
+
+    // Envía la lista de usuarios formateada como respuesta.
+    res.status(200).json(formattedData);
+} catch (error) {
+    console.error('Error en la ruta /api/usuarios_pendientes:', error.message);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+}
+});
+
+
+
+// NUEVA RUTA: Aceptar un usuario
+app.post('/api/accept_user/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { data, error } = await supabase
+            .from('login')
+            .update({ estado_login: 'Activo' })
+            .eq('id_login', id);
+        
+        if (error) {
+            console.error('Error al aceptar usuario:', error.message);
+            return res.status(500).json({ error: 'Error interno del servidor.' });
+        }
+        res.status(200).json({ message: 'Usuario aceptado exitosamente.' });
+    } catch (error) {
+        console.error('Error en la ruta /api/accept_user:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+});
+
+// NUEVA RUTA: Rechazar un usuario
+app.post('/api/reject_user/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { data, error } = await supabase
+            .from('login')
+            .update({ estado_login: 'Rechazado' })
+            .eq('id_login', id);
+
+        if (error) {
+            console.error('Error al rechazar usuario:', error.message);
+            return res.status(500).json({ error: 'Error interno del servidor.' });
+        }
+        res.status(200).json({ message: 'Usuario rechazado exitosamente.' });
+    } catch (error) {
+        console.error('Error en la ruta /api/reject_user:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+});
+
+// Ruta de inicio de sesión de usuarios
 // Ruta de inicio de sesión de usuarios
 app.post("/api/login", async (req, res) => {
     try {
@@ -257,23 +420,38 @@ app.post("/api/login", async (req, res) => {
 
         const { data, error } = await supabase
             .from('login')
-            .select(`id_login, correo, contraseña, rol`)
+            .select(`id_login, correo, contraseña, rol, estado_login`) // Incluimos estado_login en la selección
             .eq('correo', correo)
             .single();
 
         if (error || !data) {
             await registrarAuditoria({
-                id_login: null, modulo_afectado: 'Autenticación', accion_realizada: 'Intento de Inicio de Sesión Fallido',
+                id_login: null,
+                modulo_afectado: 'Autenticación',
+                accion_realizada: 'Intento de Inicio de Sesión Fallido',
                 descripcion_detallada: `Intento de inicio de sesión con correo "${correo}" fallido: Usuario no encontrado.`,
             });
             return res.status(401).json({ error: 'Credenciales inválidas.' });
+        }
+
+        // --- Verificación del estado de la cuenta ---
+        if (data.estado_login !== 'Activo') {
+            await registrarAuditoria({
+                id_login: data.id_login,
+                modulo_afectado: 'Autenticación',
+                accion_realizada: 'Intento de Inicio de Sesión Fallido',
+                descripcion_detallada: `Intento de inicio de sesión para el usuario con ID ${data.id_login} y correo "${correo}" fallido: La cuenta no está activa. Estado actual: ${data.estado_login}.`,
+            });
+            return res.status(403).json({ error: 'Tu cuenta no ha sido activada aún. Por favor, contacta al administrador.' });
         }
 
         const isPasswordValid = await bcrypt.compare(contraseña, data.contraseña);
 
         if (!isPasswordValid) {
             await registrarAuditoria({
-                id_login: data.id_login, modulo_afectado: 'Autenticación', accion_realizada: 'Intento de Inicio de Sesión Fallido',
+                id_login: data.id_login,
+                modulo_afectado: 'Autenticación',
+                accion_realizada: 'Intento de Inicio de Sesión Fallido',
                 descripcion_detallada: `Intento de inicio de sesión para usuario con ID ${data.id_login} y correo "${correo}" fallido: Contraseña incorrecta.`,
             });
             return res.status(401).json({ error: 'Credenciales inválidas.' });
@@ -290,14 +468,16 @@ app.post("/api/login", async (req, res) => {
 
         // Establecer la cookie JWT
         res.cookie("acceso_token", token, {
-            httpOnly: true, // La cookie solo es accesible por el servidor (no JavaScript del navegador)
-            secure: process.env.NODE_ENV === "production", // Solo se envía sobre HTTPS en producción
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Configuración para cross-site en prod
-            maxAge: 3600000 // 1 hora de vida para la cookie
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 3600000
         });
 
         await registrarAuditoria({
-            id_login: data.id_login, modulo_afectado: 'Autenticación', accion_realizada: 'Inicio de Sesión Exitoso',
+            id_login: data.id_login,
+            modulo_afectado: 'Autenticación',
+            accion_realizada: 'Inicio de Sesión Exitoso',
             descripcion_detallada: `Usuario con ID ${data.id_login}, correo "${data.correo}" y rol "${data.rol}" inició sesión exitosamente.`,
         });
 
@@ -313,12 +493,15 @@ app.post("/api/login", async (req, res) => {
     } catch (error) {
         console.error('Error en la ruta /api/login:', error.message);
         await registrarAuditoria({
-            id_login: null, modulo_afectado: 'Autenticación', accion_realizada: 'Error Interno del Servidor',
+            id_login: null,
+            modulo_afectado: 'Autenticación',
+            accion_realizada: 'Error Interno del Servidor',
             descripcion_detallada: `Error crítico durante el proceso de login. Mensaje: ${error.message}.`,
         });
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
+
 
 
 // Ruta para cerrar sesión (Ahora limpia la cookie JWT)
@@ -358,22 +541,36 @@ app.get("/api/buscar-proyectos/:cedula", async (req, res) => {
 
     try {
         // Servicio Comunitario
-        const { data: servicioComunitario, error: scError } = await supabase
+        const { data: scEstudiante, error: scError } = await supabase
             .from("servicio_comunitario")
             .select("id_servicio, proyecto, periodos: id_periodo(periodo), integrantes: integrantes!inner(id_estudiante!inner(cedula))")
             .eq("integrantes.id_estudiante.cedula", cedula);
+        const { data: scTutor, error: scTutorError } = await supabase
+            .from("servicio_comunitario")
+            .select("id_servicio, proyecto, periodos: id_periodo(periodo), tutor:id_tutor!inner(cedula)")
+            .eq("tutor.cedula", cedula);
+
+        const servicioComunitario = [...(scEstudiante || []), ...(scTutor || [])].reduce((acc, current) => {
+            const x = acc.find(item => item.id_servicio === current.id_servicio);
+            if (!x) {
+                return acc.concat([current]);
+            } else {
+                return acc;
+            }
+        }, []); // Eliminar duplicados si un mismo proyecto tiene al estudiante y al tutor con la misma cédula
 
         if (scError) console.error("Error servicio comunitario:", scError.message);
+        if (scTutorError) console.error("Error servicio comunitario (tutor):", scTutorError.message);
 
         // Trabajo de Grado (Consulta mejorada para estudiante O tutor)
         const { data: tgByStudent, error: tgStudentError } = await supabase
             .from("trabajo_grado")
-            .select("id_trabajo_grado, proyecto, periodos: id_periodo(periodo), estudiantes: id_estudiante(cedula)")
+            .select("id_trabajo_grado, proyecto, periodos: id_periodo(periodo), estudiantes: id_estudiante!inner(cedula)")
             .eq("estudiantes.cedula", cedula);
 
         const { data: tgByTutor, error: tgTutorError } = await supabase
             .from("trabajo_grado")
-            .select("id_trabajo_grado, proyecto, periodos: id_periodo(periodo), tutor:id_tutor(cedula)")
+            .select("id_trabajo_grado, proyecto, periodos: id_periodo(periodo), tutor:id_tutor!inner(cedula)")
             .eq("tutor.cedula", cedula);
 
         const trabajosGrado = [...(tgByStudent || []), ...(tgByTutor || [])].reduce((acc, current) => {
@@ -392,18 +589,34 @@ app.get("/api/buscar-proyectos/:cedula", async (req, res) => {
         // Proyectos de Investigación
         const { data: proyectosInvestigacion, error: piError } = await supabase
             .from("proyectos_investigacion")
-            .select("id_proyecto_investigacion, proyecto, periodos: id_periodo(periodo), estudiante: id_estudiante(cedula)")
+            .select("id_proyecto_investigacion, proyecto, periodos: id_periodo(periodo), estudiante: id_estudiante!inner(cedula)")
             .eq("estudiante.cedula", cedula);
+
 
         if (piError) console.error("Error proyectos investigación:", piError.message);
 
         // Pasantías
-        const { data: pasantias, error: paError } = await supabase
+        const { data: paEstudiante, error: paError } = await supabase
             .from("pasantia")
-            .select("id_pasantia, titulo, periodos: id_periodo(periodo), estudiante: id_estudiante(cedula)")
+            .select("id_pasantia, titulo, periodos: id_periodo(periodo), estudiante: id_estudiante!inner(cedula)")
             .eq("estudiante.cedula", cedula);
 
+        const { data: paTutor, error: paTutorError } = await supabase
+            .from("pasantia")
+            .select("id_pasantia, titulo, periodos: id_periodo(periodo), tutor:id_tutor!inner(cedula)")
+            .eq("tutor.cedula", cedula);
+
+        const pasantias = [...(paEstudiante || []), ...(paTutor || [])].reduce((acc, current) => {
+            const x = acc.find(item => item.id_pasantia === current.id_pasantia);
+            if (!x) {
+                return acc.concat([current]);
+            } else {
+                return acc;
+            }
+        }, []); // Eliminar duplicados si un mismo proyecto tiene al estudiante y al tutor con la misma cédula
+
         if (paError) console.error("Error pasantías:", paError.message);
+        if (paTutorError) console.error("Error pasantías (tutor):", paTutorError.message);
 
         // Respuesta agrupada
         res.json({
@@ -419,7 +632,6 @@ app.get("/api/buscar-proyectos/:cedula", async (req, res) => {
     }
 });
 
-
 // Otras rutas
 import servicio_comunitario from './server/rutas/servicio-comunitario.js';
 import trabajo_de_grado from './server/rutas/trabajo-de-grado.js';
@@ -428,6 +640,11 @@ import proyectos from './server/rutas/proyectos.js';
 import pasantias from './server/rutas/pasantias.js';
 import home from './server/rutas/home.js';
 import bitacora from './server/rutas/bitacora.js'
+import editar_perfil from './server/rutas/editar_perfil.js'
+import admin from './server/rutas/admin.js'
+import publicas from './server/rutas/publicas.js'
+
+
 
 app.use('/api', requireLogin, getUserIdFromSession);
 app.use('/api', servicio_comunitario);
@@ -437,3 +654,5 @@ app.use('/api', proyectos);
 app.use('/api', pasantias);
 app.use('/api', home);
 app.use('/api', bitacora);
+app.use('/api', editar_perfil);
+app.use('/api', admin);

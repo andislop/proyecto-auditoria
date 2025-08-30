@@ -7,207 +7,7 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/bootstrap-icons.css">
     <script src="https://kit.fontawesome.com/a81368914c.js" crossorigin="anonymous"></script>
-    <style>
-        /* Estilos personalizados para la bitácora y la tabla responsive */
-        .filter-section {
-            background-color: #f2f2f2;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .filter-section .form-group {
-            margin-bottom: 10px;
-        }
-
-        /* Estilos para el encabezado de la tabla (TH) */
-        .table-audit-logs thead th {
-            background-color: #2a3e61; /* Color de fondo similar a tu imagen */
-            color: white;
-            vertical-align: middle;
-        }
-                                   /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
-        .custom-modal-overlag {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .custom-modal-overlag.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .custom-modal-contento {
-            background: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
-        }
-
-        .custom-modal-overlag.active .custom-modal-content {
-            transform: translateY(0);
-        }
-
-        .custom-modal-contento h2 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-            color: #333;
-        }
-
-        .custom-modal-contento p {
-            margin-bottom: 25px;
-            color: #555;
-            line-height: 1.5;
-        }
-
-        .custom-modal-botones {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .custom-modal-botones button {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-
-        .custom-modal-botones button.confirm {
-            background-color: #f44336; /* Rojo para confirmar */
-            color: white;
-        }
-
-        .custom-modal-botones button.cancel {
-            background-color: #ccc; /* Gris para cancelar */
-            color: #333;
-        }
-
-        .custom-modal-botones button:hover {
-            transform: translateY(-2px);
-        }
-
-        .custom-modal-botones button.confirm:hover {
-            background-color: #d32f2f;
-        }
-
-        .custom-modal-botones button.cancel:hover {
-            background-color: #bbb;
-        }
-
-
-        /* Estilos para las filas al pasar el ratón (hover) */
-        .table-audit-logs tbody tr:hover {
-            background-color: #cfe2ff; /* Azul claro para el hover, como lo indicaste */
-            cursor: pointer;
-            color: #000; /* Texto oscuro para contrastar con el fondo azul */
-        }
-        /* El estilo para 'selected' lo mantengo por si más adelante quieres alguna funcionalidad de selección */
-        .table-audit-logs tbody tr.selected {
-            background-color: #cfe2ff; /* Azul claro para la selección */
-            color: #000; /* Texto oscuro para contrastar */
-        }
-
-        /* Estilos para la tabla completa: curvatura y líneas separadoras */
-        .table-responsive {
-            border-radius: 8px; /* Curvatura para la tabla completa */
-            overflow: hidden; /* Asegura que la curvatura se aplique bien */
-            border: 1px solid #dee2e6; /* Borde general para la tabla */
-        }
-
-        .table-audit-logs {
-            border-collapse: separate; /* Necesario para border-spacing */
-            border-spacing: 0; /* Elimina espacio extra entre celdas */
-            width: 100%; /* Asegura que la tabla ocupe todo el espacio */
-            margin-bottom: 0; /* Elimina margen inferior extra */
-        }
-
-        .table-audit-logs th,
-        .table-audit-logs td {
-            border-bottom: 1px solid #dee2e6; /* Líneas separadoras horizontales */
-            border-right: 1px solid #dee2e6; /* Líneas separadoras verticales */
-            padding: 8px; /* Espaciado interno de las celdas */
-        }
-
-        .table-audit-logs th:last-child,
-        .table-audit-logs td:last-child {
-            border-right: none; /* Elimina el borde derecho de la última columna */
-        }
-
-        .table-audit-logs tbody tr:last-child td {
-            border-bottom: none; /* Elimina el borde inferior de la última fila */
-        }
-
-
-        /* Responsive Table Styles for mobile - Copiado de servicio-comunitarioo.txt */
-        @media (max-width: 767px) {
-            .table-responsive {
-                border: none; /* En móvil, eliminamos el borde general del contenedor */
-            }
-            .table-audit-logs thead {
-                display: none;
-            }
-            .table-audit-logs, .table-audit-logs tbody, .table-audit-logs tr, .table-audit-logs td {
-                display: block;
-                width: 100%;
-            }
-            .table-audit-logs tr {
-                margin-bottom: 15px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                padding: 10px;
-                background-color: #fff;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            .table-audit-logs td {
-                text-align: right;
-                padding-left: 50% !important;
-                position: relative;
-                border: none; /* En móvil, las celdas no tienen bordes individuales */
-            }
-            .table-audit-logs td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 10px;
-                width: calc(50% - 20px);
-                padding-right: 10px;
-                white-space: nowrap;
-                text-align: left;
-                font-weight: bold;
-                color: #555;
-                top: 50%;
-                transform: translateY(-50%);
-                overflow-x: auto;
-            }
-            .table-audit-logs td[data-label="Acciones"] { /* Si tuvieras acciones, ajustarías aquí */
-                padding-top: 10px !important;
-                text-align: center !important;
-                padding-left: 15px !important; 
-                overflow-x: auto;
-            }
-            .table-audit-logs td[data-label="Acciones"]::before {
-                display: none;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../css/bitacora.css">
 </head>
 <body>
     <!-- SideBar -->
@@ -222,7 +22,7 @@
             <div class="full-box dashboard-sideBar-UserInfo">
                 <figure class="full-box">
                     <img src="../assets/img/unefa.png" alt="UserIcon">
-                    <figcaption class="text-center text-titles">juancito007</figcaption>
+                    <figcaption class="text-center text-titles" id="sidebarUserName"></figcaption>
                 </figure>
                 <ul class="full-box list-unstyled text-center">
                     <li>
@@ -469,6 +269,86 @@
                 customAlertModal.style.display = 'none';
             }
         };
+        // user-utils.js
+
+/**
+ * Función de utilidad para realizar fetch con retroceso exponencial.
+ * @param {string} url - La URL a la que se realizará la solicitud.
+ * @param {Object} options - Opciones para la solicitud fetch (método, headers, etc.).
+ * @param {number} retries - Número de reintentos en caso de fallo.
+ * @param {number} delay - Retraso inicial en milisegundos para el retroceso exponencial.
+ * @returns {Promise<Object|null>} - La respuesta JSON de la API o null si falla.
+ */
+async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
+    try {
+        const response = await fetch(url, options);
+        // Manejar respuestas 204 y 304 sin cuerpo
+        if (response.status === 204 || response.status === 304) {
+            console.log(`Respuesta ${response.status}. Sin contenido para procesar.`);
+            return null;
+        }
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.warn(`Recurso no encontrado: ${url}`);
+                return null;
+            }
+            throw new Error(`Error HTTP! estado: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        if (retries > 0) {
+            console.warn(`Error en fetch, reintentando en ${delay}ms... (${retries} reintentos restantes)`, error);
+            await new Promise(res => setTimeout(res, delay));
+            return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
+        } else {
+            console.error('Se agotaron los reintentos. Falló la solicitud:', url, error);
+            throw error;
+        }
+    }
+}
+
+/**
+ * Carga el nombre del usuario autenticado y lo muestra en el sidebar.
+ * Ahora usa /api/me para obtener el id_login y luego /api/user-profile/:id_login
+ * para obtener el nombre completo.
+ * @param {string} elementId - El ID del elemento HTML donde se mostrará el nombre.
+ */
+async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
+    const userNameElement = document.getElementById(elementId);
+    if (!userNameElement) {
+        console.error(`Elemento con ID '${elementId}' no encontrado.`);
+        return;
+    }
+    userNameElement.textContent = 'Cargando...'; // Texto provisional
+
+    try {
+        const meResponse = await fetchWithExponentialBackoff(`/api/me`, { method: 'GET', credentials: 'include' });
+
+        if (!meResponse || !meResponse.user || !meResponse.user.id) {
+            userNameElement.textContent = 'Usuario Desconocido';
+            console.warn('No se pudo obtener el id desde /api/me. Respuesta:', meResponse);
+            return;
+        }
+
+        const id_login = meResponse.user.id; // 👈 aquí usas "id"
+
+
+
+        // 2. Obtener el perfil
+        const profileResponse = await fetchWithExponentialBackoff(`/api/user-profile/${id_login}`, { method: 'GET', credentials: 'include' });
+
+        if (profileResponse && profileResponse.nombre_completo) {
+            userNameElement.textContent = profileResponse.nombre_completo;
+        } else {
+            userNameElement.textContent = 'Usuario Desconocido';
+        }
+
+    } catch (error) {
+        console.error('Error al cargar el nombre del usuario autenticado:', error);
+        userNameElement.textContent = 'Error al cargar nombre';
+    }
+}
+
 
         // --- Funciones de Utilidad para Fetching (Mismo que en tus archivos) ---
         async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
@@ -681,6 +561,7 @@
 
         // Cargar los logs de auditoría al iniciar la página
         $(document).ready(function() {
+            loadAuthenticatedUserName();
             // Asegura que Material Design se inicialice después de que todo el DOM esté listo
             $.material.init(); 
             loadAuditLogs();

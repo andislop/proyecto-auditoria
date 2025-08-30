@@ -52,7 +52,8 @@ router.get('/proyectos-comunitarios', async (req, res) => {
                     estudiantes:id_estudiante(id_estudiante, cedula, nombre_completo, id_carrera)
                 )
             `)
-            .eq('eliminados', false); // FIX: Filtrar solo proyectos no eliminados
+            .eq('eliminados', false) // FIX: Filtrar solo proyectos no eliminados
+            .order('id_servicio', { ascending: true });
 
         if (error) {
             console.error('Error al obtener proyectos de servicio comunitario (Router):', error.message);

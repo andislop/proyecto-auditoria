@@ -47,7 +47,8 @@ router.get('/trabajos-de-grado', async (req, res) => {
                 tutores:id_tutor(id_tutor, cedula, nombre_completo),
                 estudiantes:id_estudiante(id_estudiante, cedula, nombre_completo, carreras:id_carrera(carrera))
             `)
-            .eq('eliminados', false);
+            .eq('eliminados', false)
+            .order('id_trabajo_grado', { ascending: true });
 
         if (error) {
             console.error('Error al obtener trabajos de grado (Router):', error.message);

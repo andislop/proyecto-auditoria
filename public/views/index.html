@@ -18,6 +18,8 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(10px);
             color: #e0e0e0;
+            justify-content: center;
+            align-items: center;
         }
 
         #searchProjectModal .custom-modal-header {
@@ -50,7 +52,9 @@
             transition: all 0.3s ease;
             text-align: center; /* Centra el texto del input */
             margin: 0 auto; /* Centra el input */
+            justify-content: center;
         }
+    
 
         #searchProjectModal .form-control::placeholder {
             color: rgba(255, 255, 255, 0.6); /* Color del placeholder */
@@ -184,7 +188,7 @@
                 <div class="form-group">
                     <label class="control-label-1" for="cedulaInput">Cédula</label>
                     <!-- He cambiado el type de 'tel' a 'number' y añadido 'pattern' para validación adicional -->
-                    <input class="form-control" id="cedulaInput" type="number" placeholder="12345678" required pattern="[0-9]*">
+                    <input class="form-control" style="justify-content: center;" id="cedulaInput" type="number" placeholder="12345678" required pattern="[0-9]*">
                 </div>
                 <button id="resultadosBusqueda" class="btn btn-login">Buscar</button>
                 <div id="projectResults" class="project-results">

@@ -6,364 +6,7 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/bootstrap-icons.css">
-    <style>
-        /* Estilos para la ventana modal personalizada */
-        .custom-modal-overlay {
-            display: none; /* Oculto por defecto */
-            position: fixed;
-            z-index: 9999; 
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.6); 
-            justify-content: center;
-            align-items: center;
-        }
-
-        .custom-modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-            animation-name: animatetop;
-            animation-duration: 0.4s;
-            border-radius: 8px;
-            text-align: center;
-            color: #333;
-        }
-
-        .custom-modal-header {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 15px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .custom-modal-body {
-            padding: 10px 0;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        /* Estilos para el campo de mensaje en la alerta personalizada */
-        .custom-modal-body textarea {
-            width: 100%;
-            padding: 8px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: vertical; 
-        }
-                   /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
-        .custom-modal-overlag {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .custom-modal-overlag.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .custom-modal-contento {
-            background: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
-        }
-
-        .custom-modal-overlag.active .custom-modal-content {
-            transform: translateY(0);
-        }
-
-        .custom-modal-contento h2 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-            color: #333;
-        }
-
-        .custom-modal-contento p {
-            margin-bottom: 25px;
-            color: #555;
-            line-height: 1.5;
-        }
-
-        .custom-modal-botones {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .custom-modal-botones button {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-
-        .custom-modal-botones button.confirm {
-            background-color: #f44336; /* Rojo para confirmar */
-            color: white;
-        }
-
-        .custom-modal-botones button.cancel {
-            background-color: #ccc; /* Gris para cancelar */
-            color: #333;
-        }
-
-        .custom-modal-botones button:hover {
-            transform: translateY(-2px);
-        }
-
-        .custom-modal-botones button.confirm:hover {
-            background-color: #d32f2f;
-        }
-
-        .custom-modal-botones button.cancel:hover {
-            background-color: #bbb;
-        }
-
-        .custom-modal-footer {
-            padding: 10px 0;
-            border-top: 1px solid #eee;
-            margin-top: 15px;
-        }
-
-        .custom-modal-footer button {
-            background-color: #2a3e61; 
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        .custom-modal-footer button:hover {
-            background-color: #1a2a44; 
-        }
-
-        /* Animación de entrada */
-        @keyframes animatetop {
-            from {top: -300px; opacity: 0}
-            to {top: 0; opacity: 1}
-        }
-
-        /* Responsive Table Styles for mobile */
-        @media (max-width: 767px) {
-            .table-responsive {
-                border: none;
-                display: none; /* Ocultar la tabla original en móvil */
-            }
-            .table-projects thead {
-                display: none;
-            }
-            .table-projects, .table-projects tbody, .table-projects tr, .table-projects td {
-                display: block;
-                width: 100%;
-            }
-            .table-projects tr {
-                margin-bottom: 15px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                padding: 10px;
-                background-color: #fff;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            .table-projects td {
-                text-align: right;
-                padding-left: 50% !important;
-                position: relative;
-                border: none;
-            }
-            .table-projects td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 10px;
-                width: calc(50% - 20px);
-                padding-right: 10px;
-                white-space: nowrap;
-                text-align: left;
-                font-weight: bold;
-                color: #555;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-            .table-projects td[data-label="Acciones"] {
-                padding-top: 10px !important;
-                text-align: center !important;
-                padding-left: 15px !important; 
-            }
-            .table-projects td[data-label="Acciones"]::before {
-                display: none;
-            }
-            /* Estilo para que el contenido de Estudiantes no se recorte en móvil */
-            .table-projects td[data-label="Estudiantes"] { 
-                white-space: normal;
-                text-align: left;
-                word-break: break-word; /* Permite romper palabras largas */
-                overflow-x: auto;
-            }
-            .table-projects td[data-label="Estudiantes"]::before { 
-                top: 10px;
-                transform: translateY(0);
-            }
-
-            /* --- Nuevos estilos para la vista móvil con tarjetas --- */
-            .mobile-cards-container {
-                display: block; /* Mostrar los cards en móvil */
-                padding: 15px;
-            }
-
-            .project-card {
-                background-color: #fff;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                margin-bottom: 15px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                padding: 15px;
-            }
-
-            .card-item {
-                display: flex;
-                justify-content: space-between;
-                padding: 5px 0;
-                border-bottom: 1px dashed #eee;
-            }
-
-            .card-item:last-child {
-                border-bottom: none;
-            }
-
-            .card-label {
-                font-weight: bold;
-                color: #555;
-            }
-
-            .card-value {
-                text-align: right;
-                color: #333;
-            }
-
-            .card-actions {
-                display: flex;
-                justify-content: center;
-                gap: 10px;
-                margin-top: 15px;
-            }
-
-            .card-actions .btn {
-                flex-grow: 1; /* Para que los botones se expandan */
-            }
-        }
-
-        @media (min-width: 768px) {
-            .mobile-cards-container {
-                display: none; /* Ocultar los cards en desktop */
-            }
-        }
-
-        /* Estilos para la celda de Estudiantes en la tabla principal */
-        .table-projects td[data-label="Estudiantes"] {
-            text-align: left; 
-            white-space: normal; 
-            word-break: break-word; 
-            min-width: 180px; 
-        }
-
-        .filter-buttons button {
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-
-        /* === ESTILOS ACTUALIZADOS PARA LA TABLA DE PROYECTOS ELIMINADOS === */
-        .table-projects {
-            border-collapse: separate; 
-            border-spacing: 0; 
-        }
-
-        .table-projects thead {
-            background-color: #2a3e61; 
-            color: white; 
-            border-radius: 8px; 
-            overflow: hidden; 
-            margin-bottom: 10px; 
-            display: table-header-group; 
-        }
-        
-        .table-projects thead tr {
-            border-radius: 8px; 
-        }
-
-        .table-projects thead th {
-            color: white !important; 
-            border-right: 1px solid rgba(255, 255, 255, 0.3); 
-            padding: 12px 8px; 
-        }
-        .table-projects thead th:first-child {
-            border-top-left-radius: 8px; 
-        }
-        .table-projects thead th:last-child {
-            border-top-right-radius: 8px; 
-            border-right: none; 
-        }
-
-        /* Estilos para las filas del cuerpo de la tabla */
-        .table-projects tbody tr {
-            background-color: #ffffff; 
-            border-bottom: 1px solid #eee; 
-            transition: background-color 0.3s ease; 
-        }
-        .table-projects tbody tr:last-child {
-            border-bottom: none; 
-        }
-        .table-projects tbody tr:hover {
-            background-color: #e0f2f7; 
-            cursor: pointer;
-        }
-        .table-projects tbody td {
-            padding: 8px; 
-            vertical-align: middle; 
-            border-right: 1px solid #f0f0f0; 
-        }
-        .table-projects tbody td:last-child {
-            border-right: none; 
-        }
-
-        /* Estilo para los nombres de proyectos e integrantes dentro de las celdas */
-        .table-projects tbody td[data-label="Nombre del Proyecto / Título"] .project-name-display,
-        .table-projects tbody td[data-label="Tutor"] .tutor-name-display,
-        .table-projects tbody td[data-label="Estudiantes"] .student-name-display {
-            color: #2a3e61; 
-            font-weight: normal; 
-        }
-    </style>
+    <link rel="stylesheet" href="../css/proyectos-eliminados.css">
 </head>
 <body>
 	<!-- SideBar -->
@@ -378,7 +21,7 @@
 			<div class="full-box dashboard-sideBar-UserInfo">
 				<figure class="full-box">
 					<img src="../assets/img/unefa.png" alt="UserIcon">
-					<figcaption class="text-center text-titles">juancito007</figcaption>
+					<figcaption class="text-center text-titles" id="sidebarUserName"></figcaption>
 				</figure>
 				<ul class="full-box list-unstyled text-center">
 					<li>
@@ -557,6 +200,7 @@
 	<script src="./js/ripples.min.js"></script>
 	<script src="./js/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="./js/main.js"></script>
+    <script src="../js/obtener-user.js"></script>
 <script>
         // Referencias a los elementos de la modal personalizada
         const customAlertModal = document.getElementById('customAlertModal');
@@ -636,6 +280,86 @@
                 }
             }
         }
+        // user-utils.js
+
+/**
+ * Función de utilidad para realizar fetch con retroceso exponencial.
+ * @param {string} url - La URL a la que se realizará la solicitud.
+ * @param {Object} options - Opciones para la solicitud fetch (método, headers, etc.).
+ * @param {number} retries - Número de reintentos en caso de fallo.
+ * @param {number} delay - Retraso inicial en milisegundos para el retroceso exponencial.
+ * @returns {Promise<Object|null>} - La respuesta JSON de la API o null si falla.
+ */
+async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
+    try {
+        const response = await fetch(url, options);
+        // Manejar respuestas 204 y 304 sin cuerpo
+        if (response.status === 204 || response.status === 304) {
+            console.log(`Respuesta ${response.status}. Sin contenido para procesar.`);
+            return null;
+        }
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.warn(`Recurso no encontrado: ${url}`);
+                return null;
+            }
+            throw new Error(`Error HTTP! estado: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        if (retries > 0) {
+            console.warn(`Error en fetch, reintentando en ${delay}ms... (${retries} reintentos restantes)`, error);
+            await new Promise(res => setTimeout(res, delay));
+            return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
+        } else {
+            console.error('Se agotaron los reintentos. Falló la solicitud:', url, error);
+            throw error;
+        }
+    }
+}
+
+/**
+ * Carga el nombre del usuario autenticado y lo muestra en el sidebar.
+ * Ahora usa /api/me para obtener el id_login y luego /api/user-profile/:id_login
+ * para obtener el nombre completo.
+ * @param {string} elementId - El ID del elemento HTML donde se mostrará el nombre.
+ */
+async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
+    const userNameElement = document.getElementById(elementId);
+    if (!userNameElement) {
+        console.error(`Elemento con ID '${elementId}' no encontrado.`);
+        return;
+    }
+    userNameElement.textContent = 'Cargando...'; // Texto provisional
+
+    try {
+        const meResponse = await fetchWithExponentialBackoff(`/api/me`, { method: 'GET', credentials: 'include' });
+
+        if (!meResponse || !meResponse.user || !meResponse.user.id) {
+            userNameElement.textContent = 'Usuario Desconocido';
+            console.warn('No se pudo obtener el id desde /api/me. Respuesta:', meResponse);
+            return;
+        }
+
+        const id_login = meResponse.user.id; // 👈 aquí usas "id"
+
+
+
+        // 2. Obtener el perfil
+        const profileResponse = await fetchWithExponentialBackoff(`/api/user-profile/${id_login}`, { method: 'GET', credentials: 'include' });
+
+        if (profileResponse && profileResponse.nombre_completo) {
+            userNameElement.textContent = profileResponse.nombre_completo;
+        } else {
+            userNameElement.textContent = 'Usuario Desconocido';
+        }
+
+    } catch (error) {
+        console.error('Error al cargar el nombre del usuario autenticado:', error);
+        userNameElement.textContent = 'Error al cargar nombre';
+    }
+}
+
 
         async function loadDeletedProjectsFromAPI() {
             try {
@@ -976,6 +700,7 @@
 
 
         $(document).ready(function() {
+            loadAuthenticatedUserName();
             loadDeletedProjectsFromAPI(); 
             $.material.init(); 
 

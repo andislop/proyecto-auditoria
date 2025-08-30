@@ -1,0 +1,344 @@
+        /* Estilos para la ventana modal personalizada */
+        .custom-modal-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 9999; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); 
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            border-radius: 8px;
+            text-align: center;
+            color: #333;
+        }
+
+        .custom-modal-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .custom-modal-body {
+            padding: 10px 0;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para el campo de mensaje en la alerta personalizada */
+        .custom-modal-body textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical; 
+        }
+
+        /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
+        .custom-modal-overlag {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlag.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-contento {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-modal-overlag.active .custom-modal-content {
+            transform: translateY(0);
+        }
+
+        .custom-modal-contento h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .custom-modal-contento p {
+            margin-bottom: 25px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .custom-modal-botones {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .custom-modal-botones button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .custom-modal-botones button.confirm {
+            background-color: #f44336; /* Rojo para confirmar */
+            color: white;
+        }
+
+        .custom-modal-botones button.cancel {
+            background-color: #ccc; /* Gris para cancelar */
+            color: #333;
+        }
+
+        .custom-modal-botones button:hover {
+            transform: translateY(-2px);
+        }
+
+        .custom-modal-botones button.confirm:hover {
+            background-color: #d32f2f;
+        }
+
+        .custom-modal-botones button.cancel:hover {
+            background-color: #bbb;
+        }
+        .custom-modal-footer {
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+
+        .custom-modal-footer button {
+            background-color: #2a3e61; 
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal-footer button:hover {
+            background-color: #1a2a44; 
+        }
+
+        /* Animación de entrada */
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        /* Responsive Table Styles for mobile */
+        @media (max-width: 767px) {
+            .table-responsive {
+                border: none;
+                display: none; /* Ocultar la tabla original en móvil */
+            }
+            .table-admins thead {
+                display: none;
+            }
+            .table-admins, .table-admins tbody, .table-admins tr, .table-admins tr > td {
+                display: block;
+                width: 100%;
+            }
+            .table-admins tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 10px;
+                background-color: #fff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .table-admins td {
+                text-align: right;
+                padding-left: 50% !important;
+                position: relative;
+                border: none;
+            }
+            .table-admins td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #555;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .table-admins td[data-label="Acciones"] {
+                padding-top: 10px !important;
+                text-align: center !important;
+                padding-left: 15px !important; 
+            }
+            .table-admins td[data-label="Acciones"]::before {
+                display: none;
+            }
+            /* Estilo para que el contenido no se recorte en móvil */
+            .table-admins td[data-label="Nombre Completo"] { 
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+                overflow-x: auto;
+            }
+            .table-admins td[data-label="Nombre Completo"]::before { 
+                top: 10px;
+                transform: translateY(0);
+            }
+
+            /* --- Nuevos estilos para la vista móvil con tarjetas --- */
+            .mobile-cards-container {
+                display: block; /* Mostrar los cards en móvil */
+                padding: 15px;
+            }
+
+            .admin-card {
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                margin-bottom: 15px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                padding: 15px;
+            }
+
+            .card-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 5px 0;
+                border-bottom: 1px dashed #eee;
+            }
+
+            .card-item:last-child {
+                border-bottom: none;
+            }
+
+            .card-label {
+                font-weight: bold;
+                color: #555;
+            }
+
+            .card-value {
+                text-align: right;
+                color: #333;
+            }
+
+            .card-actions {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .card-actions .btn {
+                flex-grow: 1; /* Para que los botones se expandan */
+            }
+        }
+
+        @media (min-width: 768px) {
+            .mobile-cards-container {
+                display: none; /* Ocultar los cards en desktop */
+            }
+        }
+
+        /* === ESTILOS ACTUALIZADOS PARA LA TABLA DE ADMINISTRADORES === */
+        .table-admins {
+            border-collapse: separate; /* Necesario para que border-radius funcione en thead */
+            border-spacing: 0; /* Elimina el espacio entre celdas */
+        }
+
+        .table-admins thead {
+            background-color: #2a3e61; /* Color azul oscuro */
+            color: white; /* Texto blanco para contrastar */
+            border-radius: 8px; /* Esquinas redondeadas para la cabecera */
+            overflow: hidden; /* Asegura que las esquinas redondeadas se apliquen bien */
+            margin-bottom: 10px; /* Separación de la tabla */
+            display: table-header-group; /* Asegura que thead se comporte como cabecera de tabla */
+        }
+        
+        .table-admins thead tr {
+            border-radius: 8px; /* Asegura que la fila de la cabecera también tenga los bordes */
+        }
+
+        .table-admins thead th {
+            color: white !important; /* Asegura que el texto de la cabecera sea blanco */
+            border-right: 1px solid rgba(255, 255, 255, 0.3); /* Líneas divisorias blancas */
+            padding: 12px 8px; /* Ajuste de padding para mejor visualización */
+        }
+        .table-admins thead th:first-child {
+            border-top-left-radius: 8px; /* Redondear esquina superior izquierda */
+        }
+        .table-admins thead th:last-child {
+            border-top-right-radius: 8px; /* Redondear esquina superior derecha */
+            border-right: none; /* Elimina el borde derecho de la última columna */
+        }
+
+        /* Estilos para las filas del cuerpo de la tabla */
+        .table-admins tbody tr {
+            background-color: #ffffff; /* Fondo blanco para las filas */
+            border-bottom: 1px solid #eee; /* Línea separadora entre filas */
+            transition: background-color 0.3s ease; /* Transición suave para el hover */
+        }
+        .table-admins tbody tr:last-child {
+            border-bottom: none; /* Elimina la línea de la última fila */
+        }
+        .table-admins tbody tr:hover {
+            background-color: #e0f2f7; /* Azul claro al pasar el cursor (hover) */
+            cursor: pointer;
+        }
+        .table-admins tbody td {
+            padding: 8px; /* Padding para las celdas del cuerpo de la tabla */
+            vertical-align: middle; /* Alineación vertical para el contenido */
+            /* Líneas divisorias verticales para el cuerpo de la tabla, similar a la cabecera */
+            border-right: 1px solid #f0f0f0; 
+        }
+        .table-admins tbody td:last-child {
+            border-right: none; /* Elimina el borde derecho de la última columna */
+        }
+
+        /* Estilo para los nombres de administradores dentro de las celdas (AHORA EN FONT-WEIGHT NORMAL) */
+        .table-admins tbody td[data-label="Nombre Completo"] .admin-name-display,
+        .table-admins tbody td[data-label="Correo"] .admin-email-display,
+        .table-admins tbody td[data-label="Cédula"] .admin-cedula-display {
+            color: #2a3e61; /* Color oscuro para el texto de los nombres, para que resalte */
+            font-weight: normal; /* Asegurado para ser normal */
+        }
