@@ -59,6 +59,9 @@ function requireLogin(req, res, next) {
     if (/^\/api\/publicas\/trabajos-de-grado\/\d+\/datos-pdf$/.test(req.path)) {
         return next();
     }
+    if (/^\/api\/recuperar-password$/.test(req.path)) {
+        return next();
+    }
 
     if (!token) {
         console.log('[requireLogin] No se encontró token, redirigiendo a /');
@@ -110,6 +113,7 @@ app.use(express.static(__dirname + "/public"));
 // Rutas
 app.get("/", (req, res) => res.sendFile(__dirname + "/public/views/index.html"));
 app.use('/api', publicas);
+app.use('/api', recuperarContraseñas);
 // =======================================================
 // RUTAS PROTEGIDAS CON requireLogin y getUserIdFromSession
 // =======================================================
@@ -128,6 +132,7 @@ app.get("/editar-perfil", requireLogin, getUserIdFromSession, (req, res) => res.
 app.get("/admin", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/admin.html"));
 // Rutas sin autenticación (registro y búsqueda)
 app.get("/registro", (req, res) => res.sendFile(__dirname + "/public/views/registro.html"));
+app.get("/recuperar-contrasenia", (req, res) => res.sendFile(__dirname + "/public/views/recuperar-contraseña.html"));
 
 
 // Ruta para obtener información del usuario actual (útil para el frontend)
@@ -643,7 +648,7 @@ import bitacora from './server/rutas/bitacora.js'
 import editar_perfil from './server/rutas/editar_perfil.js'
 import admin from './server/rutas/admin.js'
 import publicas from './server/rutas/publicas.js'
-
+import recuperarContraseñas from './server/rutas/recuperar-contraseña.js';
 
 
 app.use('/api', requireLogin, getUserIdFromSession);

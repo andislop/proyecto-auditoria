@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Recuperar Contraseña</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #0a2a47, #275061);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container-box {
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            padding: 40px;
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+        }
+        .back-arrow {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .back-arrow:hover {
+            color: #0d6efd;
+        }
+        .logo {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        /* Nuevo contenedor para el input y el icono */
+        .input-container-relative {
+            position: relative; /* Esto es esencial. El icono con posición 'absolute' se posicionará con respecto a este contenedor. */
+            width: 100%;
+        }
+
+        /* Ajusta el padding del input para que el texto no oculte el ícono */
+        .form-control {
+            width: 100%;
+            padding: 12px 45px 12px 15px; /* Aumenta el padding-right a 45px para dejar espacio para el icono */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        /* Las reglas para .toggle-password que ya tienes son correctas */
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #fff;
+            width: 20px;
+            height: 20px;
+            z-index: 10;
+            stroke: currentColor;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            color: #fff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+        .message-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .message-box.show {
+            display: block;
+            opacity: 1;
+        }
+        .hidden-form {
+            display: none;
+        }
+        .error-message {
+            color: #ffcccc;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-box">
+        <a href="/" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
+
+        <div id="emailFormContainer">
+            <h2>Recuperar Contraseña</h2>
+            <p>Introduce tu correo electrónico para buscar tu cuenta.</p>
+            <form id="emailForm">
+                <div class="form-group">
+                    <input type="email" id="correoInput" class="form-control" placeholder="Correo electrónico" required>
+                </div>
+                <button type="submit" id="submitEmailBtn" class="btn btn-primary">Buscar Cuenta</button>
+            </form>
+            <div id="emailMessage" class="message-box"></div>
+        </div>
+
+        <!-- Formulario 2: Ingreso de Código -->
+        <div id="codeFormContainer" class="hidden-form">
+            <h2>Verificar Código</h2>
+            <p>Se ha enviado un código de 6 dígitos a tu correo electrónico. Ingresa el código a continuación.</p>
+            <form id="codeForm">
+                <div class="form-group">
+                    <input type="text" id="codeInput" class="form-control" placeholder="Código de 6 dígitos" required>
+                </div>
+                <button type="submit" id="submitCodeBtn" class="btn btn-primary">Verificar Código</button>
+            </form>
+            <div id="codeMessage" class="message-box"></div>
+        </div>
+
+        <!-- Formulario 3: Nueva Contraseña -->
+        <div id="passwordFormContainer" class="hidden-form">
+            <h2>Crear Nueva Contraseña</h2>
+            <p>Ingresa una nueva contraseña segura para tu cuenta.</p>
+            <form id="passwordForm">
+                <div class="form-group">
+                    <div class="input-container-relative">
+                        <input type="password" id="passwordInput" class="form-control" placeholder="Nueva contraseña" required>
+                        <span class="toggle-password" id="togglePassword">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </span>
+                </div>
+                <div id="passwordError" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-container-relative">
+                    <input type="password" id="confirmPasswordInput" class="form-control" placeholder="Confirmar contraseña" required>
+                    <span class="toggle-password" id="toggleConfirmarPassword">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </span>
+                    <div id="confirmPasswordError" class="error-message"></div>
+                </div>
+            </div>
+                <button type="submit" id="submitPasswordBtn" class="btn btn-primary">Actualizar Contraseña</button>
+            </form>
+            <div id="passwordMessage" class="message-box"></div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailFormContainer = document.getElementById('emailFormContainer');
+            const codeFormContainer = document.getElementById('codeFormContainer');
+            const passwordFormContainer = document.getElementById('passwordFormContainer');
+            
+            const emailForm = document.getElementById('emailForm');
+            const correoInput = document.getElementById('correoInput');
+            const emailMessage = document.getElementById('emailMessage');
+
+            const codeForm = document.getElementById('codeForm');
+            const codeInput = document.getElementById('codeInput');
+            const codeMessage = document.getElementById('codeMessage');
+
+            const passwordForm = document.getElementById('passwordForm');
+            const passwordInput = document.getElementById('passwordInput');
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            const passwordMessage = document.getElementById('passwordMessage');
+            const passwordError = document.getElementById('passwordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            const togglePassword = document.getElementById('togglePassword');
+            const toggleConfirmarPassword = document.getElementById('toggleConfirmarPassword');
+            const paswordInput = document.getElementById('passwordInput');
+            const confirmarContraseñaInput = document.getElementById('confirmPasswordInput');
+
+            if (togglePassword && paswordInput) {
+                togglePassword.addEventListener('click', function() {
+                    // Alternar el tipo de input entre 'password' y 'text'
+                    const type = paswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    paswordInput.setAttribute('type', type);
+
+                    // Cambiar el icono del ojo (ahora un SVG en línea)
+                    const eyeSvg = this.querySelector('svg');
+                    // Alterna el path del ojo abierto/cerrado. Este SVG es solo un ejemplo,
+                    // tendrías que ajustar los paths reales para un ojo abierto y un ojo cerrado.
+                    // Para simplificar, solo rotaremos el ojo o cambiaremos su opacidad como ejemplo.
+                    if (type === 'text') {
+                        // Si se muestra la contraseña, podrías cambiar el SVG o su estilo
+                        eyeSvg.style.transform = 'scale(0.8)'; // Ejemplo visual
+                        eyeSvg.setAttribute('stroke', '#00aaff'); // Cambiar color si se muestra
+                        // O si tienes un SVG de ojo cerrado, reemplazarlo
+                        // eyeSvg.innerHTML = '<path ... ojo cerrado ...>';
+                    } else {
+                        // Si la contraseña está oculta
+                        eyeSvg.style.transform = 'scale(1)';
+                        eyeSvg.setAttribute('stroke', 'currentColor'); // Volver al color original
+                        // eyeSvg.innerHTML = '<path ... ojo abierto ...>';
+                    }
+                });
+            }
+
+            if(toggleConfirmarPassword && confirmarContraseñaInput){
+                toggleConfirmarPassword.addEventListener('click', function() {
+                    // Alternar el tipo de input entre 'password' y 'text'
+                    const type = confirmarContraseñaInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    confirmarContraseñaInput.setAttribute('type', type);
+
+                    // Cambiar el icono del ojo (ahora un SVG en línea)
+                    const eyeSvg = this.querySelector('svg');
+                    // Alterna el path del ojo abierto/cerrado. Este SVG es solo un ejemplo,
+                    // tendrías que ajustar los paths reales para un ojo abierto y un ojo cerrado.
+                    // Para simplificar, solo rotaremos el ojo o cambiaremos su opacidad como ejemplo.
+                    if (type === 'text') {
+                        // Si se muestra la contraseña, podrías cambiar el SVG o su estilo
+                        eyeSvg.style.transform = 'scale(0.8)'; // Ejemplo visual
+                        eyeSvg.setAttribute('stroke', '#00aaff'); // Cambiar color si se muestra
+                        // O si tienes un SVG de ojo cerrado, reemplazarlo
+                        // eyeSvg.innerHTML = '<path ... ojo cerrado ...>';
+                    } else {
+                        // Si la contraseña está oculta
+                        eyeSvg.style.transform = 'scale(1)';
+                        eyeSvg.setAttribute('stroke', 'currentColor'); // Volver al color original
+                        // eyeSvg.innerHTML = '<path ... ojo abierto ...>';
+                    }
+                });
+            }
+
+            let userEmail = '';
+
+            // Función para mostrar mensajes
+            const showMessage = (element, message, isError = false) => {
+                element.innerHTML = `<p>${message}</p>`;
+                element.style.backgroundColor = isError ? 'rgba(255, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.3)';
+                element.classList.add('show');
+                setTimeout(() => element.classList.remove('show'), 5000);
+            };
+
+            // Validación de contraseña
+            const validatePassword = () => {
+                const password = passwordInput.value;
+                let isValid = true;
+                let errorMessage = '';
+
+                if (password.length < 8) {
+                    errorMessage += '<li>Debe tener al menos 8 caracteres.</li>';
+                    isValid = false;
+                }
+                if (!/[A-Z]/.test(password)) {
+                    errorMessage += '<li>Debe contener al menos una letra mayúscula.</li>';
+                    isValid = false;
+                }
+                if (!/[0-9]/.test(password)) {
+                    errorMessage += '<li>Debe contener al menos un número.</li>';
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    passwordError.innerHTML = `<ul>${errorMessage}</ul>`;
+                    passwordError.style.display = 'block';
+                } else {
+                    passwordError.style.display = 'none';
+                }
+
+                return isValid;
+            };
+
+            const validateConfirmPassword = () => {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                const isValid = password === confirmPassword;
+
+                if (!isValid) {
+                    confirmPasswordError.innerHTML = 'Las contraseñas no coinciden.';
+                    confirmPasswordError.style.display = 'block';
+                } else {
+                    confirmPasswordError.style.display = 'none';
+                }
+
+                return isValid;
+            };
+
+            // Evento para el formulario de correo
+            emailForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                userEmail = correoInput.value;
+
+                try {
+                    const response = await fetch('/api/recuperar-password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ correo: userEmail })
+                    });
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        showMessage(emailMessage, result.message);
+                        setTimeout(() => {
+                            emailFormContainer.classList.add('hidden-form');
+                            codeFormContainer.classList.remove('hidden-form');
+                        }, 2000);
+                    } else {
+                        showMessage(emailMessage, result.error, true);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showMessage(emailMessage, 'Error de conexión. Intenta de nuevo.', true);
+                }
+            });
+
+            // Evento para el formulario de código
+            codeForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const code = codeInput.value;
+
+                try {
+                    const response = await fetch('/api/verificar-codigo', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ correo: userEmail, codigo: code })
+                    });
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        showMessage(codeMessage, result.message);
+                        setTimeout(() => {
+                            codeFormContainer.classList.add('hidden-form');
+                            passwordFormContainer.classList.remove('hidden-form');
+                        }, 2000);
+                    } else {
+                        showMessage(codeMessage, result.error, true);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showMessage(codeMessage, 'Error de conexión. Intenta de nuevo.', true);
+                }
+            });
+
+            // Evento para el formulario de nueva contraseña
+            passwordForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+
+                const isPasswordValid = validatePassword();
+                const isConfirmPasswordValid = validateConfirmPassword();
+
+                if (!isPasswordValid || !isConfirmPasswordValid) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/resetear-password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ correo: userEmail, password: password })
+                    });
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        showMessage(passwordMessage, result.message);
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 3000); // Redirigir después de 3 segundos
+                    } else {
+                        showMessage(passwordMessage, result.error, true);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showMessage(passwordMessage, 'Error de conexión. Intenta de nuevo.', true);
+                }
+            });
+
+            // Eventos para la validación en tiempo real
+            passwordInput.addEventListener('input', validatePassword);
+            confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+        });
+    </script>
+</body>
+</html>
