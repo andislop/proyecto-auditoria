@@ -180,7 +180,7 @@
                 <span id="searchProjectTitle">Buscar Proyecto</span>
             </div>
             <div class="custom-modal-body">
-                <p>Introduce el número de cédula del tutor o estudiante.</p>
+                <p>Introduce el número de cédula del estudiante.</p>
                 <!-- Ajuste en el form-group para centrar correctamente -->
                 <div class="form-group">
                     <label class="control-label-1" for="cedulaInput">Cédula</label>
@@ -416,8 +416,8 @@ async function handleLogin(event) {
                         html += `
                             <li>
                                 <div class="flex flex-col">
+                                    <span class="text-sm text-gray-300">${p.periodos.periodo}-</span>
                                     <strong>${p.titulo}</strong>
-                                    <span class="text-sm text-gray-300">${p.periodos.periodo}</span>
                                 </div>
                                 <button class="btn btn-sm btn-primary ml-2" onclick="handleDownloadInternship(${p.id_pasantia})">
                                     Descargar
@@ -435,8 +435,8 @@ async function handleLogin(event) {
                         html += `
                             <li>
                                 <div class="flex flex-col">
+                                    <span class="text-sm text-gray-300">${p.periodos.periodo}-</span>
                                     <strong>${p.proyecto}</strong>
-                                    <span class="text-sm text-gray-300">${p.periodos.periodo} - Cédulas: ${cedulas}</span>
                                 </div>
                                 <button class="btn btn-sm btn-primary ml-2" onclick="generateCommunityServicePdf(${p.id_servicio})">
                                     Descargar
@@ -453,8 +453,8 @@ async function handleLogin(event) {
                         html += `
                             <li>
                                 <div class="flex flex-col">
+                                    <span class="text-sm text-gray-300">${p.periodos.periodo}-</span>
                                     <strong>${p.proyecto}</strong>
-                                    <span class="text-sm text-gray-300">${p.periodos.periodo}</span>
                                 </div>
                                 <button class="btn btn-sm btn-primary ml-2" onclick="handleDownloadInvestigationProject(${p.id_proyecto_investigacion})">
                                     Descargar
@@ -471,8 +471,8 @@ async function handleLogin(event) {
                         html += `
                             <li>
                                 <div class="flex flex-col">
+                                    <span class="text-sm text-gray-300">${p.periodos.periodo}-</span>
                                     <strong>${p.proyecto}</strong>
-                                    <span class="text-sm text-gray-300">${p.periodos.periodo}</span>
                                 </div>
                                 <button class="btn btn-sm btn-primary ml-2" onclick="handleDownloadDegreeProject(${p.id_trabajo_grado})">
                                     Descargar
