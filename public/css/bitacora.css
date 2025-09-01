@@ -82,7 +82,7 @@
         }
 
         .custom-modal-botones button.confirm {
-            background-color: #f44336; /* Rojo para confirmar */
+            background-color: #325592; /* Rojo para confirmar */
             color: white;
         }
 
@@ -96,12 +96,32 @@
         }
 
         .custom-modal-botones button.confirm:hover {
-            background-color: #d32f2f;
+            background-color: #2267df;
         }
 
         .custom-modal-botones button.cancel:hover {
             background-color: #bbb;
         }
+        /* Ajusta todos los selects */
+/* Asegura que el contenedor y el select usen todo el ancho */
+        .form-group {
+        width: 100%;
+        }
+
+        select.form-control {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: block;
+        }
+
+        /* Forzar que las opciones no se salgan */
+        select.form-control option {
+        white-space: normal !important;
+        word-break: break-word;
+        }
+
+
+
 
 
         /* Estilos para las filas al pasar el ratón (hover) */
@@ -149,6 +169,7 @@
 
         /* Responsive Table Styles for mobile - Copiado de servicio-comunitarioo.txt */
         @media (max-width: 767px) {
+
             .table-responsive {
                 border: none; /* En móvil, eliminamos el borde general del contenedor */
             }
@@ -195,5 +216,23 @@
             }
             .table-audit-logs td[data-label="Acciones"]::before {
                 display: none;
+            }
+                /* Ajusta la posición del menú desplegable */
+        /* Ajusta el contenedor de los campos en pantallas pequeñas */
+            .filter-section .col-md-3 {
+                width: 100%;
+                padding-left: 15px;
+                padding-right: 15px;
+                float: none; /* Esto evita que los elementos floten y los apila verticalmente */
+            }
+
+            /* Asegura que el select ocupe todo el ancho de su contenedor */
+            .form-group select.form-control {
+                width: 100% !important;
+                box-sizing: border-box; /* Esto incluye el padding y border en el ancho total */
+            }
+            .form-group select.form-control {
+                font-size: 14px;    /* Letra más pequeña en móvil */
+                padding: 8px;
             }
         }

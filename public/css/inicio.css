@@ -185,6 +185,36 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0, 170, 255, 0.6);
         }
+                /* Botón de login */
+        .btn-secondary {
+            display: block;
+            width: 100%;
+            max-width: 150px; /* Ancho máximo para que coincida con los campos */
+            height: 40px; /* Altura del botón un poco menor */
+            border-radius: 15px; /* Bordes un poco menos redondeados */
+            outline: none;
+            border: none;
+            /* Degradado de azules más consistentes */
+            background-image: linear-gradient(to right, #00aaff, #007bff, #00aaff);
+            background-size: 200%;
+            font-size: 0.80rem; /* Tamaño de letra del botón ajustado */
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            text-transform: uppercase;
+            margin: 20px 0 15px 0;
+            cursor: pointer;
+            transition: .5s;
+            box-shadow: 0 5px 15px rgba(0, 170, 255, 0.4);
+            padding: 0;
+            justify-self: center;
+        }
+
+        .btn-secondary:hover {
+            background-position: right;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 170, 255, 0.6);
+        }
+
 
         /* Enlaces de registro/olvido de contraseña */
         .login-links a {

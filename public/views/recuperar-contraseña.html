@@ -7,9 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #0f2027, #0a2a47, #275061);
             color: #fff;
             display: flex;
@@ -107,13 +106,33 @@
             font-size: 1rem;
             text-transform: uppercase;
         }
-        .btn-primary {
-            background-color: #0d6efd;
-            color: #fff;
+    .btn-primary {
+            display: block;
+            width: 100%;
+            max-width: 150px; /* Ancho máximo para que coincida con los campos */
+            height: 40px; /* Altura del botón un poco menor */
+            border-radius: 15px; /* Bordes un poco menos redondeados */
+            outline: none;
             border: none;
+            /* Degradado de azules más consistentes */
+            background-image: linear-gradient(to right, #00aaff, #007bff, #00aaff);
+            background-size: 200%;
+            font-size: 0.80rem; /* Tamaño de letra del botón ajustado */
+            color: rgba(0, 0, 0, .87);
+            font-family: 'Roboto', sans-serif;
+            text-transform: uppercase;
+            margin: 20px 0 15px 0;
+            cursor: pointer;
+            transition: .5s;
+            box-shadow: 0 5px 15px rgba(0, 170, 255, 0.4);
+            padding: 0;
+            justify-self: center;
         }
+
         .btn-primary:hover {
-            background-color: #0b5ed7;
+            background-position: right;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 170, 255, 0.6);
         }
         .message-box {
             margin-top: 20px;
@@ -147,7 +166,7 @@
 
         <div id="emailFormContainer">
             <h2>Recuperar Contraseña</h2>
-            <p>Introduce tu correo electrónico para buscar tu cuenta.</p>
+            <p style="padding-bottom: 15px;">Introduce tu correo electrónico para buscar tu cuenta.</p>
             <form id="emailForm">
                 <div class="form-group">
                     <input type="email" id="correoInput" class="form-control" placeholder="Correo electrónico" required>

@@ -129,7 +129,9 @@ app.get("/comprobante-proyecto-investigacion", requireLogin, getUserIdFromSessio
 app.get("/pasantias", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/pasantias.html"));
 app.get("/bitacora", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/bitacora.html"));
 app.get("/editar-perfil", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/editar-perfil.html"));
-app.get("/admin", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/admin.html"));
+app.get("/admin", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views//admin.html"));
+app.get("/estudiantes", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/estudiantes.html"));
+app.get("/tutores", requireLogin, getUserIdFromSession, (req, res) => res.sendFile(__dirname + "/public/views/tutores.html"));
 // Rutas sin autenticación (registro y búsqueda)
 app.get("/registro", (req, res) => res.sendFile(__dirname + "/public/views/registro.html"));
 app.get("/recuperar-contrasenia", (req, res) => res.sendFile(__dirname + "/public/views/recuperar-contraseña.html"));
@@ -248,7 +250,8 @@ app.post('/api/register', async (req, res) => {
                     cedula: cedula,
                     nombre_completo: nombreCompleto,
                     correo: correo,
-                    id_login: idLogin
+                    id_login: idLogin,
+                    activo: 'true'
                 }
             ])
             .select();
@@ -649,6 +652,7 @@ import editar_perfil from './server/rutas/editar_perfil.js'
 import admin from './server/rutas/admin.js'
 import publicas from './server/rutas/publicas.js'
 import recuperarContraseñas from './server/rutas/recuperar-contraseña.js';
+import estudianteTutores from './server/rutas/estudiantes-tutores.js';
 
 
 app.use('/api', requireLogin, getUserIdFromSession);
@@ -661,3 +665,4 @@ app.use('/api', home);
 app.use('/api', bitacora);
 app.use('/api', editar_perfil);
 app.use('/api', admin);
+app.use('/api', estudianteTutores);

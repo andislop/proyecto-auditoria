@@ -649,6 +649,11 @@ body, html{
 
 /*======= MEDIA QUERIES*/
 @media (max-width: 767px){
+    .filter-section .col-md-3 {
+        width: 100%;
+        padding: 0 15px; /* Ajusta el relleno para centrarlo */
+        float: none;
+    }
 	.dashboard-sideBar{
 		width: 100%;
 		z-index: 99;

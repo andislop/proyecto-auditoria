@@ -41,7 +41,18 @@
             font-size: 16px;
             margin-bottom: 20px;
         }
-                                   /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
+
+        /* Estilos para el campo de mensaje en la alerta personalizada */
+        .custom-modal-body textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical; 
+        }
+
+        /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
         .custom-modal-overlag {
             position: fixed;
             top: 0;
@@ -128,17 +139,6 @@
         .custom-modal-botones button.cancel:hover {
             background-color: #bbb;
         }
-
-        /* Estilos para el campo de mensaje en la alerta personalizada */
-        .custom-modal-body textarea {
-            width: 100%;
-            padding: 8px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: vertical; 
-        }
-
         .custom-modal-footer {
             padding: 10px 0;
             border-top: 1px solid #eee;
@@ -170,15 +170,16 @@
         @media (max-width: 767px) {
             .table-responsive {
                 border: none;
+                display: none; /* Ocultar la tabla original en móvil */
             }
-            .table-projects thead {
+            .table-estudiantes thead {
                 display: none;
             }
-            .table-projects, .table-projects tbody, .table-projects tr, .table-projects td {
+            .table-estudiantes, .table-estudiantes tbody, .table-estudiantes tr, .table-estudiantes td {
                 display: block;
                 width: 100%;
             }
-            .table-projects tr {
+            .table-estudiantes tr {
                 margin-bottom: 15px;
                 border: 1px solid #ddd;
                 border-radius: 8px;
@@ -186,13 +187,13 @@
                 background-color: #fff;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
-            .table-projects td {
+            .table-estudiantes td {
                 text-align: right;
                 padding-left: 50% !important;
                 position: relative;
                 border: none;
             }
-            .table-projects td::before {
+            .table-estudiantes td::before {
                 content: attr(data-label);
                 position: absolute;
                 left: 10px;
@@ -206,91 +207,146 @@
                 transform: translateY(-50%);
                 overflow-x: auto;
             }
-            .table-projects td[data-label="Acciones"] {
+            .table-estudiantes td[data-label="Acciones"] {
                 padding-top: 10px !important;
                 text-align: center !important;
                 padding-left: 15px !important; 
                 overflow-x: auto;
             }
-            .table-projects td[data-label="Acciones"]::before {
+            .table-estudiantes td[data-label="Acciones"]::before {
                 display: none;
             }
             /* Estilo para que el contenido de Integrantes no se recorte en móvil */
-            .table-projects td[data-label="Integrantes"] { 
+            .table-estudiantes td[data-label="Integrantes"] { 
                 white-space: normal;
                 text-align: left;
                 word-break: break-word; /* Permite romper palabras largas */
                 overflow-x: auto;
             }
-            .table-projects td[data-label="Tutor"] {
+            .table-estudiantes td[data-label="Tutor"] {
                 white-space: normal;
                 text-align: left;
                 word-break: break-word; /* Permite romper palabras largas */
                 overflow-x: auto;
             }
-            .table-projects td[data-label="Integrantes"]::before { 
+            .table-estudiantes td[data-label="Integrantes"]::before { 
                 top: 10px;
                 transform: translateY(0);
             }
+
+            /* --- Nuevos estilos para la vista móvil con tarjetas --- */
+            .mobile-cards-container {
+                display: block; /* Mostrar los cards en móvil */
+                padding: 15px;
+            }
+
+            .admin-card {
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                margin-bottom: 15px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                padding: 15px;
+            }
+
+            .card-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 5px 0;
+                border-bottom: 1px dashed #eee;
+            }
+
+            .card-item:last-child {
+                border-bottom: none;
+            }
+
+            .card-label {
+                font-weight: bold;
+                color: #555;
+            }
+
+            .card-value {
+                text-align: right;
+                color: #333;
+            }
+
+            .card-actions {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .card-actions .btn {
+                flex-grow: 1; /* Para que los botones se expandan */
+            }
         }
 
-        /* Estilos específicos para la gestión de integrantes */
-        .member-input-group { 
-            display: flex;
-            flex-wrap: wrap; 
-            align-items: center;
-            background-color: #f9f9f9;
-            border: 1px solid #eee;
-            padding: 8px 12px;
-            margin-bottom: 5px; 
-            border-radius: 5px;
-            position: relative; 
+        @media (min-width: 768px) {
+            .mobile-cards-container {
+                display: none; /* Ocultar los cards en desktop */
+            }
         }
-        .member-input-group .form-group {
-            flex-grow: 1;
-            margin-bottom: 0; 
-            padding-right: 10px; 
+
+        /* === ESTILOS ACTUALIZADOS PARA LA TABLA DE ADMINISTRADORES === */
+        .table-estudiantes {
+            border-collapse: separate; /* Necesario para que border-radius funcione en thead */
+            border-spacing: 0; /* Elimina el espacio entre celdas */
         }
-        .member-input-group .col-xs-12 {
-            width: 100%; 
+
+        .table-estudiantes thead {
+            background-color: #2a3e61; /* Color azul oscuro */
+            color: white; /* Texto blanco para contrastar */
+            border-radius: 8px; /* Esquinas redondeadas para la cabecera */
+            overflow: hidden; /* Asegura que las esquinas redondeadas se apliquen bien */
+            margin-bottom: 10px; /* Separación de la tabla */
+            display: table-header-group; /* Asegura que thead se comporte como cabecera de tabla */
         }
-        .member-input-group .col-sm-6 {
-            width: 50%; 
+        
+        .table-estudiantes thead tr {
+            border-radius: 8px; /* Asegura que la fila de la cabecera también tenga los bordes */
         }
-        .remove-member-btn { 
-            background-color: #f44336;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+
+        .table-estudiantes thead th {
+            color: white !important; /* Asegura que el texto de la cabecera sea blanco */
+            border-right: 1px solid rgba(255, 255, 255, 0.3); /* Líneas divisorias blancas */
+            padding: 12px 8px; /* Ajuste de padding para mejor visualización */
+        }
+        .table-estudiantes thead th:first-child {
+            border-top-left-radius: 8px; /* Redondear esquina superior izquierda */
+        }
+        .table-estudiantes thead th:last-child {
+            border-top-right-radius: 8px; /* Redondear esquina superior derecha */
+            border-right: none; /* Elimina el borde derecho de la última columna */
+        }
+
+        /* Estilos para las filas del cuerpo de la tabla */
+        .table-estudiantes tbody tr {
+            background-color: #ffffff; /* Fondo blanco para las filas */
+            border-bottom: 1px solid #eee; /* Línea separadora entre filas */
+            transition: background-color 0.3s ease; /* Transición suave para el hover */
+        }
+        .table-estudiantes tbody tr:last-child {
+            border-bottom: none; /* Elimina la línea de la última fila */
+        }
+        .table-estudiantes tbody tr:hover {
+            background-color: #e0f2f7; /* Azul claro al pasar el cursor (hover) */
             cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-            margin-left: auto; 
-            flex-shrink: 0; 
         }
-        .remove-member-btn:hover {
-            background-color: #d32f2f;
+        .table-estudiantes tbody td {
+            padding: 8px; /* Padding para las celdas del cuerpo de la tabla */
+            vertical-align: middle; /* Alineación vertical para el contenido */
+            /* Líneas divisorias verticales para el cuerpo de la tabla, similar a la cabecera */
+            border-right: 1px solid #f0f0f0; 
         }
-
-        /* Estilo para la celda de Integrantes en la tabla principal */
-        .table-projects td[data-label="Integrantes"] {
-            text-align: left; 
-            white-space: normal; 
-            word-break: break-word; 
-            min-width: 180px; 
+        .table-estudiantes tbody td:last-child {
+            border-right: none; /* Elimina el borde derecho de la última columna */
         }
 
-        /* Ajustes para la visualización del tutor en el modal */
-        .tutor-input-group .form-group {
-            margin-bottom: 0;
-            padding-right: 10px;
-        }
-        .tutor-input-group .col-xs-12, .tutor-input-group .col-sm-6 {
-            margin-bottom: 15px; 
+        /* Estilo para los nombres de administradores dentro de las celdas (AHORA EN FONT-WEIGHT NORMAL) */
+        .table-estudiantes tbody td[data-label="Nombre Completo"] .admin-name-display,
+        .table-estudiantes tbody td[data-label="Correo"] .admin-email-display,
+        .table-estudiantes tbody td[data-label="Cédula"] .admin-cedula-display {
+            color: #2a3e61; /* Color oscuro para el texto de los nombres, para que resalte */
+            font-weight: normal; /* Asegurado para ser normal */
         }

@@ -7,6 +7,32 @@
 	<link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/pasantias.css">
+        <style>
+/* Estilos personalizados para los dropdowns */
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+    background-color: rgba(63, 81, 181, 0.1); /* Color azul transparente (rgba) */
+    color: #000; /* Asegura que el texto sea visible */
+    border-radius: 4px; /* Un poco de borde para un efecto más suave */
+}
+.custom-dropdown {
+    width: 100%; /* Hace el botón tan ancho como su contenedor */
+    text-align: left; /* Alinea el texto a la izquierda */
+    font-size: 12px; /* Aumenta el tamaño de la letra del botón */
+    color: #2a3e61;
+}
+
+
+.custom-dropdown-menu {
+    width: 100%; /* Hace el menú desplegable tan ancho como su botón */
+    font-size: 13px; /* Aumenta el tamaño de la letra de las opciones */
+    color: #2a3e61;
+}
+
+.custom-dropdown-menu > li > a {
+    padding: 10px 15px; /* Aumenta el padding para que las opciones se vean más grandes y sean más fáciles de cliquear */
+}
+    </style>
 </head>
 <body>
 	<!-- SideBar -->
@@ -58,7 +84,7 @@
 							<a href="/proyectos"><i class="zmdi zmdi-graduation-cap zmdi-hc-fw"></i> Proyectos</a>
 						</li>
 						<li>
-							<a href="/pasantias.html"><i class="zmdi zmdi-assignment"></i> Pasantias</a>
+							<a href="/pasantias"><i class="zmdi zmdi-assignment"></i> Pasantias</a>
 						</li>
                         <li>
 							<a href="/bitacora"><i class="zmdi zmdi-bookmark-outline"></i> Bitácora</a>
@@ -70,17 +96,17 @@
 				</li>
 				<li>
 					<a href="#!" class="btn-sideBar-SubMenu">
-						<i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Users <i class="zmdi zmdi-caret-down pull-right"></i>
+						<i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Usuarios <i class="zmdi zmdi-caret-down pull-right"></i>
 					</a>
 					<ul class="list-unstyled full-box">
 						<li>
-							<a href="admin.html"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
+							<a href="/admin"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
 						</li>
 						<li>
-							<a href="teacher.html"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Teacher</a>
+							<a href="/tutores"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Tutores</a>
 						</li>
 						<li>
-							<a href="student.html"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Student</a>
+							<a href="/estudiantes"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Estudiantes</a>
 						</li>
 					</ul>
 				</li>
@@ -166,98 +192,119 @@
 
 
 	<!-- Modal para agregar/editar pasantía -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="addInternshipModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="internshipModalTitle">Agregar Nueva Pasantía</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="addInternshipForm">
-                        <!-- Campo oculto para guardar el ID de la pasantía si estamos editando -->
-                        <input type="hidden" id="editInternshipId">
+<div class="modal fade" tabindex="-1" role="dialog" id="addInternshipModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="internshipModalTitle">Agregar Nueva Pasantía</h4>
+            </div>
+            <div class="modal-body">
+                <form id="addInternshipForm">
+                    <input type="hidden" id="editInternshipId">
 
-                        <div class="form-group label-floating">
-                            <label class="control-label" for="internshipPeriod"></label>
-                            <select class="form-control" id="internshipPeriod">
-                                <!-- Opciones cargadas dinámicamente -->
-                            </select>
+                    <div class="form-group">
+                        <label class="control-label">Selecciona un Periodo</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle custom-dropdown" type="button" id="internshipPeriodDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span id="internshipPeriodSelectedText">Selecciona un Periodo</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="internshipPeriodDropdown" id="internshipPeriodList">
+                                </ul>
                         </div>
-                        <div class="form-group label-floating">
-                            <label class="control-label" for="internshipTitle">Título de la Pasantía</label>
-                            <input class="form-control" type="text" id="internshipTitle">
-                        </div>
+                        <input type="hidden" id="internshipPeriod">
+                    </div>
 
-                        <!-- Campos para Estudiante -->
-                        <div class="student-input-group">
-                            <div class="form-group label-floating col-xs-12">
-                                <label class="control-label" for="internshipStudentCedula">Cédula del Estudiante</label>
-                                <input class="form-control" type="text" id="internshipStudentCedula">
+                    <div class="form-group label-floating">
+                        <label class="control-label" for="internshipTitle">Título de la Pasantía</label>
+                        <input class="form-control" type="text" id="internshipTitle">
+                    </div>
+
+                    <div class="student-input-group">
+                        <div class="form-group label-floating col-xs-12">
+                            <label class="control-label" for="internshipStudentCedula">Cédula del Estudiante</label>
+                            <input class="form-control" type="text" id="internshipStudentCedula">
+                        </div>
+                        <div class="form-group label-floating col-xs-12">
+                            <label class="control-label" for="internshipStudentName">Nombre Completo del Estudiante</label>
+                            <input class="form-control" type="text" id="internshipStudentName" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Selecciona una Carrera</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle custom-dropdown" type="button" id="internshipCareerDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span id="internshipCareerSelectedText">Selecciona una Carrera</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="internshipCareerDropdown" id="internshipCareerList">
+                                </ul>
+                        </div>
+                        <input type="hidden" id="internshipCareer">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label">Selecciona una Empresa</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle custom-dropdown" type="button" id="internshipCompanyDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span id="internshipCompanySelectedText">Selecciona una Empresa</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="internshipCompanyDropdown" id="internshipCompanyList">
+                                </ul>
+                        </div>
+                        <input type="hidden" id="internshipCompany">
+                    </div>
+
+                    <div class="row tutor-input-group">
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label" for="internshipTutorCedula">Cédula del Tutor</label>
+                                <input class="form-control" type="text" id="internshipTutorCedula">
                             </div>
-                            <div class="form-group label-floating col-xs-12">
-                                <label class="control-label" for="internshipStudentName">Nombre Completo del Estudiante</label>
-                                <input class="form-control" type="text" id="internshipStudentName" readonly>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label" for="internshipTutorName">Nombre Completo del Tutor</label>
+                                <input class="form-control" type="text" id="internshipTutorName" readonly>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="form-group label-floating">
-                            <label class="control-label" for="internshipCareer"></label>
-                            <select class="form-control" id="internshipCareer">
-                                <!-- Opciones cargadas dinámicamente -->
-                            </select>
+                    <div class="form-group">
+                        <label class="control-label">Estado</label>
+                        <div class="dropdown dropup">
+                            <button class="btn btn-default dropdown-toggle custom-dropdown" type="button" id="internshipStatusDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span id="internshipStatusSelectedText">Selecciona un Estado</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="internshipStatusDropdown" id="internshipStatusList">
+                                <li><a href="#" data-value="Aprobado">Aprobado</a></li>
+                                <li><a href="#" data-value="Reprobado">Reprobado</a></li>
+                                <li><a href="#" data-value="Pendiente">Pendiente</a></li>
+                            </ul>
                         </div>
-                        
-                        <!-- Campos para Empresa -->
-                        <div class="form-group label-floating">
-                            <label class="control-label" for="internshipCompany"></label>
-                            <select class="form-control" id="internshipCompany">
-                                <!-- Opciones cargadas dinámicamente -->
-                            </select>
-                        </div>
-
-                        <!-- Campos para Tutor -->
-                        <div class="row tutor-input-group">
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="form-group label-floating">
-                                    <label class="control-label" for="internshipTutorCedula">Cédula del Tutor</label>
-                                    <input class="form-control" type="text" id="internshipTutorCedula">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="form-group label-floating">
-                                    <label class="control-label" for="internshipTutorName">Nombre Completo del Tutor</label>
-                                    <input class="form-control" type="text" id="internshipTutorName" readonly>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label" for="internshipStatus">Estado</label>
-                            <select class="form-control" id="internshipStatus">
-                                <option>Aprobado</option>
-                                <option>Reprobado</option>
-                                <option>Pendiente</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="internshipStartDate">Fecha Inicio</label>
-                            <input class="form-control" type="date" id="internshipStartDate">
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="internshipEndDate">Fecha Final</label>
-                            <input class="form-control" type="date" id="internshipEndDate">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-info btn-raised" id="saveInternshipBtn" onclick="saveInternship()">Guardar Pasantía</button>
-                </div>
+                        <input type="hidden" id="internshipStatus">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="internshipStartDate">Fecha Inicio</label>
+                        <input class="form-control" type="date" id="internshipStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="internshipEndDate">Fecha Final</label>
+                        <input class="form-control" type="date" id="internshipEndDate">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-info btn-raised" id="saveInternshipBtn" onclick="saveInternship()">Guardar Pasantía</button>
             </div>
         </div>
     </div>
-
+</div>
     <!-- Ventana modal personalizada (con campo de mensaje para eliminación) -->
     <div id="customAlertModal" class="custom-modal-overlay">
         <div class="custom-modal-content">
@@ -468,8 +515,8 @@
             document.getElementById('addInternshipForm').reset();
             
             // Campos de estudiante y tutor
-            document.getElementById('internshipStudentName').readOnly = true;
-            document.getElementById('internshipTutorName').readOnly = true;
+            document.getElementById('internshipStudentName').readOnly = false;
+            document.getElementById('internshipTutorName').readOnly = false;
             document.getElementById('internshipStudentName').removeAttribute('data-id');
             document.getElementById('internshipTutorName').removeAttribute('data-id');
 
@@ -567,8 +614,8 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
             document.getElementById('addInternshipForm').reset();
             
             // Campos de estudiante y tutor
-            document.getElementById('internshipStudentName').readOnly = true;
-            document.getElementById('internshipTutorName').readOnly = true;
+            document.getElementById('internshipStudentName').readOnly = false;
+            document.getElementById('internshipTutorName').readOnly = false;
 
             const internship = allInternshipsData.find(i => i.id_pasantia == internshipId)?.internshipData;
 
@@ -588,7 +635,7 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
                 document.getElementById('internshipStudentCedula').value = internship.estudiante.cedula || '';
                 document.getElementById('internshipStudentName').value = internship.estudiante.nombre_completo || '';
                 document.getElementById('internshipStudentName').setAttribute('data-id', internship.estudiante.id_estudiante || '');
-                document.getElementById('internshipStudentName').readOnly = true;
+                document.getElementById('internshipStudentName').readOnly = false;
             } else {
                 document.getElementById('internshipStudentCedula').value = '';
                 document.getElementById('internshipStudentName').value = '';
@@ -601,7 +648,7 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
                 document.getElementById('internshipTutorCedula').value = internship.tutor.cedula || '';
                 document.getElementById('internshipTutorName').value = internship.tutor.nombre_completo || '';
                 document.getElementById('internshipTutorName').setAttribute('data-id', internship.tutor.id_tutor || '');
-                document.getElementById('internshipTutorName').readOnly = true;
+                document.getElementById('internshipTutorName').readOnly = false;
             } else {
                 document.getElementById('internshipTutorCedula').value = '';
                 document.getElementById('internshipTutorName').value = '';
@@ -618,84 +665,138 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
         }
 
         // Función para poblar los dropdowns al abrir el modal (ahora acepta IDs para selección)
-        async function loadModalDataSelects(selectedPeriodId = null, selectedCareerId = null, selectedCompanyId = null) {
-            try {
-                // Cargar periodos
-                const periodSelect = document.getElementById('internshipPeriod');
-                console.log('%c[loadModalDataSelects] Fetching periodos...', 'color: #1a73e8;');
-                const periodos = await fetchWithExponentialBackoff('/api/periodos', { method: 'GET' });
-                console.log('%c[loadModalDataSelects] Periodos fetched:', 'color: #1a73e8;', periodos);
-                
-                periodSelect.innerHTML = '<option value="">Selecciona un Periodo</option>'; // Placeholder
-                if (periodos && periodos.length > 0) {
-                    periodos.forEach(p => {
-                        const option = document.createElement('option');
-                        option.value = p.id_periodo;
-                        option.textContent = p.periodo;
-                        if (selectedPeriodId && p.id_periodo == selectedPeriodId) {
-                            option.selected = true;
-                        }
-                        periodSelect.appendChild(option);
-                    });
-                } else {
-                    console.warn('%c[loadModalDataSelects] No periodos found or fetch failed.', 'color: #fbbc04;');
-                }
+// Función para poblar los dropdowns al abrir el modal (ahora acepta IDs para selección)
+async function loadModalDataSelects(selectedPeriodId = null, selectedCareerId = null, selectedCompanyId = null, selectedStatus = null) {
+    try {
+        // Referencias para el dropdown de periodos
+        const periodList = document.getElementById('internshipPeriodList');
+        const periodInput = document.getElementById('internshipPeriod');
+        const periodButtonText = document.getElementById('internshipPeriodSelectedText');
+        
+        // Referencias para el dropdown de carreras
+        const careerList = document.getElementById('internshipCareerList');
+        const careerInput = document.getElementById('internshipCareer');
+        const careerButtonText = document.getElementById('internshipCareerSelectedText');
 
-                // Cargar carreras
-                const careerSelect = document.getElementById('internshipCareer');
-                console.log('%c[loadModalDataSelects] Fetching carreras...', 'color: #1a73e8;');
-                const carreras = await fetchWithExponentialBackoff('/api/carreras', { method: 'GET' });
-                console.log('%c[loadModalDataSelects] Carreras fetched:', 'color: #1a73e8;', carreras);
+        // Referencias para el dropdown de empresas
+        const companyList = document.getElementById('internshipCompanyList');
+        const companyInput = document.getElementById('internshipCompany');
+        const companyButtonText = document.getElementById('internshipCompanySelectedText');
 
-                careerSelect.innerHTML = '<option value="">Selecciona una Carrera</option>'; // Placeholder
-                if (carreras && carreras.length > 0) {
-                    carreras.forEach(c => {
-                        const option = document.createElement('option');
-                        option.value = c.id_carrera;
-                        option.textContent = c.carrera;
-                        if (selectedCareerId && c.id_carrera == selectedCareerId) {
-                            option.selected = true;
-                        }
-                        careerSelect.appendChild(option);
-                    });
-                } else {
-                    console.warn('%c[loadModalDataSelects] No carreras found or fetch failed.', 'color: #fbbc04;');
-                }
+        // Referencias para el dropdown de estado
+        const statusList = document.getElementById('internshipStatusList');
+        const statusInput = document.getElementById('internshipStatus');
+        const statusButtonText = document.getElementById('internshipStatusSelectedText');
 
-                // Cargar empresas
-                const companySelect = document.getElementById('internshipCompany');
-                console.log('%c[loadModalDataSelects] Fetching empresas...', 'color: #1a73e8;');
-                const empresas = await fetchWithExponentialBackoff('/api/empresas', { method: 'GET' });
-                console.log('%c[loadModalDataSelects] Empresas fetched:', 'color: #1a73e8;', empresas);
-
-                companySelect.innerHTML = '<option value="">Selecciona una Empresa</option>'; // Placeholder
-                if (empresas && empresas.length > 0) {
-                    empresas.forEach(e => {
-                        const option = document.createElement('option');
-                        option.value = e.id_empresa;
-                        option.textContent = e.nombre_empresa;
-                        if (selectedCompanyId && e.id_empresa == selectedCompanyId) {
-                            option.selected = true;
-                        }
-                        companySelect.appendChild(option);
-                    });
-                } else {
-                    console.warn('%c[loadModalDataSelects] No empresas found or fetch failed.', 'color: #fbbc04;');
-                }
-                
-                $.material.init(); 
-
-                $(periodSelect).closest('.form-group').addClass('is-focused is-filled');
-                $(careerSelect).closest('.form-group').addClass('is-focused is-filled');
-                $(companySelect).closest('.form-group').addClass('is-focused is-filled');
-
-                updateFloatingLabels();
-
-            } catch (error) {
-                console.error('%c[loadModalDataSelects] ❌ Error al cargar datos para los selects del modal (Caught by try-catch):', 'color: #ea4335; font-weight: bold;', error);
-                await showCustomAlert('Error', 'Ocurrió un error al cargar los datos de selección. Revisa la consola para más detalles.');
-            }
+        // Cargar periodos
+        const periodos = await fetchWithExponentialBackoff('/api/periodos', { method: 'GET' });
+        periodList.innerHTML = '';
+        if (!selectedPeriodId) {
+            periodButtonText.textContent = 'Selecciona un Periodo';
+            periodInput.value = '';
         }
+        if (periodos && periodos.length > 0) {
+            periodos.forEach(p => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = '#';
+                link.dataset.value = p.id_periodo;
+                link.textContent = p.periodo;
+                
+                if (selectedPeriodId && p.id_periodo == selectedPeriodId) {
+                    periodButtonText.textContent = p.periodo;
+                    periodInput.value = p.id_periodo;
+                }
+                
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    periodButtonText.textContent = p.periodo;
+                    periodInput.value = p.id_periodo;
+                });
+                listItem.appendChild(link);
+                periodList.appendChild(listItem);
+            });
+        }
+
+        // Cargar carreras
+        const carreras = await fetchWithExponentialBackoff('/api/carreras', { method: 'GET' });
+        careerList.innerHTML = '';
+        if (!selectedCareerId) {
+            careerButtonText.textContent = 'Selecciona una Carrera';
+            careerInput.value = '';
+        }
+        if (carreras && carreras.length > 0) {
+            carreras.forEach(c => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = '#';
+                link.dataset.value = c.id_carrera;
+                link.textContent = c.carrera;
+                
+                if (selectedCareerId && c.id_carrera == selectedCareerId) {
+                    careerButtonText.textContent = c.carrera;
+                    careerInput.value = c.id_carrera;
+                }
+                
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    careerButtonText.textContent = c.carrera;
+                    careerInput.value = c.id_carrera;
+                });
+                listItem.appendChild(link);
+                careerList.appendChild(listItem);
+            });
+        }
+        
+        // Cargar empresas
+        const empresas = await fetchWithExponentialBackoff('/api/empresas', { method: 'GET' });
+        companyList.innerHTML = '';
+        if (!selectedCompanyId) {
+            companyButtonText.textContent = 'Selecciona una Empresa';
+            companyInput.value = '';
+        }
+        if (empresas && empresas.length > 0) {
+            empresas.forEach(e => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = '#';
+                link.dataset.value = e.id_empresa;
+                link.textContent = e.nombre_empresa;
+                
+                if (selectedCompanyId && e.id_empresa == selectedCompanyId) {
+                    companyButtonText.textContent = e.nombre_empresa;
+                    companyInput.value = e.id_empresa;
+                }
+                
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    companyButtonText.textContent = e.nombre_empresa;
+                    companyInput.value = e.id_empresa;
+                });
+                listItem.appendChild(link);
+                companyList.appendChild(listItem);
+            });
+        }
+
+        // Cargar estado (opciones estáticas)
+        if (selectedStatus) {
+            const selectedStatusLink = statusList.querySelector(`a[data-value="${selectedStatus}"]`);
+            if (selectedStatusLink) {
+                statusButtonText.textContent = selectedStatusLink.textContent;
+                statusInput.value = selectedStatusLink.dataset.value;
+            }
+        } else {
+            statusButtonText.textContent = 'Selecciona un Estado';
+            statusInput.value = '';
+        }
+        
+        $.material.init(); 
+        
+    } catch (error) {
+        console.error('Error al cargar datos para los selects del modal:', error);
+        await showCustomAlert('Error', 'Ocurrió un error al cargar los datos de selección.');
+    }
+}
         
 
         // Función para añadir listeners a los campos de cédula de estudiante y tutor
@@ -747,7 +848,7 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
             
             if (cedula === '') {
                 nameInput.value = '';
-                nameInput.readOnly = isTutor; 
+                nameInput.readOnly = false; 
                 nameInput.removeAttribute('data-id'); 
                 $(nameInput).closest('.form-group').removeClass('is-focused is-filled'); 
                 $.material.init();
@@ -760,7 +861,7 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
 
                 if (personData) {
                     nameInput.value = personData.nombre_completo;
-                    nameInput.readOnly = true; 
+                    nameInput.readOnly = false; 
                     nameInput.setAttribute('data-id', personData[`id_${type}`]); 
                     $(nameInput).closest('.form-group').addClass('is-focused is-filled');
                     
@@ -1134,8 +1235,8 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
                 if (response && response.message) {
                     $('#addInternshipModal').on('hidden.bs.modal', async function () {
                         document.getElementById('addInternshipForm').reset();
-                        document.getElementById('internshipStudentName').readOnly = true;
-                        document.getElementById('internshipTutorName').readOnly = true;
+                        document.getElementById('internshipStudentName').readOnly = false;
+                        document.getElementById('internshipTutorName').readOnly = false;
                         document.getElementById('internshipStudentName').removeAttribute('data-id');
                         document.getElementById('internshipTutorName').removeAttribute('data-id');
                         
@@ -1417,6 +1518,44 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
                 $.material.init(); 
                 updateFloatingLabels(); 
             });
+                $('#internshipStatusList a').on('click', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+        const selectedText = $(this).text();
+
+        $('#internshipStatusSelectedText').text(selectedText);
+        $('#internshipStatus').val(selectedValue);
+    });
+
+    // Lógica para el dropdown de "Carreras"
+    $('#internshipCareerList').on('click', 'a', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+        const selectedText = $(this).text();
+
+        $('#internshipCareerSelectedText').text(selectedText);
+        $('#internshipCareer').val(selectedValue);
+    });
+
+    // Lógica para el dropdown de "Periodos"
+    $('#internshipPeriodList').on('click', 'a', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+        const selectedText = $(this).text();
+
+        $('#internshipPeriodSelectedText').text(selectedText);
+        $('#internshipPeriod').val(selectedValue);
+    });
+
+    // Lógica para el dropdown de "Empresas"
+    $('#internshipCompanyList').on('click', 'a', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+        const selectedText = $(this).text();
+
+        $('#internshipCompanySelectedText').text(selectedText);
+        $('#internshipCompany').val(selectedValue);
+    });
              // Reinicializar Material Design cuando el documento esté listo
             $.material.init();
         });

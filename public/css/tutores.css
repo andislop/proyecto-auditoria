@@ -52,7 +52,7 @@
             resize: vertical; 
         }
 
-                           /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
+        /* Estilos para el modal personalizado de confirmación (si no usas SweetAlert2) */
         .custom-modal-overlag {
             position: fixed;
             top: 0;
@@ -119,7 +119,7 @@
         }
 
         .custom-modal-botones button.confirm {
-            background-color: #325592; /* Rojo para confirmar */
+            background-color: #f44336; /* Rojo para confirmar */
             color: white;
         }
 
@@ -133,7 +133,7 @@
         }
 
         .custom-modal-botones button.confirm:hover {
-            background-color: #2267df;
+            background-color: #d32f2f;
         }
 
         .custom-modal-botones button.cancel:hover {
@@ -156,6 +156,92 @@
             transition: background-color 0.3s ease;
         }
 
+                .custom-modal-overlag {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlag.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-contento {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-modal-overlag.active .custom-modal-content {
+            transform: translateY(0);
+        }
+
+        .custom-modal-contento h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .custom-modal-contento p {
+            margin-bottom: 25px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .custom-modal-botones {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .custom-modal-botones button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .custom-modal-botones button.confirm {
+            background-color: #325592; /* Azul para confirmar */
+            color: white;
+        }
+
+        .custom-modal-botones button.cancel {
+            background-color: #ccc; /* Gris para cancelar */
+            color: #333;
+        }
+
+        .custom-modal-botones button:hover {
+            transform: translateY(-2px);
+        }
+
+        .custom-modal-botones button.confirm:hover {
+            background-color: #2267df;
+        }
+
+        .custom-modal-botones button.cancel:hover {
+            background-color: #bbb;
+        }
         .custom-modal-footer button:hover {
             background-color: #1a2a44; 
         }
@@ -172,14 +258,14 @@
                 border: none;
                 display: none; /* Ocultar la tabla original en móvil */
             }
-            .table-internships thead {
+            .table-tutores thead {
                 display: none;
             }
-            .table-internships, .table-internships tbody, .table-internships tr, .table-internships tr > td {
+            .table-tutores, .table-tutores tbody, .table-tutores tr, .table-tutores td {
                 display: block;
                 width: 100%;
             }
-            .table-internships tr {
+            .table-tutores tr {
                 margin-bottom: 15px;
                 border: 1px solid #ddd;
                 border-radius: 8px;
@@ -187,13 +273,13 @@
                 background-color: #fff;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
-            .table-internships td {
+            .table-tutores td {
                 text-align: right;
                 padding-left: 50% !important;
                 position: relative;
                 border: none;
             }
-            .table-internships td::before {
+            .table-tutores td::before {
                 content: attr(data-label);
                 position: absolute;
                 left: 10px;
@@ -205,23 +291,31 @@
                 color: #555;
                 top: 50%;
                 transform: translateY(-50%);
+                overflow-x: auto;
             }
-            .table-internships td[data-label="Acciones"] {
+            .table-tutores td[data-label="Acciones"] {
                 padding-top: 10px !important;
                 text-align: center !important;
                 padding-left: 15px !important; 
+                overflow-x: auto;
             }
-            .table-internships td[data-label="Acciones"]::before {
+            .table-tutores td[data-label="Acciones"]::before {
                 display: none;
             }
-            /* Estilo para que el contenido de Estudiante no se recorte en móvil */
-            .table-internships td[data-label="Estudiante"] { 
+            /* Estilo para que el contenido de Integrantes no se recorte en móvil */
+            .table-tutores td[data-label="Integrantes"] { 
                 white-space: normal;
                 text-align: left;
                 word-break: break-word; /* Permite romper palabras largas */
                 overflow-x: auto;
             }
-            .table-internships td[data-label="Estudiante"]::before { 
+            .table-tutores td[data-label="Tutor"] {
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+                overflow-x: auto;
+            }
+            .table-tutores td[data-label="Integrantes"]::before { 
                 top: 10px;
                 transform: translateY(0);
             }
@@ -232,7 +326,7 @@
                 padding: 15px;
             }
 
-            .internship-card {
+            .admin-card {
                 background-color: #fff;
                 border: 1px solid #ddd;
                 border-radius: 8px;
@@ -280,53 +374,13 @@
             }
         }
 
-        /* Estilos específicos para la gestión de estudiante */
-        .student-input-group { 
-            display: flex;
-            flex-wrap: wrap; 
-            align-items: center;
-            background-color: #f9f9f9;
-            border: 1px solid #eee;
-            padding: 8px 12px;
-            margin-bottom: 15px; 
-            border-radius: 5px;
-            position: relative; 
-        }
-        .student-input-group .form-group {
-            flex-grow: 1;
-            margin-bottom: 0; 
-            padding-right: 10px; 
-        }
-        .student-input-group .col-xs-12 {
-            width: 100%; 
-        }
-        .student-input-group .col-sm-6 {
-            width: 50%; 
-        }
-
-        /* Estilos para la celda de Estudiante en la tabla principal */
-        .table-internships td[data-label="Estudiante"] {
-            text-align: left; 
-            white-space: normal; 
-            word-break: break-word; 
-            min-width: 180px; 
-        }
-        /* Ajustes para la visualización del tutor en el modal */
-        .tutor-input-group .form-group {
-            margin-bottom: 0;
-            padding-right: 10px;
-        }
-        .tutor-input-group .col-xs-12, .tutor-input-group .col-sm-6 {
-            margin-bottom: 15px; /* Restaurar margen inferior para los campos del tutor */
-        }
-        
-        /* === ESTILOS ACTUALIZADOS PARA LA TABLA DE PASANTÍAS === */
-        .table-internships {
+        /* === ESTILOS ACTUALIZADOS PARA LA TABLA DE ADMINISTRADORES === */
+        .table-tutores {
             border-collapse: separate; /* Necesario para que border-radius funcione en thead */
             border-spacing: 0; /* Elimina el espacio entre celdas */
         }
 
-        .table-internships thead {
+        .table-tutores thead {
             background-color: #2a3e61; /* Color azul oscuro */
             color: white; /* Texto blanco para contrastar */
             border-radius: 8px; /* Esquinas redondeadas para la cabecera */
@@ -335,51 +389,50 @@
             display: table-header-group; /* Asegura que thead se comporte como cabecera de tabla */
         }
         
-        .table-internships thead tr {
+        .table-tutores thead tr {
             border-radius: 8px; /* Asegura que la fila de la cabecera también tenga los bordes */
         }
 
-        .table-internships thead th {
+        .table-tutores thead th {
             color: white !important; /* Asegura que el texto de la cabecera sea blanco */
             border-right: 1px solid rgba(255, 255, 255, 0.3); /* Líneas divisorias blancas */
             padding: 12px 8px; /* Ajuste de padding para mejor visualización */
         }
-        .table-internships thead th:first-child {
+        .table-tutores thead th:first-child {
             border-top-left-radius: 8px; /* Redondear esquina superior izquierda */
         }
-        .table-internships thead th:last-child {
+        .table-tutores thead th:last-child {
             border-top-right-radius: 8px; /* Redondear esquina superior derecha */
             border-right: none; /* Elimina el borde derecho de la última columna */
         }
 
         /* Estilos para las filas del cuerpo de la tabla */
-        .table-internships tbody tr {
+        .table-tutores tbody tr {
             background-color: #ffffff; /* Fondo blanco para las filas */
             border-bottom: 1px solid #eee; /* Línea separadora entre filas */
             transition: background-color 0.3s ease; /* Transición suave para el hover */
         }
-        .table-internships tbody tr:last-child {
+        .table-tutores tbody tr:last-child {
             border-bottom: none; /* Elimina la línea de la última fila */
         }
-        .table-internships tbody tr:hover {
+        .table-tutores tbody tr:hover {
             background-color: #e0f2f7; /* Azul claro al pasar el cursor (hover) */
             cursor: pointer;
         }
-        .table-internships tbody td {
+        .table-tutores tbody td {
             padding: 8px; /* Padding para las celdas del cuerpo de la tabla */
             vertical-align: middle; /* Alineación vertical para el contenido */
             /* Líneas divisorias verticales para el cuerpo de la tabla, similar a la cabecera */
             border-right: 1px solid #f0f0f0; 
         }
-        .table-internships tbody td:last-child {
+        .table-tutores tbody td:last-child {
             border-right: none; /* Elimina el borde derecho de la última columna */
         }
 
-        /* Estilo para los nombres de proyectos e integrantes dentro de las celdas (AHORA EN FONT-WEIGHT NORMAL) */
-        .table-internships tbody td[data-label="Título"] .internship-title-display,
-        .table-internships tbody td[data-label="Estudiante"] .student-name-display,
-        .table-internships tbody td[data-label="Empresa"] .company-name-display,
-        .table-internships tbody td[data-label="Tutor"] .tutor-name-display {
+        /* Estilo para los nombres de administradores dentro de las celdas (AHORA EN FONT-WEIGHT NORMAL) */
+        .table-tutores tbody td[data-label="Nombre Completo"] .admin-name-display,
+        .table-tutores tbody td[data-label="Correo"] .admin-email-display,
+        .table-tutores tbody td[data-label="Cédula"] .admin-cedula-display {
             color: #2a3e61; /* Color oscuro para el texto de los nombres, para que resalte */
             font-weight: normal; /* Asegurado para ser normal */
         }

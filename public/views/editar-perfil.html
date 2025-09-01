@@ -10,19 +10,16 @@
     <link rel="stylesheet" href="../css/editar-perfil.css">
 </head>
 <body>
-    	<!-- SideBar -->
-	<section class="full-box cover dashboard-sideBar">
+    <section class="full-box cover dashboard-sideBar">
 		<div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
 		<div class="full-box dashboard-sideBar-ct">
-			<!--SideBar Title -->
 			<div class="full-box text-uppercase text-center text-titles dashboard-sideBar-title">
 				UNEFA <i class="zmdi zmdi-close btn-menu-dashboard visible-xs"></i>
 			</div>
-			<!-- SideBar User info -->
 			<div class="full-box dashboard-sideBar-UserInfo">
 				<figure class="full-box">
 					<img src="../assets/img/unefa.png" alt="UserIcon">
-					<figcaption class="text-center text-titles">juancito007</figcaption>
+					<figcaption class="text-center text-titles" id="sidebarUserName"></figcaption>
 				</figure>
 				<ul class="full-box list-unstyled text-center">
 					<li>
@@ -31,14 +28,12 @@
 						</a>
 					</li>
 					<li>
-						<!-- Modificamos el href para que no redirija directamente -->
 						<a href="#" class="btn-exit-system" id="logoutBtn">
-							<i class="zmdi zmdi-power"></i> <!-- Color del icono de cerrar sesión -->
+							<i class="zmdi zmdi-power"></i>
 						</a>
 					</li>
 				</ul>
 			</div>
-			<!-- SideBar Menu -->
 			<ul class="list-unstyled full-box dashboard-sideBar-Menu">
 				<li>
 					<a href="/home">
@@ -72,26 +67,24 @@
 				</li>
 				<li>
 					<a href="#!" class="btn-sideBar-SubMenu">
-						<i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Users <i class="zmdi zmdi-caret-down pull-right"></i>
+						<i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Usuarios <i class="zmdi zmdi-caret-down pull-right"></i>
 					</a>
 					<ul class="list-unstyled full-box">
 						<li>
-							<a href="admin.html"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
+							<a href="/admin"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
 						</li>
 						<li>
-							<a href="teacher.html"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Teacher</a>
+							<a href="/tutores"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Tutores</a>
 						</li>
 						<li>
-							<a href="student.html"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Student</a>
+							<a href="/estudiantes"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Estudiantes</a>
 						</li>
 					</ul>
 				</li>
 			</ul>
 		</div>
 	</section>
-    <!-- Content page-->
-	<section class="full-box dashboard-contentPage">
-		<!-- NavBar -->
+    <section class="full-box dashboard-contentPage">
 		<nav class="full-box dashboard-Navbar">
 			<ul class="full-box list-unstyled text-right">
 				<li class="pull-left">
@@ -116,9 +109,18 @@
                     <input type="text" class="form-control" id="cedula" name="cedula" required>
                 </div>
                 <div class="form-group">
+                    <label for="contraseña-antigua">Contraseña Antigua</label>
+                    <input type="password" class="form-control" id="contraseña-antigua" name="contraseña-antigua">
+                    <span class="toggle-password" id="togglePasswordAntigua">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </span>
+                </div>
+                <div class="form-group">
                     <label for="contraseña">Contraseña</label>
-                    <input type="password" class="form-control" id="contraseña" name="contraseña"> 
-                    <!-- La contraseña ya no es requerida por defecto para la actualización -->
+                    <input type="password" class="form-control" id="contraseña" name="contraseña">
                     <span class="toggle-password" id="togglePassword">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -134,7 +136,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                         </svg>
-                    </span> <!-- La contraseña ya no es requerida por defecto para la actualización -->
+                    </span>
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primaria id="saveProfileBtn">Guardar Cambios</button>
@@ -144,35 +146,41 @@
         </div>
     </section>
 
-	<script src="./js/jquery-3.1.1.min.js"></script>
-	<script src="./js/bootstrap.min.js"></script>
-	<script src="./js/material.min.js"></script>
-	<script src="./js/ripples.min.js"></script>
-	<script src="./js/jquery.mCustomScrollbar.concat.min.js"></script>
-	<script src="./js/main.js"></script>
-    <!-- Librerías jsPDF y autoTable (localmente) -->
+    <div id="customConfirmModal" class="custom-modal-overpal">
+        <div class="custom-modal-contenpal">
+            <h2>¿Estás seguro?</h2>
+            <p>¿Realmente quieres cerrar sesión?</p>
+            <div class="custom-modal-botopal">
+                <button class="confirm" id="confirmLogoutBtn">Sí, cerrar sesión</button>
+                <button class="cancel" id="cancelLogoutBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+	<script src="../js/jquery-3.1.1.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/material.min.js"></script>
+	<script src="../js/ripples.min.js"></script>
+	<script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="../js/main.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', async () => {
         let id_login = null;
 
-        // Paso 1: Obtener el ID del usuario actual de la API que usa la sesión
         try {
             const response = await fetch('/api/current-user-id');
             if (!response.ok) {
-                // Si falla, significa que el token no es válido o no existe.
                 throw new Error('No autorizado. Por favor, inicie sesión de nuevo.');
             }
             const userData = await response.json();
             id_login = userData.id_login;
         } catch (error) {
             console.error('Error:', error);
-            // Mostrar un mensaje de error sin usar alert
             const errorMessage = document.createElement('div');
             errorMessage.className = 'alert alert-danger';
             errorMessage.textContent = 'Error al cargar el ID del perfil. Por favor, inicie sesión de nuevo.';
             document.querySelector('.dashboard-contentPage').prepend(errorMessage);
 
-            // Redirigir al login después de un breve retraso para que el usuario vea el mensaje
             setTimeout(() => {
                 window.location.href = '/'; 
             }, 3000);
@@ -180,69 +188,98 @@
         }
         
         if (!id_login) {
-            // Mostrar un mensaje de error sin usar alert
             const errorMessage = document.createElement('div');
             errorMessage.className = 'alert alert-danger';
             errorMessage.textContent = 'ID de usuario no encontrado. Vuelva a iniciar sesión.';
             document.querySelector('.dashboard-contentPage').prepend(errorMessage);
 
-            // Redirigir al login después de un breve retraso
             setTimeout(() => {
                 window.location.href = '/'; 
             }, 3000);
             return;
         }
     
-        const form = document.getElementById('editProfileForm');
-        const saveBtn = document.getElementById('saveProfileBtn');
-        
-        // Función para cargar los datos del usuario en el formulario
-        async function loadUserData() {
-            try {
-                // Ahora usamos el id_login obtenido de la sesión para la petición
-                const response = await fetch(`/api/administrador/${id_login}`);
-                if (!response.ok) {
-                    throw new Error('Error al cargar los datos del usuario.');
-                }
-                const userData = await response.json();
+            const form = document.getElementById('editProfileForm');
+                const saveBtn = document.getElementById('saveProfileBtn');
                 
-                // Rellenar el formulario con los datos obtenidos
-                document.getElementById('nombre_completo').value = userData.nombre_completo;
-                document.getElementById('correo').value = userData.correo;
-                document.getElementById('cedula').value = userData.cedula;
-                // La contraseña no se debe precargar en un campo de texto visible por seguridad.
-                // Si se desea permitir al usuario cambiarla, se debe dejar el campo vacío
-                // y solo enviar la nueva contraseña si el usuario la introduce.
-                // document.getElementById('contraseña').value = userData.login.contraseña; 
-    
-            } catch (error) {
-                console.error('Error:', error);
-                // Mostrar un mensaje de error sin usar alert
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'alert alert-danger';
-                errorMessage.textContent = 'Error al cargar los datos del perfil.';
-                document.querySelector('.dashboard-contentPage').prepend(errorMessage);
-            }
-        }
-    
-        // Manejar el envío del formulario
+                async function loadUserData() {
+                    try {
+                        const response = await fetch(`/api/administrador/${id_login}`);
+                        if (!response.ok) {
+                            throw new Error('Error al cargar los datos del usuario.');
+                        }
+                        const userData = await response.json();
+                        
+                        document.getElementById('nombre_completo').value = userData.nombre_completo;
+                        document.getElementById('correo').value = userData.correo;
+                        document.getElementById('cedula').value = userData.cedula;
+            
+                    } catch (error) {
+                        console.error('Error:', error);
+                        const errorMessage = document.createElement('div');
+                        errorMessage.className = 'alert alert-danger';
+                        errorMessage.textContent = 'Error al cargar los datos del perfil.';
+                        document.querySelector('.dashboard-contentPage').prepend(errorMessage);
+                    }
+                }
+                
+            
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            saveBtn.disabled = true;
-    
+            
+            const nombreCompletoInput = document.getElementById('nombre_completo').value.trim();
+            const cedulaInput = document.getElementById('cedula').value.trim();
+            const contraseñaNueva = document.getElementById('contraseña').value;
+            const confirmarContraseña = document.getElementById('confirmar_contraseña').value;
+            const contraseñaAntigua = document.getElementById('contraseña-antigua').value;
+
+            // Validar Nombre Completo (solo letras y espacios)
+            const nombreRegex = /^[A-Za-z\sñÑáéíóúÁÉÍÓÚ]+$/;
+            if (!nombreRegex.test(nombreCompletoInput)) {
+                showCustomMessage('El nombre completo solo debe contener letras y espacios.', 'danger');
+                return;
+            }
+
+            // Validar Cédula (solo números, 7-10 dígitos)
+            const cedulaRegex = /^[0-9]{7,10}$/;
+            if (!cedulaRegex.test(cedulaInput)) {
+                showCustomMessage('La cédula debe contener solo números y tener entre 7 y 10 dígitos.', 'danger');
+                return;
+            }
+
+            // Lógica para cambiar contraseña (solo si los campos de contraseña están llenos)
+            if (contraseñaNueva || confirmarContraseña || contraseñaAntigua) {
+                
+                if (contraseñaAntigua === '') {
+                    showCustomMessage('Debe ingresar la contraseña antigua para poder cambiarla.', 'danger');
+                    return;
+                }
+
+                if (contraseñaNueva !== confirmarContraseña) {
+                    showCustomMessage('Las contraseñas no coinciden. Por favor, verifica.', 'danger');
+                    return;
+                }
+                
+                // Validar Contraseña (mínimo 7 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 especial)
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{7,}$/;
+                if (!passwordRegex.test(contraseñaNueva)) {
+                    showCustomMessage('La contraseña debe tener al menos 7 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial (ej. @$!%*?&._-).', 'danger');
+                    return;
+                }
+            }
+
+
             const updatedData = {
-                nombre_completo: document.getElementById('nombre_completo').value,
+                nombre_completo: nombreCompletoInput,
                 correo: document.getElementById('correo').value,
-                cedula: document.getElementById('cedula').value,
-                // La contraseña se envía solo si el usuario la ha escrito
-                contraseña: document.getElementById('contraseña').value
+                cedula: cedulaInput,
             };
 
-            // Solo incluye la contraseña en la actualización si el campo no está vacío
-            if (updatedData.contraseña === '') {
-                delete updatedData.contraseña; // Elimina la propiedad si está vacía para no sobrescribir la existente
+            if (contraseñaNueva) {
+                updatedData.contraseña_antigua = contraseñaAntigua;
+                updatedData.contraseña_nueva = contraseñaNueva;
             }
-    
+
             try {
                 const response = await fetch(`/api/administrador/${id_login}`, {
                     method: 'PUT',
@@ -250,41 +287,93 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(updatedData),
-                    // Es importante incluir las credenciales para enviar la cookie de sesión
                     credentials: 'include' 
                 });
-    
+                
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.error || 'No se pudo actualizar el perfil.');
                 }
-                // Mostrar un mensaje de éxito sin usar alert
-                const successMessage = document.createElement('div');
-                successMessage.className = 'alert alert-success';
-                successMessage.textContent = 'Perfil actualizado con éxito.';
-                document.querySelector('.dashboard-contentPage').prepend(successMessage);
-
-                // Redirigir después de un breve retraso
+                
+                showCustomMessage('Perfil actualizado con éxito.', 'success');
                 setTimeout(() => {
                     window.location.href = '/home'; 
                 }, 2000);
-    
             } catch (error) {
                 console.error('Error:', error);
-                // Mostrar un mensaje de error sin usar alert
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'alert alert-danger';
-                errorMessage.textContent = error.message;
-                document.querySelector('.dashboard-contentPage').prepend(errorMessage);
+                showCustomMessage(error.message, 'danger');
             } finally {
                 saveBtn.disabled = false;
             }
         });
+
     
         loadUserData();
     });
 
-    // Función para crear un mensaje modal personalizado en lugar de alert
+    async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
+    try {
+        const response = await fetch(url, options);
+        // Manejar respuestas 204 y 304 sin cuerpo
+        if (response.status === 204 || response.status === 304) {
+            console.log(`Respuesta ${response.status}. Sin contenido para procesar.`);
+            return null;
+        }
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.warn(`Recurso no encontrado: ${url}`);
+                return null;
+            }
+            throw new Error(`Error HTTP! estado: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        if (retries > 0) {
+            console.warn(`Error en fetch, reintentando en ${delay}ms... (${retries} reintentos restantes)`, error);
+            await new Promise(res => setTimeout(res, delay));
+            return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
+        } else {
+            console.error('Se agotaron los reintentos. Falló la solicitud:', url, error);
+            throw error;
+        }
+    }
+}
+    async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
+    const userNameElement = document.getElementById(elementId);
+    if (!userNameElement) {
+        console.error(`Elemento con ID '${elementId}' no encontrado.`);
+        return;
+    }
+    userNameElement.textContent = 'Cargando...'; // Texto provisional
+
+    try {
+        const meResponse = await fetchWithExponentialBackoff(`/api/me`, { method: 'GET', credentials: 'include' });
+
+        if (!meResponse || !meResponse.user || !meResponse.user.id) {
+            userNameElement.textContent = 'Usuario Desconocido';
+            console.warn('No se pudo obtener el id desde /api/me. Respuesta:', meResponse);
+            return;
+        }
+
+        const id_login = meResponse.user.id; // 👈 aquí usas "id"
+
+
+
+        // 2. Obtener el perfil
+        const profileResponse = await fetchWithExponentialBackoff(`/api/user-profile/${id_login}`, { method: 'GET', credentials: 'include' });
+
+        if (profileResponse && profileResponse.nombre_completo) {
+            userNameElement.textContent = profileResponse.nombre_completo;
+        } else {
+            userNameElement.textContent = 'Usuario Desconocido';
+        }
+
+    } catch (error) {
+        console.error('Error al cargar el nombre del usuario autenticado:', error);
+        userNameElement.textContent = 'Error al cargar nombre';
+    }
+}
+
     function showCustomMessage(message, type) {
         const messageContainer = document.createElement('div');
         messageContainer.className = `custom-message-box ${type}`;
@@ -298,7 +387,6 @@
             document.body.removeChild(messageContainer);
         });
 
-        // Estilos para el mensaje modal
         const style = document.createElement('style');
         style.textContent = `
             .custom-message-box {
@@ -315,8 +403,8 @@
                 max-width: 80%;
                 border: 2px solid;
             }
-            .custom-message-box.success { border-color: #28a745; color: #28a745; }
-            .custom-message-box.danger { border-color: #dc3545; color: #dc3545; }
+            .custom-message-box.success { border-color: rgb(21, 132, 216); color: rgb(21, 132, 216); }
+            .custom-message-box.danger { border-color: #2a3e61; color: #2a3e61; }
             .close-message-btn {
                 background-color: #007bff;
                 color: white;
@@ -332,82 +420,37 @@
         `;
         document.head.appendChild(style);
     }
-                // Lógica para alternar la visibilidad de la contraseña
-            const togglePassword = document.getElementById('togglePassword');
-            const toggleConfirmarPassword = document.getElementById('toggleConfirmarPassword');
-            const passwordInput = document.getElementById('contraseña');
-            const confirmarContraseñaInput = document.getElementById('confirmar_contraseña');
+    
+    const togglePassword = document.getElementById('togglePassword');
+    const toggleConfirmarPassword = document.getElementById('toggleConfirmarPassword');
+    const passwordInput = document.getElementById('contraseña');
+    const confirmarContraseñaInput = document.getElementById('confirmar_contraseña');
+    const toggleAntiguo = document.getElementById('togglePasswordAntigua');
+    const antiguoInput = document.getElementById('contraseña-antigua');
 
-            if (togglePassword && passwordInput) {
-                togglePassword.addEventListener('click', function() {
-                    // Alternar el tipo de input entre 'password' y 'text'
-                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordInput.setAttribute('type', type);
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        });
+    }
 
-                    // Cambiar el icono del ojo (ahora un SVG en línea)
-                    const eyeSvg = this.querySelector('svg');
-                    // Alterna el path del ojo abierto/cerrado. Este SVG es solo un ejemplo,
-                    // tendrías que ajustar los paths reales para un ojo abierto y un ojo cerrado.
-                    // Para simplificar, solo rotaremos el ojo o cambiaremos su opacidad como ejemplo.
-                    if (type === 'text') {
-                        // Si se muestra la contraseña, podrías cambiar el SVG o su estilo
-                        eyeSvg.style.transform = 'scale(0.8)'; // Ejemplo visual
-                        eyeSvg.setAttribute('stroke', '#00aaff'); // Cambiar color si se muestra
-                        // O si tienes un SVG de ojo cerrado, reemplazarlo
-                        // eyeSvg.innerHTML = '<path ... ojo cerrado ...>';
-                    } else {
-                        // Si la contraseña está oculta
-                        eyeSvg.style.transform = 'scale(1)';
-                        eyeSvg.setAttribute('stroke', 'currentColor'); // Volver al color original
-                        // eyeSvg.innerHTML = '<path ... ojo abierto ...>';
-                    }
-                });
-            }
+    if(toggleConfirmarPassword && confirmarContraseñaInput){
+        toggleConfirmarPassword.addEventListener('click', function() {
+            const type = confirmarContraseñaInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmarContraseñaInput.setAttribute('type', type);
+        });
+    }
 
-            if(toggleConfirmarPassword && confirmarContraseñaInput){
-                toggleConfirmarPassword.addEventListener('click', function() {
-                    // Alternar el tipo de input entre 'password' y 'text'
-                    const type = confirmarContraseñaInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    confirmarContraseñaInput.setAttribute('type', type);
-
-                    // Cambiar el icono del ojo (ahora un SVG en línea)
-                    const eyeSvg = this.querySelector('svg');
-                    // Alterna el path del ojo abierto/cerrado. Este SVG es solo un ejemplo,
-                    // tendrías que ajustar los paths reales para un ojo abierto y un ojo cerrado.
-                    // Para simplificar, solo rotaremos el ojo o cambiaremos su opacidad como ejemplo.
-                    if (type === 'text') {
-                        // Si se muestra la contraseña, podrías cambiar el SVG o su estilo
-                        eyeSvg.style.transform = 'scale(0.8)'; // Ejemplo visual
-                        eyeSvg.setAttribute('stroke', '#00aaff'); // Cambiar color si se muestra
-                        // O si tienes un SVG de ojo cerrado, reemplazarlo
-                        // eyeSvg.innerHTML = '<path ... ojo cerrado ...>';
-                    } else {
-                        // Si la contraseña está oculta
-                        eyeSvg.style.transform = 'scale(1)';
-                        eyeSvg.setAttribute('stroke', 'currentColor'); // Volver al color original
-                        // eyeSvg.innerHTML = '<path ... ojo abierto ...>';
-                    }
-                });
-            }
-
-
-
-    // Reemplaza las llamadas a 'alert' con 'showCustomMessage'
-    // Ejemplo: alert('Perfil actualizado con éxito.'); se convierte en showCustomMessage('Perfil actualizado con éxito.', 'success');
-    // Ejemplo: alert(error.message); se convierte en showCustomMessage(error.message, 'danger');
-
-    // Modifica las funciones para usar el custom message box
-    const originalFetch = window.fetch;
-    window.fetch = async (...args) => {
-        try {
-            const response = await originalFetch(...args);
-            return response;
-        } catch (error) {
-            console.error('Fetch Error:', error);
-            showCustomMessage('Error de conexión o de red.', 'danger');
-            throw error; // Re-lanza el error para que la cadena de promesas pueda manejarlo si es necesario
-        }
-    };
+    if(toggleAntiguo && antiguoInput){
+        toggleAntiguo.addEventListener('click', function() {
+            const type = antiguoInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            antiguoInput.setAttribute('type', type);
+        });
+    }
+    $(document).ready(function() {
+        loadAuthenticatedUserName('sidebarUserName');
+    });
     </script>
 </body>
 </html>

@@ -2,6 +2,7 @@ import express from 'express';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import path from 'path'; // Importa path de forma estándar
+import bcrypt from 'bcryptjs'; // Asegúrate de tener bcryptjs instalado
 import pdf from 'html-pdf'; // Si aún lo utilizas para la generación de PDFs
 import { fileURLToPath } from 'url'; // Necesario para convertir URL a path de sistema de archivos
 import fs from 'fs'; // Importamos el módulo 'fs' para leer archivos
@@ -61,29 +62,52 @@ router.get('/administrador/:id_login', async (req, res) => {
     }
 });
 
-// Agrega esta ruta para actualizar los datos del administrador y el login
 router.put('/administrador/:id_login', async (req, res) => {
     const { id_login } = req.params;
     const {
         nombre_completo,
         correo,
         cedula,
-        contraseña // Viene del frontend, ya hasheada
+        contraseña_antigua,
+        contraseña_nueva
     } = req.body;
 
     try {
         // Actualizar la tabla 'administrador'
         const { error: adminError } = await supabase
             .from('administrador')
-            .update({ nombre_completo, correo, telefono, cedula })
+            .update({ nombre_completo, correo, cedula })
             .eq('id_login', id_login);
 
         // Actualizar la tabla 'login' (solo si se proporciona una nueva contraseña)
         let loginError = null;
-        if (contraseña) {
+        if (contraseña_nueva) {
+            // Obtener la contraseña actual hasheada de la base de datos
+            const { data: loginData, error: fetchLoginError } = await supabase
+                .from('login')
+                .select('contraseña')
+                .eq('id_login', id_login)
+                .single();
+
+            if (fetchLoginError || !loginData) {
+                return res.status(404).json({ error: 'Contraseña de usuario no encontrada.' });
+            }
+            
+            const contraseñaActualHasheada = loginData.contraseña;
+            
+            // Comparar la contraseña antigua proporcionada con la hasheada en la base de datos
+            const match = await bcrypt.compare(contraseña_antigua, contraseñaActualHasheada);
+            if (!match) {
+                return res.status(403).json({ error: 'La contraseña antigua no es correcta.' });
+            }
+            
+            // Hash de la nueva contraseña
+            const saltRounds = 10;
+            const nuevaContraseñaHasheada = await bcrypt.hash(contraseña_nueva, saltRounds);
+
             const { error } = await supabase
                 .from('login')
-                .update({ contraseña })
+                .update({ contraseña: nuevaContraseñaHasheada })
                 .eq('id_login', id_login);
             loginError = error;
         }

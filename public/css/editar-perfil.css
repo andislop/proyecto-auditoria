@@ -138,3 +138,116 @@
         .close-message-btn:hover {
             background-color: #0056b3;
         }
+       /* Estilo del fondo del modal que cubre toda la pantalla */
+.custom-modal-overpal {
+    /* * 'position: fixed' asegura que el modal se mantenga en el mismo lugar 
+     * de la ventana, sin importar el desplazamiento.
+     */
+    position: fixed;
+    /* * 'top: 0', 'left: 0', 'width: 100%', 'height: 100%' 
+     * hacen que el fondo cubra toda la ventana del navegador.
+     */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* * 'background-color: rgba(0, 0, 0, 0.5)' crea un fondo semitransparente 
+     * para oscurecer el contenido detrás de la modal.
+     */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* * 'display: flex', 'justify-content: center', 'align-items: center' 
+     * centran el contenido del modal tanto horizontal como verticalmente.
+     */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* * 'z-index' es crucial. Asegura que el modal esté por encima de todos 
+     * los demás elementos de la página. '1000' es un valor alto que casi 
+     * siempre funciona.
+     */
+    z-index: 1000;
+    /* * Estos estilos controlan la visibilidad de la modal. Por defecto, 
+     * estará oculta.
+     */
+    opacity: 0; /* Lo hace completamente transparente */
+    visibility: hidden; /* Lo oculta por completo del flujo del documento */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Añade una transición suave */
+}
+
+/* * Esta clase se activa con JavaScript cuando se muestra la modal, 
+ * haciendo que se vuelva visible.
+ */
+.custom-modal-overpal.active {
+    opacity: 1; /* Hace que el fondo se vuelva visible */
+    visibility: visible; /* Muestra el modal */
+}
+
+/* * Ajusta el transform en el contenedor del modal cuando está activo 
+ * para que el contenido se deslice hacia arriba.
+ */
+.custom-modal-overpal.active .custom-modal-contenpal {
+    transform: translateY(0);
+}
+
+        .custom-modal-contenpal {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+
+
+        .custom-modal-contenpal h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .custom-modal-contenpal p {
+            margin-bottom: 25px;
+            color: #555;
+            line-height: 1.5;
+        }
+        .custom-modal-botopal {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .custom-modal-botopal button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .custom-modal-botopal button.confirm {
+            background-color: #325592; /* Azul para confirmar */
+            color: white;
+        }
+
+        .custom-modal-botopal button.cancel {
+            background-color: #ccc; /* Gris para cancelar */
+            color: #333;
+        }
+
+        .custom-modal-botopal button:hover {
+            transform: translateY(-2px);
+        }
+
+        .custom-modal-botopal button.confirm:hover {
+            background-color: #2267df;
+        }
+
+        .custom-modal-botopal button.cancel:hover {
+            background-color: #bbb;
+        }

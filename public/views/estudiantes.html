@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<title>Estudiantes</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/estudiantes.css">
+    <style>
+        .tablas thead{
+            background-color:#2a3e61;
+            color: #fff;
+        }
+ /* Estilos para la tabla en el modal de detalles del estudiante */
+@media (max-width: 767px) {
+  /* Asegura que el contenedor de la tabla en el modal no se oculte */
+    #estudianteDetailModal .table-responsive {
+        display: block !important;
+    }
+    }
+    </style>
+</head>
+<body>
+	<!-- SideBar -->
+	<section class="full-box cover dashboard-sideBar">
+		<div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
+		<div class="full-box dashboard-sideBar-ct">
+			<!--SideBar Title -->
+			<div class="full-box text-uppercase text-center text-titles dashboard-sideBar-title">
+				UNEFA <i class="zmdi zmdi-close btn-menu-dashboard visible-xs"></i>
+			</div>
+			<!-- SideBar User info -->
+			<div class="full-box dashboard-sideBar-UserInfo">
+				<figure class="full-box">
+					<img src="../assets/img/unefa.png" alt="UserIcon">
+					<figcaption class="text-center text-titles" id="sidebarUserName">Cargando...</figcaption>
+				</figure>
+				<ul class="full-box list-unstyled text-center">
+					<li>
+						<a href="#!">
+							<i class="zmdi zmdi-settings"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" class="btn-exit-system" id="logoutBtn">
+							<i class="zmdi zmdi-power"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<!-- SideBar Menu -->
+			<ul class="list-unstyled full-box dashboard-sideBar-Menu">
+				<li>
+					<a href="/home">
+						<i class="zmdi zmdi-view-dashboard zmdi-hc-fw"></i> Dashboard
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-case zmdi-hc-fw"></i> Administracion <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="/servicio-comunitario"><i class="zmdi zmdi-accounts"></i> Servicio Comunitario</a>
+						</li>
+						<li>
+							<a href="/trabajo-de-grado"><i class="zmdi zmdi-book zmdi-hc-fw"></i> Trabajo de Grado</a>
+						</li>
+						<li>
+							<a href="/proyectos"><i class="zmdi zmdi-graduation-cap zmdi-hc-fw"></i> Proyectos</a>
+						</li>
+						<li>
+							<a href="/pasantias.html"><i class="zmdi zmdi-assignment"></i> Pasantias</a>
+						</li>
+                        <li>
+							<a href="/bitacora"><i class="zmdi zmdi-bookmark-outline"></i> Bitácora</a>
+						</li>
+                        <li>
+                            <a href="/proyectos-eliminados"><i class="zmdi zmdi-delete zmdi-hc-fw"></i> Proyectos Eliminados</a>
+                        </li>
+					</ul>
+				</li>
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Usuarios <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="/admin"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
+						</li>
+						<li>
+							<a href="/tutores"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Tutores</a>
+						</li>
+						<li>
+							<a href="/estudiantes"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Estudiantes</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</section>
+
+	<!-- Content page-->
+	<section class="full-box dashboard-contentPage">
+		<!-- NavBar -->
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li class="pull-left">
+					<a href="#!" class="btn-menu-dashboard"><i class="zmdi zmdi-more-vert"></i></a>
+				</li>
+			</ul>
+		</nav>
+		<!-- Content page -->
+		<div class="container-fluid">
+			<div class="page-header" style="text-align: center;">
+			  <h1 class="text-titles" style="display: inline-block;">Estudiantes</h1>
+			</div>
+			<p class="lead">Bienvenido a la sección de estudiantes. Aquí puedes gestionar todos los estudiantes del sistema.</p>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<div id="myTabContent" class="tab-content">
+					  	<div class="tab-pane fade active in" id="list">
+                            <div class="container-fluid">
+                                <div class="row" style="margin-bottom: 15px;">
+                                    <div class="col-xs-12 col-sm-6">
+                                        <button class="btn btn-info btn-raised" data-toggle="modal" data-target="#addEstudianteModal" onclick="prepareAddEstudianteModal()">
+                                            <i class="zmdi zmdi-plus"></i> Agregar nuevo estudiante
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        <div class="form-group label-floating">
+                                            <label class="control-label" for="searchEstudiante">Buscar Estudiante</label>
+                                            <input class="form-control" type="text" id="searchEstudiante" onkeyup="filterTable()">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Tabla para vista de escritorio -->
+							<div class="table-responsive">
+								<table class="table table-hover text-center table-estudiantes" id="estudiantesTable">
+									<thead>
+										<tr>
+											<th class="text-center">N°</th>
+											<th class="text-center">Cédula</th>
+											<th class="text-center">Nombre Completo</th>
+                                            <th class="text-center">Carrera</th>
+											<th class="text-center">Acciones</th>
+										</tr>
+									</thead>
+									<tbody>
+										<!-- Los datos se cargarán dinámicamente aquí -->
+									</tbody>
+								</table>
+							</div>
+
+                            <!-- Contenedor para tarjetas en vista móvil -->
+                            <div class="mobile-cards-container" id="mobileEstudianteCards">
+                                <!-- Las tarjetas se cargarán dinámicamente aquí para móvil -->
+                            </div>
+
+								<ul class="pagination pagination-sm" id="pagination">
+								</ul>
+					  	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Modal para agregar/editar estudiante -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="addEstudianteModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="estudianteModalTitle">Agregar Nuevo Estudiante</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addEstudianteForm">
+                        <!-- Campo oculto para guardar el ID del estudiante si estamos editando -->
+                        <input type="hidden" id="editEstudianteId">
+
+                        <div class="form-group label-floating">
+                            <label class="control-label" for="estudianteCedula">Cédula</label>
+                            <input class="form-control" type="text" id="estudianteCedula" pattern="[0-9]{6,10}" title="La cédula debe contener solo números (6-10 dígitos)" required>
+                        </div>
+                        <div class="form-group label-floating">
+                            <label class="control-label" for="estudianteNombreCompleto">Nombre Completo</label>
+                            <input class="form-control" type="text" id="estudianteNombreCompleto" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="El nombre debe contener solo letras y espacios" required>
+                        </div>
+                        <div class="form-group label-floating">
+                            <label class="control-label" for="estudianteCarrera">Carrera</label>
+                            <select class="form-control" id="estudianteCarrera">
+                                <!-- Opciones cargadas dinámicamente -->
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-info btn-raised" id="saveEstudianteBtn" onclick="saveEstudiante()">Guardar Estudiante</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventana modal personalizada (con campo de mensaje para eliminación) -->
+    <div id="customAlertModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <span id="customAlertTitle"></span>
+            </div>
+            <div class="custom-modal-body">
+                <p id="customAlertMessage"></p>
+                <div id="customAlertInputContainer" style="display: none;">
+                    <textarea id="customAlertInput" placeholder="Motivo de la eliminación (opcional)"></textarea>
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button id="customAlertOkBtn">Ok</button>
+                <button id="customAlertCancelBtn" style="display: none; background-color: #f44336; margin-left: 10px;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+            <!-- Custom Modal for Confirmation (Alternative to SweetAlert2 if not working) -->
+    <div id="customConfirmModal" class="custom-modal-overlag">
+        <div class="custom-modal-contento">
+            <h2>¿Estás seguro?</h2>
+            <p>¿Realmente quieres cerrar sesión?</p>
+            <div class="custom-modal-botones">
+                <button class="confirm" id="confirmLogoutBtn">Sí, cerrar sesión</button>
+                <button class="cancel" id="cancelLogoutBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    
+<div class="modal fade" tabindex="-1" role="dialog" id="estudianteDetailModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="estudianteDetailModalTitle">Detalles del Estudiante</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <h5 class="text-titles">Información Personal</h5>
+                            <p><strong>Cédula:</strong> <span id="detailCedula"></span></p>
+                            <p><strong>Nombre Completo:</strong> <span id="detailNombreCompleto"></span></p>
+                            <p><strong>Carrera:</strong> <span id="detailCarrera"></span></p>
+                        </div>
+                    <div class="col-xs-12 col-md-6">
+                        <h5 class="text-titles">Proyectos Relacionados</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tablas">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th>Tipo</th>
+                                        <th>Título</th>
+                                        <th>Período</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="proyectosTableBody">
+                                    </tbody>
+                            </table>
+                            <p id="noProjectsMessage" class="text-center" style="display:none; color: #777;">Este estudiante no está relacionado con ningún proyecto.</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+    <!-- Modal para mostrar detalles del proyecto del estudiante -->
+    <div id="projectDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <div id="modalContent">
+                <!-- El contenido se generará aquí dinámicamente -->
+            </div>
+        </div>
+    </div>
+	<!--====== Scripts -->
+	<script src="../js/jquery-3.1.1.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/material.min.js"></script>
+	<script src="../js/ripples.min.js"></script>
+	<script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="../js/main.js"></script>
+    <!-- Librerías jsPDF -->
+    <script src="../js/jspdf.umd.min.js"></script>
+    <script src="../js/jspdf.plugin.autotable.min.js"></script>
+
+
+<script>
+        // Referencias a los elementos de la modal personalizada
+        const customAlertModal = document.getElementById('customAlertModal');
+        const customAlertTitle = document.getElementById('customAlertTitle');
+        const customAlertMessage = document.getElementById('customAlertMessage');
+        const customAlertInputContainer = document.getElementById('customAlertInputContainer'); // Contenedor del input
+        const customAlertInput = document.getElementById('customAlertInput'); // El input/textarea
+        const customAlertOkBtn = document.getElementById('customAlertOkBtn');
+        const customAlertCancelBtn = document.getElementById('customAlertCancelBtn'); // Botón de cancelar
+        
+        // Función para mostrar la modal personalizada
+        function showCustomAlert(title, message, showInput = false) {
+            customAlertTitle.textContent = title;
+            customAlertMessage.textContent = message;
+            
+            // Mostrar u ocultar el input/textarea
+            customAlertInputContainer.style.display = showInput ? 'block' : 'none';
+            customAlertInput.value = ''; // Limpiar el campo cada vez
+            
+            // Mostrar u ocultar el botón de cancelar
+            customAlertCancelBtn.style.display = showInput ? 'inline-block' : 'none';
+
+            customAlertModal.style.display = 'flex'; // Usamos flex para centrar
+
+            // Manejo de la promesa para simular .then() de Swal.fire
+            return new Promise(resolve => {
+                const okClickHandler = function() {
+                    customAlertModal.style.display = 'none';
+                    customAlertOkBtn.removeEventListener('click', okClickHandler);
+                    customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
+                    resolve({ isConfirmed: true, inputValue: customAlertInput.value });
+                };
+
+                const cancelClickHandler = function() {
+                    customAlertModal.style.display = 'none';
+                    customAlertOkBtn.removeEventListener('click', okClickHandler);
+                    customAlertCancelBtn.removeEventListener('click', cancelClickHandler);
+                    resolve({ isConfirmed: false });
+                };
+
+                customAlertOkBtn.addEventListener('click', okClickHandler);
+                customAlertCancelBtn.addEventListener('click', cancelClickHandler);
+            });
+        }
+
+        // Para cerrar la modal si se hace clic fuera de ella
+        window.onclick = function(event) {
+            if (event.target == customAlertModal) {
+                customAlertModal.style.display = 'none';
+                customAlertOkBtn.removeEventListener('click', okClickHandler); 
+                customAlertCancelBtn.removeEventListener('click', cancelClickHandler); 
+            }
+        };
+
+        const rowsPerPageDesktop = 5;
+        const rowsPerPageMobile = 3;
+        let currentPage = 1;
+        let currentRowsPerPage;
+
+        // Global array to store all estudiante data as objects
+        let allEstudiantesData = [];
+
+        // --- Funciones de Utilidad para Fetching ---
+        async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        return null; 
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                if (retries > 0) {
+                    console.warn(`Fetch failed, retrying in ${delay}ms... (${retries} retries left)`, error);
+                    await new Promise(res => setTimeout(res, delay));
+                    return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
+                } else {
+                    console.error('Max retries reached. Failed to fetch:', url, error);
+                    throw error;
+                }
+            }
+        }
+        
+        async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
+            const userNameElement = document.getElementById(elementId);
+            if (!userNameElement) {
+                console.error(`Elemento con ID '${elementId}' no encontrado.`);
+                return;
+            }
+            userNameElement.textContent = 'Cargando...'; // Texto provisional
+
+            try {
+                const meResponse = await fetchWithExponentialBackoff(`/api/me`, { method: 'GET', credentials: 'include' });
+
+                if (!meResponse || !meResponse.user || !meResponse.user.id) {
+                    userNameElement.textContent = 'Usuario Desconocido';
+                    console.warn('No se pudo obtener el id desde /api/me. Respuesta:', meResponse);
+                    return;
+                }
+
+                const id_login = meResponse.user.id; // 👈 aquí usas "id"
+
+
+
+                // 2. Obtener el perfil
+                const profileResponse = await fetchWithExponentialBackoff(`/api/user-profile/${id_login}`, { method: 'GET', credentials: 'include' });
+
+                if (profileResponse && profileResponse.nombre_completo) {
+                    userNameElement.textContent = profileResponse.nombre_completo;
+                } else {
+                    userNameElement.textContent = 'Usuario Desconocido';
+                }
+
+            } catch (error) {
+                console.error('Error al cargar el nombre del usuario autenticado:', error);
+                userNameElement.textContent = 'Error al cargar nombre';
+            }
+        }
+
+        // Función para cargar datos de la API y poblar la tabla y las tarjetas móviles
+        async function loadEstudiantesFromAPI() {
+            try {
+                const estudiantes = await fetchWithExponentialBackoff('/api/estudiantes', { method: 'GET' });
+                if (!estudiantes) {
+                    await showCustomAlert('Error', 'No se pudieron cargar los estudiantes. Inténtalo de nuevo más tarde.');
+                    return;
+                }
+
+                const tableBody = document.getElementById('estudiantesTable').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = ''; // Limpia los datos existentes
+                allEstudiantesData = []; // Limpia el array global
+
+                estudiantes.forEach((estudiante, index) => {
+                    const newOriginalN = index + 1;
+                    const newRow = tableBody.insertRow();
+                    newRow.dataset.estudianteId = estudiante.id_estudiante;
+
+                    const cedulaDisplay = estudiante.cedula ? `<span class="estudiante-cedula-display">${estudiante.cedula}</span>` : 'N/A';
+                    const nombreCompletoDisplay = estudiante.nombre_completo ? `<span class="estudiante-name-display">${estudiante.nombre_completo}</span>` : 'N/A';
+
+                    newRow.innerHTML = `
+                        <td data-label="N°">${newOriginalN}</td>
+                        <td data-label="Cédula">${cedulaDisplay}</td>
+                        <td data-label="Nombre Completo">${nombreCompletoDisplay}</td>
+                        <td data-label="Carrera">${estudiante.carrera}</td>
+                        <td data-label="Acciones">
+                            <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar" onclick="openEditEstudianteModal('${estudiante.id_estudiante}')"><i class="zmdi zmdi-edit"></i></a>
+                            <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar" onclick="confirmDeleteEstudiante('${estudiante.id_estudiante}', '${estudiante.nombre_completo}')"><i class="zmdi zmdi-delete"></i></a>
+                            <button class="btn btn-primary btn-raised btn-xs" title="Ver Más" onclick="showEstudianteDetailModal('${estudiante.id_estudiante}')"><i class="zmdi zmdi-eye"></i></button>
+                        </td>
+                    `;
+
+                    allEstudiantesData.push({
+                        element: newRow,
+                        originalN: newOriginalN,
+                        id_estudiante: estudiante.id_estudiante,
+                        estudianteData: estudiante,
+                        searchableText: `${estudiante.cedula} ${estudiante.nombre_completo}`.toLowerCase(),
+                        isVisibleByFilter: true
+                    });
+                });
+
+                filterTable();
+                $.material.init();
+            } catch (error) {
+                console.error('Error al cargar estudiantes:', error);
+                await showCustomAlert('Error', 'Ocurrió un error al cargar los estudiantes. Revisa la consola para más detalles.');
+            }
+        }
+    
+        // Función para preparar el modal para agregar un nuevo estudiante
+        async function prepareAddEstudianteModal() {
+            document.getElementById('estudianteModalTitle').textContent = 'Agregar Nuevo Estudiante';
+            document.getElementById('saveEstudianteBtn').textContent = 'Guardar Estudiante';
+            document.getElementById('editEstudianteId').value = '';
+            document.getElementById('addEstudianteForm').reset(); // Hacer la contraseña requerida
+
+            $.material.init();
+            await loadModalDataSelects();
+            updateFloatingLabels();
+        }
+
+        // Función para abrir el modal en modo edición
+// ... tus otras funciones ...
+
+// ... tus otras funciones ...
+
+async function openEditEstudianteModal(estudianteId) {
+    try {
+        console.log(`%c[openEditEstudianteModal] Abriendo modal para editar estudiante con ID: ${estudianteId}`, 'color: #34a853; font-weight: bold;');
+
+        // OBTENER LOS DATOS DEL ESTUDIANTE DIRECTAMENTE DE LA API
+        const estudiante = await fetchWithExponentialBackoff(`/api/estudiantes/${estudianteId}`, { method: 'GET' });
+
+        if (!estudiante) {
+            await showCustomAlert('Error', 'No se encontró el estudiante para editar. La API devolvió un resultado nulo.');
+            console.error(`%c[openEditEstudianteModal] ❌ Error: No se encontró estudiante con ID ${estudianteId}`, 'color: #ea4335;');
+            return;
+        }
+
+        console.log('%c[openEditEstudianteModal] Datos del estudiante obtenidos:', 'color: #34a853;', estudiante);
+
+        // Limpia el formulario antes de llenarlo
+        document.getElementById('addEstudianteForm').reset();
+
+        // Llenar los campos de texto del formulario
+        document.getElementById('estudianteModalTitle').textContent = 'Editar Estudiante';
+        document.getElementById('saveEstudianteBtn').textContent = 'Guardar Cambios';
+        document.getElementById('editEstudianteId').value = estudiante.id_estudiante || '';
+        document.getElementById('estudianteCedula').value = estudiante.cedula || '';
+        document.getElementById('estudianteNombreCompleto').value = estudiante.nombre_completo || '';
+        
+        // LLENAR Y PRESELECCIONAR EL SELECT DE CARRERAS
+        const carreraId = estudiante.id_carrera;
+        if (carreraId) {
+            console.log(`%c[openEditEstudianteModal] Preseleccionando la carrera con ID: ${carreraId}`, 'color: #34a853;');
+        }
+        await loadModalDataSelects(carreraId);
+
+        // Re-inicializa las etiquetas flotantes DESPUÉS de llenar los campos
+        $.material.init();
+        updateFloatingLabels();
+        
+        // Mostrar el modal DESPUÉS de que todos los datos se hayan cargado
+        $('#addEstudianteModal').modal('show');
+        
+    } catch (error) {
+        console.error(`%c[openEditEstudianteModal] ❌ Error al abrir el modal de edición para el estudiante con ID ${estudianteId}:`, 'color: #ea4335; font-weight: bold;', error);
+        await showCustomAlert('Error', 'Ocurrió un error al cargar los datos del estudiante. Revisa la consola para más detalles.');
+    }
+}
+
+
+        // Function to determine rows per page based on screen width
+        function getRowsPerPage() {
+            return window.innerWidth <= 767 ? rowsPerPageMobile : rowsPerPageDesktop;
+        }
+
+        // Function to apply pagination visibility
+        function displayRows() {
+            const filteredEstudiantes = allEstudiantesData.filter(i => i.isVisibleByFilter);
+
+            // Ocultar todas las filas de la tabla y los cards móviles
+            $('.table-estudiantes tbody tr').hide();
+            $('#mobileEstudianteCards').empty(); // Limpiar cards existentes
+
+            currentRowsPerPage = getRowsPerPage();
+            const startIndex = (currentPage - 1) * currentRowsPerPage;
+            const endIndex = Math.min(startIndex + currentRowsPerPage, filteredEstudiantes.length);
+
+            if (window.innerWidth <= 767) { // Vista móvil
+                $('.table-responsive').hide();
+                $('#mobileEstudianteCards').show();
+                for (let i = startIndex; i < endIndex; i++) {
+                    if (filteredEstudiantes[i]) {
+                        // Crear y añadir la tarjeta para móvil
+                        const estudiante = filteredEstudiantes[i].estudianteData;
+                        const card = createMobileEstudianteCard(estudiante, i + 1); // Pasamos el N° correcto
+                        $('#mobileEstudianteCards').append(card);
+                    }
+                }
+            } else { // Vista de escritorio
+                $('.table-responsive').show();
+                $('#mobileEstudianteCards').hide();
+                for (let i = startIndex; i < endIndex; i++) {
+                    if (filteredEstudiantes[i]) {
+                        filteredEstudiantes[i].element.style.display = '';
+                    }
+                }
+            }
+        }
+
+        // Función para poblar los dropdowns al abrir el modal
+async function loadModalDataSelects(selectedCareerId = null) {
+    try {
+        // Obtener el elemento select de carreras correctamente
+        const careerSelect = document.getElementById('estudianteCarrera');
+        
+        console.log('%c[loadModalDataSelects] Fetching carreras...', 'color: #1a73e8;');
+        const carreras = await fetchWithExponentialBackoff('/api/carreras', { method: 'GET' });
+        console.log('%c[loadModalDataSelects] Carreras fetched:', 'color: #1a73e8;', carreras);
+
+        careerSelect.innerHTML = '<option value="">Selecciona una Carrera</option>'; // Placeholder
+        if (carreras && carreras.length > 0) {
+            carreras.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.id_carrera;
+                option.textContent = c.carrera;
+                if (selectedCareerId && c.id_carrera == selectedCareerId) {
+                    option.selected = true;
+                }
+                careerSelect.appendChild(option);
+            });
+        } else {
+            console.warn('%c[loadModalDataSelects] No carreras found or fetch failed.', 'color: #fbbc04;');
+        }
+
+        $.material.init(); 
+
+        // Actualizar el estado visual del select
+        if (selectedCareerId) {
+            $(careerSelect).closest('.form-group').addClass('is-focused is-filled');
+        }
+
+        updateFloatingLabels();
+
+    } catch (error) {
+        console.error('%c[loadModalDataSelects] ❌ Error al cargar datos para los selects del modal (Caught by try-catch):', 'color: #ea4335; font-weight: bold;', error);
+        await showCustomAlert('Error', 'Ocurrió un error al cargar los datos de selección. Revisa la consola para más detalles.');
+    }
+}
+
+
+
+// Función para mostrar el modal de detalles del estudiante
+async function showEstudianteDetailModal(estudianteId) {
+    try {
+        console.log(`%c[showEstudianteDetailModal] Abriendo modal para ver estudiante con ID: ${estudianteId}`, 'color: #34a853; font-weight: bold;');
+        
+        // Fetch the student's details
+        const estudiante = await fetchWithExponentialBackoff(`/api/estudiantes/${estudianteId}`, { method: 'GET' });
+        if (!estudiante) {
+            await showCustomAlert('Error', 'No se encontró la información del estudiante.');
+            return;
+        }
+
+        // Fetch the student's projects
+        const proyectos = await fetchWithExponentialBackoff(`/api/buscar-proyectos/${estudianteId}`, { method: 'GET' });
+
+        // Populate the modal with student details
+        document.getElementById('detailCedula').textContent = estudiante.cedula || 'N/A';
+        document.getElementById('detailNombreCompleto').textContent = estudiante.nombre_completo || 'N/A';
+        document.getElementById('detailCarrera').textContent = estudiante.carreras?.carrera || 'N/A';
+        
+        // Selecciona los elementos del DOM antes del if/else
+        const proyectosTableBody = document.getElementById('proyectosTableBody');
+        const noProjectsMessage = document.getElementById('noProjectsMessage');
+
+        // Limpia el contenido anterior de la tabla y oculta el mensaje
+        proyectosTableBody.innerHTML = '';
+        noProjectsMessage.style.display = 'none';
+
+        // Verifica si se recibieron datos de proyectos y si alguno de los arrays tiene contenido
+        if (proyectos && (
+            proyectos.servicioComunitario?.length > 0 ||
+            proyectos.trabajosGrado?.length > 0 ||
+            proyectos.proyectosInvestigacion?.length > 0 ||
+            proyectos.pasantias?.length > 0
+        )) {
+            // Función auxiliar para renderizar proyectos en la tabla
+            const renderProjects = (list, type, titleKey, startIndex) => {
+                if (!list || list.length === 0) return;
+                
+                list.forEach((proyecto, index) => {
+                    const tableRow = document.createElement('tr');
+                    const titulo = proyecto[titleKey] || 'Título no disponible';
+                    const periodo = (proyecto.periodos && proyecto.periodos.periodo) ? proyecto.periodos.periodo : 'Período no disponible';
+                    
+                    // Calcular el número de proyecto
+                    const projectNumber = startIndex + index + 1;
+
+                    tableRow.innerHTML = `
+                        <td class="text-center">${projectNumber}</td>
+                        <td>${type}</td>
+                        <td>${titulo}</td>
+                        <td>${periodo}</td>
+                    `;
+                    proyectosTableBody.appendChild(tableRow);
+                });
+            };
+
+            let projectCount = 0;
+            
+            renderProjects(proyectos.servicioComunitario, 'Servicio Comunitario', 'proyecto', projectCount);
+            projectCount += proyectos.servicioComunitario?.length || 0;
+
+            renderProjects(proyectos.trabajosGrado, 'Trabajo de Grado', 'proyecto', projectCount);
+            projectCount += proyectos.trabajosGrado?.length || 0;
+
+            renderProjects(proyectos.proyectosInvestigacion, 'Proyecto de Investigación', 'proyecto', projectCount);
+            projectCount += proyectos.proyectosInvestigacion?.length || 0;
+
+            renderProjects(proyectos.pasantias, 'Pasantía', 'titulo', projectCount);
+            projectCount += proyectos.pasantias?.length || 0;
+
+        } else {
+            // Si no hay proyectos, muestra el mensaje
+            noProjectsMessage.style.display = 'block';
+            console.log("Este estudiante no tiene proyectos.");
+        }
+        
+        // Show the modal
+        $('#estudianteDetailModal').modal('show');
+
+    } catch (error) {
+        console.error(`%c[showEstudianteDetailModal] ❌ Error al abrir el modal de detalles para el estudiante con ID ${estudianteId}:`, 'color: #ea4335; font-weight: bold;', error);
+        await showCustomAlert('Error', 'Ocurrió un error al cargar los datos del estudiante y sus proyectos. Revisa la consola para más detalles.');
+    }
+}
+        // Función para crear una tarjeta de estudiante para vista móvil
+        function createMobileEstudianteCard(estudiante, displayN) {
+            const cedulaDisplay = estudiante.cedula || 'N/A';
+            const nombreCompletoDisplay = estudiante.nombre_completo || 'N/A';
+            const carreraDisplay = estudiante.carrera || 'N/A';
+
+            return `
+                <div class="estudiante-card" data-estudiante-id="${estudiante.id_estudiante}">
+                    <div class="card-item">
+                        <span class="card-label">N°:</span>
+                        <span class="card-value">${displayN}</span>
+                    </div>
+                    <div class="card-item">
+                        <span class="card-label">Cédula:</span>
+                        <span class="card-value">${cedulaDisplay}</span>
+                    </div>
+                    <div class="card-item">
+                        <span class="card-label">Nombre Completo:</span>
+                        <span class="card-value">${nombreCompletoDisplay}</span>
+                    </div>
+                    <div class="card-item">
+                        <span class="card-label">Carrera:</span>
+                        <span class="card-value">${carreraDisplay}</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar" onclick="openEditEstudianteModal('${estudiante.id_estudiante}')"><i class="zmdi zmdi-edit"></i></a>
+                        <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar" onclick="confirmDeleteEstudiante('${estudiante.id_estudiante}', '${estudiante.nombre_completo}')"><i class="zmdi zmdi-delete"></i></a>
+                        <button class="btn btn-primary btn-raised btn-xs" title="Ver Más" onclick="showEstudianteDetailModal('${estudiante.id_estudiante}')"><i class="zmdi zmdi-eye"></i></button>
+                </div>
+            `;
+        }
+
+        // Function to set up pagination links
+        function setupPagination() {
+            const visibleRowsForPagination = allEstudiantesData.filter(i => i.isVisibleByFilter);
+
+            const pageCount = Math.ceil(visibleRowsForPagination.length / currentRowsPerPage);
+            const paginationUl = document.getElementById('pagination');
+            paginationUl.innerHTML = '';
+
+            if (currentPage > pageCount && pageCount > 0) {
+                currentPage = pageCount;
+            } else if (pageCount === 0 && visibleRowsForPagination.length > 0) {
+                currentPage = 1;
+            } else if (visibleRowsForPagination.length === 0) {
+                currentPage = 1;
+            }
+
+            if (pageCount <= 1) {
+                paginationUl.style.display = 'none';
+            } else {
+                paginationUl.style.display = '';
+            }
+
+            if (visibleRowsForPagination.length === 0) {
+                return;
+            }
+
+            let prevLi = document.createElement('li');
+            let prevLink = document.createElement('a');
+            prevLink.href = '#!';
+            prevLink.innerHTML = '«';
+            prevLink.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateTableAndPagination();
+                }
+            };
+            prevLi.appendChild(prevLink);
+            paginationUl.appendChild(prevLi);
+
+            for (let i = 1; i <= pageCount; i++) {
+                let li = document.createElement('li');
+                let link = document.createElement('a');
+                link.href = '#!';
+                link.textContent = i;
+                link.onclick = (function(pageNumber) {
+                    return function() {
+                        currentPage = pageNumber;
+                        updateTableAndPagination();
+                    };
+                })(i);
+                li.appendChild(link);
+                paginationUl.appendChild(li);
+            }
+
+            let nextLi = document.createElement('li');
+            let nextLink = document.createElement('a');
+            nextLink.href = '#!';
+            nextLink.innerHTML = '»';
+            nextLink.onclick = () => {
+                if (currentPage < pageCount) {
+                    currentPage++;
+                    updateTableAndPagination();
+                }
+            };
+            nextLi.appendChild(nextLink);
+            paginationUl.appendChild(nextLi);
+
+            if (currentPage === 1) {
+                prevLi.classList.add('disabled');
+            } else {
+                prevLi.classList.remove('disabled');
+            }
+            if (currentPage >= pageCount || pageCount === 0) {
+                nextLi.classList.add('disabled');
+            } else {
+                nextLi.classList.remove('disabled');
+            }
+
+            Array.from(paginationUl.children).forEach(li => {
+                if (li.textContent == currentPage && li.textContent !== '«' && li.textContent !== '»') {
+                    li.classList.add('active');
+                } else {
+                    li.classList.remove('active');
+                }
+            });
+        }
+
+        // Function to update table and pagination
+        function updateTableAndPagination() {
+            currentRowsPerPage = getRowsPerPage();
+            displayRows();
+            setupPagination();
+        }
+
+        // Function to filter the table
+        function filterTable() {
+            const input = document.getElementById('searchEstudiante');
+            const filter = input.value.toLowerCase();
+            let currentFilteredN = 1;
+
+            allEstudiantesData.forEach(estudiante => {
+                if (estudiante.searchableText.includes(filter)) {
+                    estudiante.isVisibleByFilter = true;
+                    if (filter !== '') {
+                        estudiante.element.getElementsByTagName('td')[0].textContent = currentFilteredN++;
+                    }
+                } else {
+                    estudiante.isVisibleByFilter = false;
+                }
+            });
+
+            if (filter === '') {
+                allEstudiantesData.forEach((estudiante) => {
+                    estudiante.element.getElementsByTagName('td')[0].textContent = estudiante.originalN;
+                });
+            }
+
+            currentPage = 1;
+            updateTableAndPagination();
+        }
+
+                    // Función para guardar (agregar o editar) un estudiante
+            // Función para guardar (agregar o editar) un estudiante
+            async function saveEstudiante() {
+                const saveButton = document.getElementById('saveEstudianteBtn');
+                saveButton.disabled = true;
+                saveButton.textContent = 'Guardando...';
+
+                const estudianteId = document.getElementById('editEstudianteId').value;
+                const isEditing = !!estudianteId;
+
+                try {
+                    const cedula = document.getElementById('estudianteCedula').value;
+                    const nombreCompleto = document.getElementById('estudianteNombreCompleto').value;
+                    const careerSelect = document.getElementById('estudianteCarrera');
+                    const carreraId = careerSelect.value; // Obtener el valor correctamente
+
+                    if (!cedula || !nombreCompleto || !carreraId) {
+                        await showCustomAlert("Error", "Por favor, completa todos los campos obligatorios.");
+                        saveButton.disabled = false;
+                        saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Estudiante';
+                        return;
+                    }
+        // ... resto del código sin cambios
+
+                const estudianteData = {
+                    cedula: cedula,
+                    nombre_completo: nombreCompleto,
+                    id_carrera: parseInt(carreraId)
+                };
+
+                let response;
+                if (isEditing) {
+                    // Lógica para editar (PUT)
+                    response = await fetchWithExponentialBackoff(`/api/estudiantes/${estudianteId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(estudianteData),
+                        credentials: 'include'
+                    });
+                } else {
+                    // Lógica para agregar (POST)
+                    response = await fetchWithExponentialBackoff('/api/estudiantes', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(estudianteData),
+                        credentials: 'include'
+                    });
+                }
+
+
+                if (response && response.message) {
+                    $('#addEstudianteModal').on('hidden.bs.modal', async function () {
+                        document.getElementById('addEstudianteForm').reset();
+                        $.material.init();
+                        await loadEstudiantesFromAPI();
+                    });
+                }
+                
+                if (response && response.message) {
+                    $('#addEstudianteModal').on('hidden.bs.modal', async function () {
+                        document.getElementById('addEstudianteForm').reset();
+                        $.material.init();
+                        await loadEstudiantesFromAPI();
+
+                        await showCustomAlert("¡Éxito!", response.message);
+                        
+                        $('.modal-backdrop').remove();
+                        $(this).off('hidden.bs.modal'); 
+                    });
+                    $('#addEstudianteModal').modal('hide');
+
+                } else {
+                    await showCustomAlert("Error", response.error || "No se pudo realizar la operación. Inténtalo de nuevo.");
+                }
+            } catch (error) {
+                console.error('Error al enviar el estudiante:', error);
+                await showCustomAlert("Error", "Ocurrió un error de conexión al guardar el estudiante. Revisa la consola.");
+            } finally {
+                saveButton.disabled = false;
+                saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Estudiante';
+            }
+        }
+
+        // Function para confirmar la eliminación lógica de un estudiante
+        async function confirmDeleteEstudiante(estudianteId, estudianteNombreCompleto) {
+            const { isConfirmed, inputValue: mensajeEliminacion } = await showCustomAlert(
+                'Confirmar Eliminación', 
+                `¿Estás seguro de que quieres eliminar lógicamente al estudiante "${estudianteNombreCompleto}"?`,
+                true 
+            );
+
+            if (isConfirmed) {
+                try {
+                    const response = await fetchWithExponentialBackoff(`/api/estudiantes/eliminar-logico/${estudianteId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion }),
+                        credentials: 'include'
+                    });
+
+                    if (response && response.message) {
+                        await showCustomAlert('¡Éxito!', response.message);
+                        await loadEstudiantesFromAPI(); 
+                    } else {
+                        await showCustomAlert('Error', response.error || 'No se pudo eliminar al estudiante lógicamente. Inténtalo de nuevo.');
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar lógicamente al estudiante:', error);
+                    await showCustomAlert('Error', 'Ocurrió un error de conexión al intentar eliminar al estudiante.');
+                }
+            }
+        }
+
+        function updateFloatingLabels() {
+            // Esta función asegura que las etiquetas flotantes de Material Design se comporten correctamente
+            $('form .form-group').each(function() {
+                if ($(this).find('input').val() !== '') {
+                    $(this).addClass('is-focused');
+                } else {
+                    $(this).removeClass('is-focused');
+                }
+            });
+        }
+
+        // Initial call to populate allAdminsData and display table on load
+        $(document).ready(function() {
+            loadAuthenticatedUserName();
+            loadEstudiantesFromAPI(); 
+            window.addEventListener('resize', updateTableAndPagination);
+
+            // Re-inicializar Material Design cuando el modal se muestra
+            $('#addEstudianteModal').on('shown.bs.modal', function () {
+                $.material.init(); 
+                updateFloatingLabels(); 
+            });
+             // Reinicializar Material Design cuando el documento esté listo
+            $.material.init();
+        });
+	</script>
+</body>
+</html>

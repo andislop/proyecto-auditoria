@@ -70,7 +70,7 @@
         }
 
         .custom-modal-buttons button.confirm {
-            background-color: #f44336; /* Rojo para confirmar */
+            background-color: #325592; /* Rojo para confirmar */
             color: white;
         }
 
@@ -84,7 +84,7 @@
         }
 
         .custom-modal-buttons button.confirm:hover {
-            background-color: #d32f2f;
+            background-color: #2267df;
         }
 
         .custom-modal-buttons button.cancel:hover {

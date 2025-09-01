@@ -7,6 +7,32 @@
 	<link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/servicio-comunitario.css">
+    <style>
+/* Estilos personalizados para los dropdowns */
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+    background-color: rgba(63, 81, 181, 0.1); /* Color azul transparente (rgba) */
+    color: #000; /* Asegura que el texto sea visible */
+    border-radius: 4px; /* Un poco de borde para un efecto más suave */
+}
+.custom-dropdown {
+    width: 100%; /* Hace el botón tan ancho como su contenedor */
+    text-align: left; /* Alinea el texto a la izquierda */
+    font-size: 12px; /* Aumenta el tamaño de la letra del botón */
+    color: #2a3e61;
+}
+
+
+.custom-dropdown-menu {
+    width: 100%; /* Hace el menú desplegable tan ancho como su botón */
+    font-size: 13px; /* Aumenta el tamaño de la letra de las opciones */
+    color: #2a3e61;
+}
+
+.custom-dropdown-menu > li > a {
+    padding: 10px 15px; /* Aumenta el padding para que las opciones se vean más grandes y sean más fáciles de cliquear */
+}
+    </style>
 </head>
 <body>
 	<!-- SideBar -->
@@ -70,17 +96,17 @@
 				</li>
 				<li>
 					<a href="#!" class="btn-sideBar-SubMenu">
-						<i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Users <i class="zmdi zmdi-caret-down pull-right"></i>
+						<i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Usuarios <i class="zmdi zmdi-caret-down pull-right"></i>
 					</a>
 					<ul class="list-unstyled full-box">
 						<li>
-							<a href="admin.html"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
+							<a href="/admin"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
 						</li>
 						<li>
-							<a href="teacher.html"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Teacher</a>
+							<a href="/tutores"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Tutores</a>
 						</li>
 						<li>
-							<a href="student.html"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Student</a>
+							<a href="/estudiantes"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Estudiantes</a>
 						</li>
 					</ul>
 				</li>
@@ -96,12 +122,6 @@
 			<ul class="full-box list-unstyled text-right">
 				<li class="pull-left">
 					<a href="#!" class="btn-menu-dashboard"><i class="zmdi zmdi-more-vert"></i></a>
-				</li>
-                <li>
-					<a href="#!" class="btn-Notifications-area">
-						<i class="zmdi zmdi-notifications-none"></i>
-						<span class="badge">7</span>
-					</a>
 				</li>
 			</ul>
 		</nav>
@@ -163,146 +183,108 @@
 		</div>
 	</section>
 
-	<!-- Notifications area -->
-	<section class="full-box Notifications-area">
-		<div class="full-box Notifications-bg btn-Notifications-area"></div>
-		<div class="full-box Notifications-body">
-			<div class="Notifications-body-title text-titles text-center">
-				Notifications <i class="zmdi zmdi-close btn-Notifications-area"></i>
-			</div>
-			<div class="list-group">
-			  	<div class="list-group-item">
-				    <div class="row-action-primary">
-				      	<i class="zmdi zmdi-alert-triangle"></i>
-				    </div>
-				    <div class="row-content">
-				      	<div class="least-content">17m</div>
-				      	<h4 class="list-group-item-heading">Tile with a label</h4>
-				      	<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p>
-				    </div>
-			  	</div>
-			  	<div class="list-group-separator"></div>
-			  	<div class="list-group-item">
-				    <div class="row-action-primary">
-				      	<i class="zmdi zmdi-alert-octagon"></i>
-				    </div>
-				    <div class="row-content">
-				      	<div class="least-content">15m</div>
-				      	<h4 class="list-group-item-heading">Tile with a label</h4>
-				      	<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p>
-				    </div>
-			  	</div>
-			  	<div class="list-group-separator"></div>
-				<div class="list-group-item">
-				    <div class="row-action-primary">
-				      	<i class="zmdi zmdi-help"></i>
-				    </div>
-				    <div class="row-content">
-				      	<div class="least-content">10m</div>
-				      	<h4 class="list-group-item-heading">Tile with a label</h4>
-				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
-				    </div>
-				</div>
-			  	<div class="list-group-separator"></div>
-			  	<div class="list-group-item">
-				    <div class="row-action-primary">
-				      	<i class="zmdi zmdi-info"></i>
-				    </div>
-				    <div class="row-content">
-				      	<div class="least-content">8m</div>
-				      	<h4 class="list-group-item-heading">Tile with a label</h4>
-				      	<p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
-				    </div>
-			  	</div>
-			</div>
 
-		</div>
-	</section>
 
-	<!-- Modal para agregar nuevo proyecto -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="addProjectModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="projectModalTitle">Agregar Nuevo Proyecto</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="addProjectForm">
-                        <!-- Campo oculto para guardar el ID del proyecto si estamos editando -->
-                        <input type="hidden" id="editProjectId">
+     <div class="modal fade" tabindex="-1" role="dialog" id="addProjectModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="projectModalTitle">Agregar Nuevo Proyecto</h4>
+            </div>
+            <div class="modal-body">
+                <form id="addProjectForm">
+                    <input type="hidden" id="editProjectId">
 
-                        <div class="form-group label-floating">
-                            <label class="control-label" for="projectPeriod"></label>
-                            <select class="form-control" id="projectPeriod">
-                                <!-- Opciones cargadas dinámicamente -->
-                            </select>
+                    <div class="form-group">
+                        <label class="control-label">Selecciona un Periodo</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle custom-dropdown" type="button" id="projectPeriodDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span id="projectPeriodSelectedText">Selecciona un Periodo</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="projectPeriodDropdown" id="projectPeriodList">
+                                </ul>
                         </div>
-                        <div class="form-group label-floating">
-                            <label class="control-label" for="projectName">Nombre del Proyecto</label>
-                            <input class="form-control" type="text" id="projectName">
+                        <input type="hidden" id="projectPeriod">
+                    </div>
+                    
+                    <div class="form-group label-floating">
+                        <label class="control-label" for="projectName">Nombre del Proyecto</label>
+                        <input class="form-control" type="text" id="projectName">
+                    </div>
+                    <div id="membersContainer">
                         </div>
-                        <!-- Campos dinámicos para Integrantes (Estudiantes) -->
-                        <div id="membersContainer">
-                            <!-- Los integrantes se añadirán aquí dinámicamente -->
-                        </div>
-                        <button type="button" class="btn btn-info btn-raised" onclick="addMemberField()">
-                            <i class="zmdi zmdi-plus"></i> Añadir Integrante
-                        </button>
+                    <button type="button" class="btn btn-info btn-raised" onclick="addMemberField()">
+                        <i class="zmdi zmdi-plus"></i> Añadir Integrante
+                    </button>
 
-                        <div class="form-group label-floating">
-                            <label class="control-label" for="projectCareer"></label>
-                            <select class="form-control" id="projectCareer">
-                                <!-- Opciones cargadas dinámicamente -->
-                            </select>
+                    <div class="form-group">
+                        <label class="control-label">Selecciona una Carrera</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle custom-dropdown" type="button" id="projectCareerDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span id="projectCareerSelectedText">Selecciona una Carrera</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="projectCareerDropdown" id="projectCareerList">
+                                </ul>
                         </div>
-                        
-                        <div class="form-group label-floating">
-                            <label class="control-label" for="projectCommunity">Comunidad</label>
-                            <input class="form-control" type="text" id="projectCommunity">
-                        </div>
+                        <input type="hidden" id="projectCareer">
+                    </div>
+                    
+                    <div class="form-group label-floating">
+                        <label class="control-label" for="projectCommunity">Comunidad</label>
+                        <input class="form-control" type="text" id="projectCommunity">
+                    </div>
 
-                        <!-- Campos para Tutor -->
-                        <div class="row tutor-input-group">
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="form-group label-floating">
-                                    <label class="control-label" for="projectTutorCedula">Cédula del Tutor</label>
-                                    <input class="form-control" type="text" id="projectTutorCedula">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="form-group label-floating">
-                                    <label class="control-label" for="projectTutorName">Nombre Completo del Tutor</label>
-                                    <input class="form-control" type="text" id="projectTutorName" readonly>
-                                </div>
+                    <div class="row tutor-input-group">
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label" for="projectTutorCedula">Cédula del Tutor</label>
+                                <input class="form-control" type="text" id="projectTutorCedula">
                             </div>
                         </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label" for="projectTutorName">Nombre Completo del Tutor</label>
+                                <input class="form-control" type="text" id="projectTutorName">
+                            </div>
+                        </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label class="control-label" for="projectStartDate">Fecha Inicio</label>
-                            <input class="form-control" type="date" id="projectStartDate">
+                    <div class="form-group">
+                        <label class="control-label" for="projectStartDate">Fecha Inicio</label>
+                        <input class="form-control" type="date" id="projectStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="projectEndDate">Fecha Final</label>
+                        <input class="form-control" type="date" id="projectEndDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Estado</label>
+                        <div class="dropdown dropup">
+                            <button class="btn btn-default dropdown-toggle custom-dropdown" type="button" id="projectStatusDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span id="projectStatusSelectedText" style="font-size: 12px;">Selecciona un Estado</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="projectStatusDropdown" id="projectStatusList">
+                                <li><a href="#" data-value="Pendiente">Pendiente</a></li>
+                                <li><a href="#" data-value="Aprobado">Aprobado</a></li>
+                                <li><a href="#" data-value="Reprobado">Reprobado</a></li>
+                            </ul>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label" for="projectEndDate">Fecha Final</label>
-                            <input class="form-control" type="date" id="projectEndDate">
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="projectStatus">Estado</label>
-                            <select class="form-control" id="projectStatus">
-                                <option>Pendiente</option>
-                                <option>Aprobado</option>
-                                <option>Reprobado</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-info btn-raised" id="saveProjectBtn" onclick="saveProject()">Guardar Proyecto</button>
-                </div>
+                        <input type="hidden" id="projectStatus">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-info btn-raised" id="saveProjectBtn" onclick="saveProject()">Guardar Proyecto</button>
             </div>
         </div>
     </div>
+</div>
 	<!-- Dialog help -->
 	<div class="modal fade" tabindex="-1" role="dialog" id="Dialog-Help">
 	  	<div class="modal-dialog" role="document">
@@ -545,7 +527,7 @@
             </div>
             <div class="form-group label-floating col-xs-12">
                 <label class="control-label" for="projectMemberName_${memberFieldIndex}">Nombre Completo del Integrante</label>
-                <input class="form-control projectMemberName" type="text" id="projectMemberName_${memberFieldIndex}" data-member-index="${memberFieldIndex}" readonly>
+                <input class="form-control projectMemberName" type="text" id="projectMemberName_${memberFieldIndex}" data-member-index="${memberFieldIndex}">
             </div>
             <button type="button" class="remove-member-btn" onclick="removeMemberField(this)"><i class="zmdi zmdi-close"></i></button>
         `;
@@ -578,7 +560,7 @@
         document.getElementById('saveProjectBtn').textContent = 'Guardar Proyecto';
         document.getElementById('editProjectId').value = '';
         document.getElementById('addProjectForm').reset();
-        document.getElementById('projectTutorName').readOnly = true;
+        document.getElementById('projectTutorName').readOnly = false;
         document.getElementById('projectTutorName').removeAttribute('data-id');
 
 
@@ -598,7 +580,7 @@
         document.getElementById('saveProjectBtn').textContent = 'Guardar Cambios';
         document.getElementById('editProjectId').value = projectId;
         document.getElementById('addProjectForm').reset();
-        document.getElementById('projectTutorName').readOnly = true;
+        document.getElementById('projectTutorName').readOnly = false;
 
         const project = allProjectsData.find(p => p.id_servicio == projectId)?.projectData;
 
@@ -619,7 +601,7 @@
             document.getElementById('projectTutorCedula').value = project.tutor.cedula || '';
             document.getElementById('projectTutorName').value = project.tutor.nombre_completo || '';
             document.getElementById('projectTutorName').setAttribute('data-id', project.tutor.id_tutor || '');
-            document.getElementById('projectTutorName').readOnly = true; 
+            document.getElementById('projectTutorName').readOnly = false; 
         } else {
             document.getElementById('projectTutorCedula').value = '';
             document.getElementById('projectTutorName').value = '';
@@ -644,7 +626,7 @@
                     </div>
                     <div class="form-group label-floating col-xs-12">
                         <label class="control-label" for="projectMemberName_${memberFieldIndex}">Nombre Completo del Integrante</label>
-                        <input class="form-control projectMemberName" type="text" id="projectMemberName_${memberFieldIndex}" data-member-index="${memberFieldIndex}" value="${integrante.nombre_completo || ''}" data-id="${integrante.id_estudiante || ''}" readonly>
+                        <input class="form-control projectMemberName" type="text" id="projectMemberName_${memberFieldIndex}" data-member-index="${memberFieldIndex}" value="${integrante.nombre_completo || ''}" data-id="${integrante.id_estudiante || ''}">
                     </div>
                     <button type="button" class="remove-member-btn" onclick="removeMemberField(this)"><i class="zmdi zmdi-close"></i></button>
                 `;
@@ -662,52 +644,91 @@
         $('#addProjectModal').modal('show');
     }
 
-    // Función para poblar los dropdowns al abrir el modal
-    async function loadModalDataSelects(selectedPeriodId = null, selectedCareerId = null) {
-        try {
-            const periodSelect = document.getElementById('projectPeriod');
-            const careerSelect = document.getElementById('projectCareer');
+// Función para poblar los dropdowns al abrir el modal
+async function loadModalDataSelects(selectedPeriodId = null, selectedCareerId = null) {
+    try {
+        // Referencias para el nuevo dropdown de periodos
+        const periodList = document.getElementById('projectPeriodList');
+        const periodInput = document.getElementById('projectPeriod');
+        const periodButtonText = document.getElementById('projectPeriodSelectedText');
+        
+        // Referencias para el nuevo dropdown de carreras
+        const careerList = document.getElementById('projectCareerList');
+        const careerInput = document.getElementById('projectCareer');
+        const careerButtonText = document.getElementById('projectCareerSelectedText');
 
-            // Cargar periodos
-            const periodos = await fetchWithExponentialBackoff('/api/periodos', { method: 'GET' });
-            periodSelect.innerHTML = '<option value="">Selecciona un Periodo</option>'; 
-            if (periodos) {
-                periodos.forEach(p => {
-                    const option = document.createElement('option');
-                    option.value = p.id_periodo;
-                    option.textContent = p.periodo;
-                    if (selectedPeriodId && p.id_periodo == selectedPeriodId) {
-                        option.selected = true;
-                    }
-                    periodSelect.appendChild(option);
-                });
-            }
-
-            // Cargar carreras
-            const carreras = await fetchWithExponentialBackoff('/api/carreras', { method: 'GET' });
-            careerSelect.innerHTML = '<option value="">Selecciona una Carrera</option>'; 
-            if (carreras) {
-                carreras.forEach(c => {
-                    const option = document.createElement('option');
-                    option.value = c.id_carrera;
-                    option.textContent = c.carrera;
-                    if (selectedCareerId && c.id_carrera == selectedCareerId) {
-                        option.selected = true;
-                    }
-                    careerSelect.appendChild(option);
-                });
-            }
-            // Disparar evento change en los selects para que Material Design los actualice visualmente
-            $(periodSelect).trigger('change');
-            $(careerSelect).trigger('change');
-
-            $.material.init(); 
-        } catch (error) {
-            console.error('%c[loadModalDataSelects] ❌ Error al cargar datos para los selects del modal:', 'color: #ea4335; font-weight: bold;', error);
-            await showCustomAlert('Error', 'Ocurrió un error al cargar los datos de selección.');
+        // Cargar periodos (usando el nuevo dropdown de Bootstrap)
+        const periodos = await fetchWithExponentialBackoff('/api/periodos', { method: 'GET' });
+        periodList.innerHTML = '';
+        if (!selectedPeriodId) {
+            periodButtonText.textContent = 'Selecciona un Periodo';
+            periodInput.value = '';
         }
-    }
 
+        if (periodos) {
+            periodos.forEach(p => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = '#';
+                link.dataset.value = p.id_periodo;
+                link.textContent = p.periodo;
+                
+                if (selectedPeriodId && p.id_periodo == selectedPeriodId) {
+                    periodButtonText.textContent = p.periodo;
+                    periodInput.value = p.id_periodo;
+                }
+                
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    periodButtonText.textContent = p.periodo;
+                    periodInput.value = p.id_periodo;
+                });
+
+                listItem.appendChild(link);
+                periodList.appendChild(listItem);
+            });
+        }
+
+        // Cargar carreras (usando el nuevo dropdown de Bootstrap)
+        const carreras = await fetchWithExponentialBackoff('/api/carreras', { method: 'GET' });
+        careerList.innerHTML = '';
+        if (!selectedCareerId) {
+            careerButtonText.textContent = 'Selecciona una Carrera';
+            careerInput.value = '';
+        }
+
+        if (carreras) {
+            carreras.forEach(c => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = '#';
+                link.dataset.value = c.id_carrera;
+                link.textContent = c.carrera;
+                
+                if (selectedCareerId && c.id_carrera == selectedCareerId) {
+                    careerButtonText.textContent = c.carrera;
+                    careerInput.value = c.id_carrera;
+                }
+                
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    careerButtonText.textContent = c.carrera;
+                    careerInput.value = c.id_carrera;
+                });
+
+                listItem.appendChild(link);
+                careerList.appendChild(listItem);
+            });
+        }
+        
+        // La inicialización de Material Design ahora se aplica a todo el modal
+        $.material.init(); 
+        
+    } catch (error) {
+        console.error('%c[loadModalDataSelects] ❌ Error al cargar datos para los selects del modal:', 'color: #ea4335; font-weight: bold;', error);
+        await showCustomAlert('Error', 'Ocurrió un error al cargar los datos de selección.');
+    }
+}
     // Función para añadir listeners a los campos de cédula de integrantes y tutor
     function setupCedulaListeners() {
         $('.projectMemberId').off('blur keydown');
@@ -750,47 +771,50 @@
 
     // Función genérica para verificar persona por cédula (estudiante o tutor)
     async function checkPersonByCedula(cedulaInput, type, nameClassOrId, isTutor) {
-        const cedula = cedulaInput.value.trim();
-        const nameInput = isTutor ? document.getElementById(nameClassOrId) : document.getElementById(`${nameClassOrId}_${cedulaInput.dataset.memberIndex}`);
-        
-        if (cedula === '') {
-            nameInput.value = '';
-            nameInput.readOnly = isTutor; 
-            nameInput.removeAttribute('data-id'); 
-            $(nameInput).closest('.form-group').removeClass('is-focused is-filled'); 
-            $.material.init();
-            return;
-        }
-
-        try {
-            const url = `/api/${type}-por-cedula/${cedula}`;
-            const personData = await fetchWithExponentialBackoff(url, { method: 'GET' });
-
-            if (personData) {
-                nameInput.value = personData.nombre_completo;
-                nameInput.readOnly = true; 
-                nameInput.setAttribute('data-id', personData[`id_${type}`]); 
-                $(nameInput).closest('.form-group').addClass('is-focused is-filled');
-                
-            } else {
-                nameInput.value = ''; 
-                nameInput.readOnly = false; 
-                nameInput.removeAttribute('data-id'); 
-                $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
-            }
-            $.material.init();
-            updateFloatingLabelsForElement(nameInput); 
-
-        } catch (error) {
-            console.error(`%c[checkPersonByCedula] ❌ Error al verificar cédula de ${type}:`, 'color: #ea4335; font-weight: bold;', error);
-            nameInput.value = '';
-            nameInput.readOnly = false;
-            nameInput.removeAttribute('data-id');
-            $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
-            await showCustomAlert('Error de Conexión', `No se pudo verificar la cédula de ${type}. Intenta de nuevo.`);
-            updateFloatingLabelsForElement(nameInput); 
-        }
+    const cedula = cedulaInput.value.trim();
+    const nameInput = isTutor ? document.getElementById(nameClassOrId) : document.getElementById(`${nameClassOrId}_${cedulaInput.dataset.memberIndex}`);
+    
+    if (cedula === '') {
+        nameInput.value = '';
+        // **CORRECCIÓN:** Se asegura que el campo sea editable, sin importar si es un tutor.
+        nameInput.readOnly = false; 
+        nameInput.removeAttribute('data-id'); 
+        $(nameInput).closest('.form-group').removeClass('is-focused is-filled'); 
+        $.material.init();
+        return;
     }
+
+    try {
+        const url = `/api/${type}-por-cedula/${cedula}`;
+        const personData = await fetchWithExponentialBackoff(url, { method: 'GET' });
+
+        if (personData) {
+            nameInput.value = personData.nombre_completo;
+            // No es necesario cambiar la propiedad readOnly aquí, ya que el valor por defecto se maneja arriba.
+            nameInput.setAttribute('data-id', personData[`id_${type}`]); 
+            $(nameInput).closest('.form-group').addClass('is-focused is-filled');
+            
+        } else {
+            // Se asegura que el campo sea editable cuando no se encuentra la persona.
+            nameInput.value = ''; 
+            nameInput.readOnly = false; 
+            nameInput.removeAttribute('data-id'); 
+            $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
+        }
+        $.material.init();
+        updateFloatingLabelsForElement(nameInput); 
+
+    } catch (error) {
+        console.error(`%c[checkPersonByCedula] ❌ Error al verificar cédula de ${type}:`, 'color: #ea4335; font-weight: bold;', error);
+        nameInput.value = '';
+        // Se asegura que el campo sea editable en caso de error.
+        nameInput.readOnly = false;
+        nameInput.removeAttribute('data-id');
+        $(nameInput).closest('.form-group').removeClass('is-focused').removeClass('is-filled');
+        await showCustomAlert('Error de Conexión', `No se pudo verificar la cédula de ${type}. Intenta de nuevo.`);
+        updateFloatingLabelsForElement(nameInput); 
+    }
+}
     // user-utils.js
 
 /**
@@ -1160,7 +1184,7 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
             if (response && response.message) {
                 $('#addProjectModal').on('hidden.bs.modal', async function () {
                     document.getElementById('addProjectForm').reset();
-                    document.getElementById('projectTutorName').readOnly = true;
+                    document.getElementById('projectTutorName').readOnly = false;
                     document.getElementById('projectTutorName').removeAttribute('data-id');
                     
                     const membersContainer = document.getElementById('membersContainer');
@@ -1477,6 +1501,38 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
         $('#addProjectModal').on('shown.bs.modal', function () {
             updateFloatingLabels();
         });
+
+            // Lógica para el dropdown de "Estado"
+    $('#projectStatusList a').on('click', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+        const selectedText = $(this).text();
+
+        $('#projectStatusSelectedText').text(selectedText);
+        $('#projectStatus').val(selectedValue);
+    });
+
+    // Lógica existente para el dropdown de "Carreras"
+    // Opcional si ya la tienes en el otro archivo, pero asegúrate de que use los IDs correctos
+    $('#projectCareerList').on('click', 'a', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+        const selectedText = $(this).text();
+
+        $('#projectCareerSelectedText').text(selectedText);
+        $('#projectCareer').val(selectedValue);
+    });
+
+    // Lógica existente para el dropdown de "Periodos"
+    // Opcional si ya la tienes en el otro archivo, pero asegúrate de que use los IDs correctos
+    $('#projectPeriodList').on('click', 'a', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+        const selectedText = $(this).text();
+
+        $('#projectPeriodSelectedText').text(selectedText);
+        $('#projectPeriod').val(selectedValue);
+    });
     });
 </script>
 </body>

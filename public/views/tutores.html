@@ -1,12 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-	<title>Administradores</title>
+	<title>Tutores</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/bootstrap-icons.css">
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/estudiantes.css">
+    <link rel="stylesheet" href="../css/tutores.css">
+    <style>
+        .tablas thead{
+            background-color:#2a3e61;
+            color: #fff;
+        }
+ /* Estilos para la tabla en el modal de detalles del estudiante */
+@media (max-width: 767px) {
+  /* Asegura que el contenedor de la tabla en el modal no se oculte */
+    #tutorDetailModal .table-responsive {
+        display: block !important;
+    }
+    }
+    </style>
 </head>
 <body>
 	<!-- SideBar -->
@@ -101,9 +115,9 @@
 		<!-- Content page -->
 		<div class="container-fluid">
 			<div class="page-header" style="text-align: center;">
-			  <h1 class="text-titles" style="display: inline-block;">Administradores</h1>
+			  <h1 class="text-titles" style="display: inline-block;">Tutores</h1>
 			</div>
-			<p class="lead">Bienvenido a la sección de administradores. Aquí puedes gestionar todos los administradores del sistema.</p>
+			<p class="lead">Bienvenido a la sección de tutores. Aquí puedes gestionar todos los tutores del sistema.</p>
 		</div>
 		<div class="container-fluid">
 			<div class="row">
@@ -113,27 +127,26 @@
                             <div class="container-fluid">
                                 <div class="row" style="margin-bottom: 15px;">
                                     <div class="col-xs-12 col-sm-6">
-                                        <button class="btn btn-info btn-raised" data-toggle="modal" data-target="#addAdminModal" onclick="prepareAddAdminModal()">
-                                            <i class="zmdi zmdi-plus"></i> Agregar nuevo administrador
+                                        <button class="btn btn-info btn-raised" data-toggle="modal" data-target="#addTutorModal" onclick="prepareAddTutorModal()">
+                                            <i class="zmdi zmdi-plus"></i> Agregar nuevo Tutor
                                         </button>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="form-group label-floating">
-                                            <label class="control-label" for="searchAdmin">Buscar Administrador</label>
-                                            <input class="form-control" type="text" id="searchAdmin" onkeyup="filterTable()">
+                                            <label class="control-label" for="searchTutor">Buscar Tutor</label>
+                                            <input class="form-control" type="text" id="searchTutor" onkeyup="filterTable()">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <!-- Tabla para vista de escritorio -->
 							<div class="table-responsive">
-								<table class="table table-hover text-center table-admins" id="adminTable">
+								<table class="table table-hover text-center table-tutores" id="tutoresTable">
 									<thead>
 										<tr>
 											<th class="text-center">N°</th>
 											<th class="text-center">Cédula</th>
 											<th class="text-center">Nombre Completo</th>
-											<th class="text-center">Correo</th>
 											<th class="text-center">Acciones</th>
 										</tr>
 									</thead>
@@ -144,10 +157,9 @@
 							</div>
 
                             <!-- Contenedor para tarjetas en vista móvil -->
-                            <div class="mobile-cards-container" id="mobileAdminCards">
+                            <div class="mobile-cards-container" id="mobileTutorCards">
                                 <!-- Las tarjetas se cargarán dinámicamente aquí para móvil -->
                             </div>
-
 								<ul class="pagination pagination-sm" id="pagination">
 								</ul>
 					  	</div>
@@ -157,40 +169,32 @@
 		</div>
 	</section>
 
-	<!-- Modal para agregar/editar administrador -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="addAdminModal">
+	<!-- Modal para agregar/editar estudiante -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="addTutorModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="adminModalTitle">Agregar Nuevo Administrador</h4>
+                    <h4 class="modal-title" id="tutorModalTitle">Agregar Nuevo Tutor</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="addAdminForm">
-                        <!-- Campo oculto para guardar el ID del administrador si estamos editando -->
-                        <input type="hidden" id="editAdminId">
+                    <form id="addTutorForm">
+                        <!-- Campo oculto para guardar el ID del tutor si estamos editando -->
+                        <input type="hidden" id="editTutorId">
 
                         <div class="form-group label-floating">
-                            <label class="control-label" for="adminCedula">Cédula</label>
-                            <input class="form-control" type="text" id="adminCedula" pattern="[0-9]{6,10}" title="La cédula debe contener solo números (6-10 dígitos)" required>
+                            <label class="control-label" for="tutorCedula">Cédula</label>
+                            <input class="form-control" type="text" id="tutorCedula" pattern="[0-9]{6,10}" title="La cédula debe contener solo números (6-10 dígitos)" required>
                         </div>
                         <div class="form-group label-floating">
-                            <label class="control-label" for="adminNombreCompleto">Nombre Completo</label>
-                            <input class="form-control" type="text" id="adminNombreCompleto" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="El nombre debe contener solo letras y espacios" required>
-                        </div>
-                        <div class="form-group label-floating">
-                            <label class="control-label" for="adminCorreo">Correo</label>
-                            <input class="form-control" type="email" id="adminCorreo" required>
-                        </div>
-                        <div class="form-group label-floating" id="passwordGroup">
-                            <label class="control-label" for="adminPassword">Contraseña (Solo para nuevos administradores)</label>
-                            <input class="form-control" type="password" id="adminPassword">
+                            <label class="control-label" for="tutorNombreCompleto">Nombre Completo</label>
+                            <input class="form-control" type="text" id="tutorNombreCompleto" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="El nombre debe contener solo letras y espacios" required>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-info btn-raised" id="saveAdminBtn" onclick="saveAdmin()">Guardar Administrador</button>
+                    <button type="button" class="btn btn-info btn-raised" id="saveTutorBtn" onclick="saveTutor()">Guardar Tutor</button>
                 </div>
             </div>
         </div>
@@ -222,6 +226,61 @@
             <div class="custom-modal-botones">
                 <button class="confirm" id="confirmLogoutBtn">Sí, cerrar sesión</button>
                 <button class="cancel" id="cancelLogoutBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="tutorDetailModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tutorDetailModalTitle">Detalles del Tutor</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <h5 class="text-titles">Información Personal</h5>
+                            <p><strong>Cédula:</strong> <span id="detailCedula"></span></p>
+                            <p><strong>Nombre Completo:</strong> <span id="detailNombreCompleto"></span></p>
+                        </div>
+                    <div class="col-xs-12 col-md-6">
+                        <h5 class="text-titles">Proyectos Relacionados</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tablas">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th>Tipo</th>
+                                        <th>Título</th>
+                                        <th>Período</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="proyectosTableBody">
+                                    </tbody>
+                            </table>
+                            <p id="noProjectsMessage" class="text-center" style="display:none; color: #777;">Este estudiante no está relacionado con ningún proyecto.</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+    <!-- Modal para mostrar detalles del proyecto del estudiante -->
+    <div id="projectDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <div id="modalContent">
+                <!-- El contenido se generará aquí dinámicamente -->
             </div>
         </div>
     </div>
@@ -296,8 +355,8 @@
         let currentPage = 1;
         let currentRowsPerPage;
 
-        // Global array to store all administrator data as objects
-        let allAdminsData = [];
+        // Global array to store all tutor data as objects
+        let allTutoresData = [];
 
         // --- Funciones de Utilidad para Fetching ---
         async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
@@ -359,44 +418,43 @@
         }
 
         // Función para cargar datos de la API y poblar la tabla y las tarjetas móviles
-        async function loadAdminsFromAPI() {
+        async function loadTutoresFromAPI() {
             try {
-                const admins = await fetchWithExponentialBackoff('/api/administradores', { method: 'GET' });
-                if (!admins) {
-                    await showCustomAlert('Error', 'No se pudieron cargar los administradores. Inténtalo de nuevo más tarde.');
+                const tutores = await fetchWithExponentialBackoff('/api/tutores', { method: 'GET' });
+                if (!tutores) {
+                    await showCustomAlert('Error', 'No se pudieron cargar los tutores. Inténtalo de nuevo más tarde.');
                     return;
                 }
 
-                const tableBody = document.getElementById('adminTable').getElementsByTagName('tbody')[0];
+                const tableBody = document.getElementById('tutoresTable').getElementsByTagName('tbody')[0];
                 tableBody.innerHTML = ''; // Limpia los datos existentes
-                allAdminsData = []; // Limpia el array global
+                allTutoresData = []; // Limpia el array global
 
-                admins.forEach((admin, index) => {
+                tutores.forEach((tutor, index) => {
                     const newOriginalN = index + 1;
                     const newRow = tableBody.insertRow();
-                    newRow.dataset.adminId = admin.id_administrador;
+                    newRow.dataset.tutorId = tutor.id_tutor;
 
-                    const cedulaDisplay = admin.cedula ? `<span class="admin-cedula-display">${admin.cedula}</span>` : 'N/A';
-                    const nombreCompletoDisplay = admin.nombre_completo ? `<span class="admin-name-display">${admin.nombre_completo}</span>` : 'N/A';
-                    const correoDisplay = admin.correo ? `<span class="admin-email-display">${admin.correo}</span>` : 'N/A';
+                    const cedulaDisplay = tutor.cedula ? `<span class="tutor-cedula-display">${tutor.cedula}</span>` : 'N/A';
+                    const nombreCompletoDisplay = tutor.nombre_completo ? `<span class="tutor-name-display">${tutor.nombre_completo}</span>` : 'N/A';
 
                     newRow.innerHTML = `
                         <td data-label="N°">${newOriginalN}</td>
                         <td data-label="Cédula">${cedulaDisplay}</td>
                         <td data-label="Nombre Completo">${nombreCompletoDisplay}</td>
-                        <td data-label="Correo">${correoDisplay}</td>
                         <td data-label="Acciones">
-                            <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar" onclick="openEditAdminModal('${admin.id_administrador}')"><i class="zmdi zmdi-edit"></i></a>
-                            <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar" onclick="confirmDeleteAdmin('${admin.id_administrador}', '${admin.nombre_completo}')"><i class="zmdi zmdi-delete"></i></a>
+                            <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar" onclick="openEditTutorModal('${tutor.id_tutor}')"><i class="zmdi zmdi-edit"></i></a>
+                            <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar" onclick="confirmDeleteTutor('${tutor.id_tutor}', '${tutor.nombre_completo}')"><i class="zmdi zmdi-delete"></i></a>
+                            <button class="btn btn-primary btn-raised btn-xs" title="Ver Más" onclick="showTutorDetailModal('${tutor.id_tutor}')"><i class="zmdi zmdi-eye"></i></button>
                         </td>
                     `;
 
-                    allAdminsData.push({
+                    allTutoresData.push({
                         element: newRow,
                         originalN: newOriginalN,
-                        id_administrador: admin.id_administrador,
-                        adminData: admin,
-                        searchableText: `${admin.cedula} ${admin.nombre_completo} ${admin.correo}`.toLowerCase(),
+                        id_tutor: tutor.id_tutor,
+                        tutorData: tutor,
+                        searchableText: `${tutor.cedula} ${tutor.nombre_completo}`.toLowerCase(),
                         isVisibleByFilter: true
                     });
                 });
@@ -404,48 +462,66 @@
                 filterTable();
                 $.material.init();
             } catch (error) {
-                console.error('Error al cargar administradores:', error);
-                await showCustomAlert('Error', 'Ocurrió un error al cargar los administradores. Revisa la consola para más detalles.');
+                console.error('Error al cargar tutores:', error);
+                await showCustomAlert('Error', 'Ocurrió un error al cargar los tutores. Revisa la consola para más detalles.');
             }
         }
 
-        // Función para preparar el modal para agregar un nuevo administrador
-        function prepareAddAdminModal() {
-            document.getElementById('adminModalTitle').textContent = 'Agregar Nuevo Administrador';
-            document.getElementById('saveAdminBtn').textContent = 'Guardar Administrador';
-            document.getElementById('editAdminId').value = '';
-            document.getElementById('addAdminForm').reset();
-            document.getElementById('passwordGroup').style.display = 'block'; // Mostrar campo de contraseña
-            document.getElementById('adminPassword').setAttribute('required', 'required'); // Hacer la contraseña requerida
-            
-            $.material.init(); 
-            updateFloatingLabels(); 
+        // Función para preparar el modal para agregar un nuevo tutor
+        async function prepareAddTutorModal() {
+            document.getElementById('tutorModalTitle').textContent = 'Agregar Nuevo Tutor';
+            document.getElementById('saveTutorBtn').textContent = 'Guardar Tutor';
+            document.getElementById('editTutorId').value = '';
+            document.getElementById('addTutorForm').reset(); // Hacer la contraseña requerida
+
+            $.material.init();
+            updateFloatingLabels();
         }
 
         // Función para abrir el modal en modo edición
-        async function openEditAdminModal(adminId) {
-            document.getElementById('adminModalTitle').textContent = 'Editar Administrador';
-            document.getElementById('saveAdminBtn').textContent = 'Guardar Cambios';
-            document.getElementById('editAdminId').value = adminId;
-            document.getElementById('addAdminForm').reset();
-            document.getElementById('passwordGroup').style.display = 'none'; // Ocultar campo de contraseña en edición
-            document.getElementById('adminPassword').removeAttribute('required'); // No requerir contraseña en edición
-            
-            const admin = allAdminsData.find(a => a.id_administrador == adminId)?.adminData;
+// ... tus otras funciones ...
 
-            if (!admin) {
-                await showCustomAlert('Error', 'No se encontró el administrador para editar.');
-                return;
-            }
+// ... tus otras funciones ...
 
-            document.getElementById('adminCedula').value = admin.cedula || '';
-            document.getElementById('adminNombreCompleto').value = admin.nombre_completo || '';
-            document.getElementById('adminCorreo').value = admin.correo || '';
+async function openEditTutorModal(tutorId) {
+    try {
+        console.log(`%c[openEditTutorModal] Abriendo modal para editar tutor con ID: ${tutorId}`, 'color: #34a853; font-weight: bold;');
 
-            $.material.init(); 
-            updateFloatingLabels(); 
-            $('#addAdminModal').modal('show');
+        // OBTENER LOS DATOS DEL TUTOR DIRECTAMENTE DE LA API
+        const tutor = await fetchWithExponentialBackoff(`/api/tutores/${tutorId}`, { method: 'GET' });
+
+        if (!tutor) {
+            await showCustomAlert('Error', 'No se encontró el tutor para editar. La API devolvió un resultado nulo.');
+            console.error(`%c[openEditTutorModal] ❌ Error: No se encontró tutor con ID ${tutorId}`, 'color: #ea4335;');
+            return;
         }
+
+        console.log('%c[openEditTutorModal] Datos del tutor obtenidos:', 'color: #34a853;', tutor);
+        
+        // Limpia el formulario antes de llenarlo
+        document.getElementById('addTutorForm').reset();
+
+        // Llenar los campos de texto del formulario
+        document.getElementById('tutorModalTitle').textContent = 'Editar Tutor';
+        document.getElementById('saveTutorBtn').textContent = 'Guardar Cambios';
+        document.getElementById('editTutorId').value = tutor.id_tutor || '';
+        document.getElementById('tutorCedula').value = tutor.cedula || '';
+        document.getElementById('tutorNombreCompleto').value = tutor.nombre_completo || '';
+
+
+        // Re-inicializa las etiquetas flotantes DESPUÉS de llenar los campos
+        $.material.init();
+        updateFloatingLabels();
+        
+        // Mostrar el modal DESPUÉS de que todos los datos se hayan cargado
+        $('#addTutorModal').modal('show');
+
+    } catch (error) {
+        console.error(`%c[openEditTutorModal] ❌ Error al abrir el modal de edición para el tutor con ID ${tutorId}:`, 'color: #ea4335; font-weight: bold;', error);
+        await showCustomAlert('Error', 'Ocurrió un error al cargar los datos del tutor. Revisa la consola para más detalles.');
+    }
+}
+
 
         // Function to determine rows per page based on screen width
         function getRowsPerPage() {
@@ -454,46 +530,133 @@
 
         // Function to apply pagination visibility
         function displayRows() {
-            const filteredAdmins = allAdminsData.filter(i => i.isVisibleByFilter);
+            const filteredTutores = allTutoresData.filter(i => i.isVisibleByFilter);
 
             // Ocultar todas las filas de la tabla y los cards móviles
-            $('.table-admins tbody tr').hide();
-            $('#mobileAdminCards').empty(); // Limpiar cards existentes
+            $('.table-tutores tbody tr').hide();
+            $('#mobileTutorCards').empty(); // Limpiar cards existentes
 
             currentRowsPerPage = getRowsPerPage();
             const startIndex = (currentPage - 1) * currentRowsPerPage;
-            const endIndex = Math.min(startIndex + currentRowsPerPage, filteredAdmins.length);
+            const endIndex = Math.min(startIndex + currentRowsPerPage, filteredTutores.length);
 
             if (window.innerWidth <= 767) { // Vista móvil
                 $('.table-responsive').hide();
-                $('#mobileAdminCards').show();
+                $('#mobileTutorCards').show();
                 for (let i = startIndex; i < endIndex; i++) {
-                    if (filteredAdmins[i]) {
+                    if (filteredTutores[i]) {
                         // Crear y añadir la tarjeta para móvil
-                        const admin = filteredAdmins[i].adminData;
-                        const card = createMobileAdminCard(admin, i + startIndex + 1); // Pasamos el N° correcto
-                        $('#mobileAdminCards').append(card);
+                        const tutor = filteredTutores[i].tutorData;
+                        const card = createMobileTutorCard(tutor, i + 1); // Pasamos el N° correcto
+                        $('#mobileTutorCards').append(card);
                     }
                 }
             } else { // Vista de escritorio
                 $('.table-responsive').show();
-                $('#mobileAdminCards').hide();
+                $('#mobileTutorCards').hide();
                 for (let i = startIndex; i < endIndex; i++) {
-                    if (filteredAdmins[i]) {
-                        filteredAdmins[i].element.style.display = '';
+                    if (filteredTutores[i]) {
+                        filteredTutores[i].element.style.display = '';
                     }
                 }
             }
         }
 
-        // Función para crear una tarjeta de administrador para vista móvil
-        function createMobileAdminCard(admin, displayN) {
-            const cedulaDisplay = admin.cedula || 'N/A';
-            const nombreCompletoDisplay = admin.nombre_completo || 'N/A';
-            const correoDisplay = admin.correo || 'N/A';
+        // Función para poblar los dropdowns al abrir el modal
+
+
+
+// Función para mostrar el modal de detalles del tutor
+async function showTutorDetailModal(tutorId) {
+    try {
+        console.log(`%c[showTutorDetailModal] Abriendo modal para ver tutor con ID: ${tutorId}`, 'color: #34a853; font-weight: bold;');
+
+        // Fetch the tutor's details
+        const tutor = await fetchWithExponentialBackoff(`/api/tutores/${tutorId}`, { method: 'GET' });
+        if (!tutor) {
+            await showCustomAlert('Error', 'No se encontró la información del tutor.');
+            return;
+        }
+
+        // Fetch the tutor's projects
+        const proyectos = await fetchWithExponentialBackoff(`/api/buscar-proyectos/tutor/${tutorId}`, { method: 'GET' });
+
+        // Populate the modal with tutor details
+        document.getElementById('detailCedula').textContent = tutor.cedula || 'N/A';
+        document.getElementById('detailNombreCompleto').textContent = tutor.nombre_completo || 'N/A';
+        
+        // Selecciona los elementos del DOM antes del if/else
+        const proyectosTableBody = document.getElementById('proyectosTableBody');
+        const noProjectsMessage = document.getElementById('noProjectsMessage');
+
+        // Limpia el contenido anterior de la tabla y oculta el mensaje
+        proyectosTableBody.innerHTML = '';
+        noProjectsMessage.style.display = 'none';
+
+        // Verifica si se recibieron datos de proyectos y si alguno de los arrays tiene contenido
+        if (proyectos && (
+            proyectos.servicioComunitario?.length > 0 ||
+            proyectos.trabajosGrado?.length > 0 ||
+            proyectos.proyectosInvestigacion?.length > 0 ||
+            proyectos.pasantias?.length > 0
+        )) {
+            // Función auxiliar para renderizar proyectos en la tabla
+            const renderProjects = (list, type, titleKey, startIndex) => {
+                if (!list || list.length === 0) return;
+                
+                list.forEach((proyecto, index) => {
+                    const tableRow = document.createElement('tr');
+                    const titulo = proyecto[titleKey] || 'Título no disponible';
+                    const periodo = (proyecto.periodos && proyecto.periodos.periodo) ? proyecto.periodos.periodo : 'Período no disponible';
+                    
+                    // Calcular el número de proyecto
+                    const projectNumber = startIndex + index + 1;
+
+                    tableRow.innerHTML = `
+                        <td class="text-center">${projectNumber}</td>
+                        <td>${type}</td>
+                        <td>${titulo}</td>
+                        <td>${periodo}</td>
+                    `;
+                    proyectosTableBody.appendChild(tableRow);
+                });
+            };
+
+            let projectCount = 0;
+            
+            renderProjects(proyectos.servicioComunitario, 'Servicio Comunitario', 'proyecto', projectCount);
+            projectCount += proyectos.servicioComunitario?.length || 0;
+
+            renderProjects(proyectos.trabajosGrado, 'Trabajo de Grado', 'proyecto', projectCount);
+            projectCount += proyectos.trabajosGrado?.length || 0;
+
+            renderProjects(proyectos.proyectosInvestigacion, 'Proyecto de Investigación', 'proyecto', projectCount);
+            projectCount += proyectos.proyectosInvestigacion?.length || 0;
+
+            renderProjects(proyectos.pasantias, 'Pasantía', 'titulo', projectCount);
+            projectCount += proyectos.pasantias?.length || 0;
+
+        } else {
+            // Si no hay proyectos, muestra el mensaje
+            noProjectsMessage.style.display = 'block';
+            console.log("Este estudiante no tiene proyectos.");
+        }
+        
+        // Show the modal
+        $('#tutorDetailModal').modal('show');
+
+    } catch (error) {
+        console.error(`%c[showTutorDetailModal] ❌ Error al abrir el modal de detalles para el tutor con ID ${tutorId}:`, 'color: #ea4335; font-weight: bold;', error);
+        await showCustomAlert('Error', 'Ocurrió un error al cargar los datos del tutor y sus proyectos. Revisa la consola para más detalles.');
+    }
+}
+        // Función para crear una tarjeta de tutor para vista móvil
+        function createMobileTutorCard(tutor, displayN) {
+            const cedulaDisplay = tutor.cedula || 'N/A';
+            const nombreCompletoDisplay = tutor.nombre_completo || 'N/A';
 
             return `
-                <div class="admin-card" data-admin-id="${admin.id_administrador}">
+                <div class="tutor-card" data-tutor-id="${tutor.id_tutor}">
                     <div class="card-item">
                         <span class="card-label">N°:</span>
                         <span class="card-value">${displayN}</span>
@@ -506,22 +669,17 @@
                         <span class="card-label">Nombre Completo:</span>
                         <span class="card-value">${nombreCompletoDisplay}</span>
                     </div>
-                    <div class="card-item">
-                        <span class="card-label">Correo:</span>
-                        <span class="card-value">${correoDisplay}</span>
-                    </div>
                     <div class="card-actions">
-                        <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar" onclick="openEditAdminModal('${admin.id_administrador}')"><i class="zmdi zmdi-edit"></i></a>
-                        <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar" onclick="confirmDeleteAdmin('${admin.id_administrador}', '${admin.nombre_completo}')"><i class="zmdi zmdi-delete"></i></a>
-                        <button class="btn btn-light btn-raised btn-xs" title="Descargar" onclick="handleDownloadAdmin('${admin.id_administrador}')"><i class="zmdi zmdi-download"></i></button>
-                    </div>
+                        <a href="#!" class="btn btn-info btn-raised btn-xs" title="Editar" onclick="openEditTutorModal('${tutor.id_tutor}')"><i class="zmdi zmdi-edit"></i></a>
+                        <a href="#!" class="btn btn-danger btn-raised btn-xs" title="Eliminar" onclick="confirmDeleteTutor('${tutor.id_tutor}', '${tutor.nombre_completo}')"><i class="zmdi zmdi-delete"></i></a>
+                        <button class="btn btn-primary btn-raised btn-xs" title="Ver Más" onclick="showTutorDetailModal('${tutor.id_tutor}')"><i class="zmdi zmdi-eye"></i></button>
                 </div>
             `;
         }
 
         // Function to set up pagination links
         function setupPagination() {
-            const visibleRowsForPagination = allAdminsData.filter(i => i.isVisibleByFilter);
+            const visibleRowsForPagination = allTutoresData.filter(i => i.isVisibleByFilter);
 
             const pageCount = Math.ceil(visibleRowsForPagination.length / currentRowsPerPage);
             const paginationUl = document.getElementById('pagination');
@@ -604,6 +762,7 @@
                     li.classList.remove('active');
                 }
             });
+            
         }
 
         // Function to update table and pagination
@@ -615,24 +774,24 @@
 
         // Function to filter the table
         function filterTable() {
-            const input = document.getElementById('searchAdmin');
+            const input = document.getElementById('searchTutor');
             const filter = input.value.toLowerCase();
             let currentFilteredN = 1;
 
-            allAdminsData.forEach(admin => {
-                if (admin.searchableText.includes(filter)) {
-                    admin.isVisibleByFilter = true;
+            allTutoresData.forEach(tutor => {
+                if (tutor.searchableText.includes(filter)) {
+                    tutor.isVisibleByFilter = true;
                     if (filter !== '') {
-                        admin.element.getElementsByTagName('td')[0].textContent = currentFilteredN++;
+                        tutor.element.getElementsByTagName('td')[0].textContent = currentFilteredN++;
                     }
                 } else {
-                    admin.isVisibleByFilter = false;
+                    tutor.isVisibleByFilter = false;
                 }
             });
 
             if (filter === '') {
-                allAdminsData.forEach((admin) => {
-                    admin.element.getElementsByTagName('td')[0].textContent = admin.originalN;
+                allTutoresData.forEach((tutor) => {
+                    tutor.element.getElementsByTagName('td')[0].textContent = tutor.originalN;
                 });
             }
 
@@ -640,89 +799,98 @@
             updateTableAndPagination();
         }
 
-        // Función para guardar (agregar o editar) un administrador
-        async function saveAdmin() {
-            const saveButton = document.getElementById('saveAdminBtn');
-            saveButton.disabled = true;
-            saveButton.textContent = 'Guardando...';
+                    // Función para guardar (agregar o editar) un estudiante
+            // Función para guardar (agregar o editar) un estudiante
+            async function saveTutor() {
+                const saveButton = document.getElementById('saveTutorBtn');
+                saveButton.disabled = true;
+                saveButton.textContent = 'Guardando...';
 
-            const adminId = document.getElementById('editAdminId').value;
-            const isEditing = !!adminId;
+                const tutorId = document.getElementById('editTutorId').value;
+                const isEditing = !!tutorId;
 
-            try {
-                const cedula = document.getElementById('adminCedula').value;
-                const nombreCompleto = document.getElementById('adminNombreCompleto').value;
-                const correo = document.getElementById('adminCorreo').value;
-                const password = document.getElementById('adminPassword').value;
+                try {
+                    const cedula = document.getElementById('tutorCedula').value;
+                    const nombreCompleto = document.getElementById('tutorNombreCompleto').value;
 
-                if (!cedula || !nombreCompleto || !correo || (!isEditing && !password)) {
-                    await showCustomAlert("Error", "Por favor, completa todos los campos obligatorios.");
-                    return;
-                }
-                
-                const adminData = {
+
+                    if (!cedula || !nombreCompleto) {
+                        await showCustomAlert("Error", "Por favor, completa todos los campos obligatorios.");
+                        saveButton.disabled = false;
+                        saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Tutor';
+                        return;
+                    }
+        // ... resto del código sin cambios
+
+                const tutorData = {
                     cedula: cedula,
                     nombre_completo: nombreCompleto,
-                    correo: correo
                 };
-
-                if (!isEditing) { // Solo añadir contraseña si es un nuevo admin
-                    adminData.password = password;
-                }
 
                 let response;
                 if (isEditing) {
-                    response = await fetchWithExponentialBackoff(`/api/administradores/${adminId}`, {
+                    // Lógica para editar (PUT)
+                    response = await fetchWithExponentialBackoff(`/api/tutores/${tutorId}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(adminData),
+                        body: JSON.stringify(tutorData),
                         credentials: 'include'
                     });
                 } else {
-                    response = await fetchWithExponentialBackoff('/api/administradores', {
+                    // Lógica para agregar (POST)
+                    response = await fetchWithExponentialBackoff('/api/tutores', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(adminData),
+                        body: JSON.stringify(tutorData),
                         credentials: 'include'
+                    });
+                }
+
+
+                if (response && response.message) {
+                    $('#addTutorModal').on('hidden.bs.modal', async function () {
+                        document.getElementById('addTutorForm').reset();
+                        $.material.init();
+                        await loadTutoresFromAPI();
                     });
                 }
                 
                 if (response && response.message) {
-                    $('#addAdminModal').on('hidden.bs.modal', async function () {
-                        document.getElementById('addAdminForm').reset();
+                    $('#addTutorModal').on('hidden.bs.modal', async function () {
+                        document.getElementById('addTutorForm').reset();
                         $.material.init();
-                        await loadAdminsFromAPI();
-                        
+                        await loadTutoresFromAPI();
+
                         await showCustomAlert("¡Éxito!", response.message);
                         
                         $('.modal-backdrop').remove();
                         $(this).off('hidden.bs.modal'); 
                     });
-                    $('#addAdminModal').modal('hide');
+                    $('#addTutorModal').modal('hide');
 
                 } else {
                     await showCustomAlert("Error", response.error || "No se pudo realizar la operación. Inténtalo de nuevo.");
                 }
             } catch (error) {
-                console.error('Error al enviar el administrador:', error);
-                await showCustomAlert("Error", "Ocurrió un error de conexión al guardar el administrador. Revisa la consola.");
+                console.error('Error al enviar el tutor:', error);
+                await showCustomAlert("Error", "Ocurrió un error de conexión al guardar el tutor. Revisa la consola.");
             } finally {
                 saveButton.disabled = false;
-                saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Administrador';
+                saveButton.textContent = isEditing ? 'Guardar Cambios' : 'Guardar Estudiante';
             }
         }
 
-        // Function para confirmar la eliminación lógica de un administrador
-        async function confirmDeleteAdmin(adminId, adminNombreCompleto) {
+        // Function para confirmar la eliminación lógica de un estudiante
+        async function confirmDeleteTutor(tutorId, tutorNombreCompleto) {
             const { isConfirmed, inputValue: mensajeEliminacion } = await showCustomAlert(
-                'Confirmar Eliminación', 
-                `¿Estás seguro de que quieres eliminar lógicamente al administrador "${adminNombreCompleto}"?`,
-                true 
+                'Confirmar Eliminación',
+                `¿Estás seguro de que quieres eliminar lógicamente al tutor "${tutorNombreCompleto}"?`,
+                true
             );
 
             if (isConfirmed) {
                 try {
-                    const response = await fetchWithExponentialBackoff(`/api/administradores/eliminar-logico/${adminId}`, {
+                    const response = await fetchWithExponentialBackoff(`/api/tutores/eliminar-logico/${tutorId}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ mensajeEliminacion: mensajeEliminacion }),
@@ -731,111 +899,14 @@
 
                     if (response && response.message) {
                         await showCustomAlert('¡Éxito!', response.message);
-                        await loadAdminsFromAPI(); 
+                        await loadTutoresFromAPI();
                     } else {
-                        await showCustomAlert('Error', response.error || 'No se pudo eliminar al administrador lógicamente. Inténtalo de nuevo.');
+                        await showCustomAlert('Error', response.error || 'No se pudo eliminar al tutor lógicamente. Inténtalo de nuevo.');
                     }
                 } catch (error) {
-                    console.error('Error al eliminar lógicamente al administrador:', error);
-                    await showCustomAlert('Error', 'Ocurrió un error de conexión al intentar eliminar al administrador.');
+                    console.error('Error al eliminar lógicamente al tutor:', error);
+                    await showCustomAlert('Error', 'Ocurrió un error de conexión al intentar eliminar al tutor.');
                 }
-            }
-        }
-
-        // --- GENERACIÓN DE PDF EN EL CLIENTE CON JSPDF ---
-
-        // Helper para cargar una imagen y convertirla a Data URL (Base64)
-        async function getImageDataUrl(url) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.crossOrigin = 'Anonymous'; 
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const canvasResolutionMultiplier = 4; 
-                    canvas.width = img.width * canvasResolutionMultiplier;
-                    canvas.height = img.height * canvasResolutionMultiplier;
-                    const ctx = canvas.getContext('2d');
-                    ctx.fillStyle = '#FFFFFF'; 
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    resolve(canvas.toDataURL('image/png'));
-                };
-                img.onerror = (error) => {
-                    console.error('Error al cargar la imagen:', url, error);
-                    resolve('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='); 
-                };
-                img.src = url;
-            });
-        }
-
-        // Función para descargar los datos de un administrador como PDF
-        async function handleDownloadAdmin(adminId) {
-            try {
-                const adminData = allAdminsData.find(a => a.id_administrador == adminId)?.adminData;
-
-                if (!adminData) {
-                    await showCustomAlert('Error', 'No se encontraron los datos del administrador para descargar.');
-                    return;
-                }
-
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-
-                const logoUrl = '../assets/img/unefa.png'; // Ruta a tu logo
-                const logoDataUrl = await getImageDataUrl(logoUrl);
-
-                // Configurar el documento
-                doc.setFontSize(22);
-                doc.setTextColor(42, 62, 97); // Color azul oscuro
-                doc.text('Reporte de Administrador', doc.internal.pageSize.getWidth() / 2, 30, { align: 'center' });
-                
-                if (logoDataUrl) {
-                    doc.addImage(logoDataUrl, 'PNG', 10, 10, 30, 30);
-                }
-
-                doc.setFontSize(12);
-                doc.setTextColor(51, 51, 51); // Color gris oscuro
-                doc.text(`Fecha de Generación: ${new Date().toLocaleDateString()}`, doc.internal.pageSize.getWidth() - 10, 45, { align: 'right' });
-
-                const startY = 60;
-                let currentY = startY;
-
-                // Detalles del Administrador
-                doc.setFontSize(14);
-                doc.setTextColor(42, 62, 97);
-                doc.text('Detalles del Administrador:', 15, currentY);
-                currentY += 10;
-
-                doc.setFontSize(12);
-                doc.setTextColor(85, 85, 85);
-
-                const adminDetails = [
-                    ['ID', adminData.id_administrador],
-                    ['Cédula', adminData.cedula],
-                    ['Nombre Completo', adminData.nombre_completo],
-                    ['Correo', adminData.correo]
-                ];
-
-                doc.autoTable({
-                    startY: currentY,
-                    head: [['Campo', 'Valor']],
-                    body: adminDetails,
-                    theme: 'grid',
-                    styles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0.1, lineColor: [200, 200, 200] },
-                    headStyles: { fillColor: [42, 62, 97], textColor: [255, 255, 255], fontStyle: 'bold' },
-                    columnStyles: { 0: { fontStyle: 'bold' } },
-                    margin: { left: 15, right: 15 }
-                });
-
-                currentY = doc.autoTable.previous.finalY + 10;
-
-
-                // Guardar el PDF
-                doc.save(`Administrador_${adminData.cedula}.pdf`);
-
-            } catch (error) {
-                console.error('Error al generar el PDF del administrador:', error);
-                await showCustomAlert('Error', 'Ocurrió un error al generar el PDF. Revisa la consola.');
             }
         }
 
@@ -850,17 +921,16 @@
             });
         }
 
-
         // Initial call to populate allAdminsData and display table on load
         $(document).ready(function() {
             loadAuthenticatedUserName();
-            loadAdminsFromAPI(); 
+            loadTutoresFromAPI();
             window.addEventListener('resize', updateTableAndPagination);
 
             // Re-inicializar Material Design cuando el modal se muestra
-            $('#addAdminModal').on('shown.bs.modal', function () {
-                $.material.init(); 
-                updateFloatingLabels(); 
+            $('#addTutorModal').on('shown.bs.modal', function () {
+                $.material.init();
+                updateFloatingLabels();
             });
              // Reinicializar Material Design cuando el documento esté listo
             $.material.init();

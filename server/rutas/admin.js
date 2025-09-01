@@ -189,10 +189,10 @@ router.post('/administradores', async (req, res) => {
         const { data: loginData, error: loginError } = await client
             .from('login')
             .insert({
-                correo: correo, 
-                nombre_usuario: correo, // Usamos el correo como nombre_usuario para login si no se especifica
-                password: hashedPassword,
-                rol: 'administrador'
+                correo: correo, // Usamos el correo como nombre_usuario para login si no se especifica
+                contraseña: hashedPassword,
+                estado_login: 'Activo',
+                rol: 'Administrador'
             })
             .select()
             .single();

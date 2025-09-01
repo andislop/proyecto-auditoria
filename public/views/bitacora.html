@@ -8,6 +8,38 @@
     <link rel="stylesheet" href="../css/bootstrap-icons.css">
     <script src="https://kit.fontawesome.com/a81368914c.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../css/bitacora.css">
+        <!-- CSS de Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- JS de Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <style>
+/* Estilos personalizados para los dropdowns */
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+    background-color: rgba(63, 81, 181, 0.1); /* Color azul transparente (rgba) */
+    color: #000; /* Asegura que el texto sea visible */
+    border-radius: 4px; /* Un poco de borde para un efecto más suave */
+}
+.custom-dropdown {
+    width: 100%; /* Hace el botón tan ancho como su contenedor */
+    text-align: left; /* Alinea el texto a la izquierda */
+    font-size: 12px; /* Aumenta el tamaño de la letra del botón */
+    color: #2a3e61;
+}
+
+
+.custom-dropdown-menu {
+    width: 100%; /* Hace el menú desplegable tan ancho como su botón */
+    font-size: 13px; /* Aumenta el tamaño de la letra de las opciones */
+    color: #2a3e61;
+}
+
+.custom-dropdown-menu > li > a {
+    padding: 10px 15px; /* Aumenta el padding para que las opciones se vean más grandes y sean más fáciles de cliquear */
+}
+    </style>
+
 </head>
 <body>
     <!-- SideBar -->
@@ -71,17 +103,17 @@
                 </li>
                 <li>
                     <a href="#!" class="btn-sideBar-SubMenu">
-                        <i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Users <i class="zmdi zmdi-caret-down pull-right"></i>
+                        <i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Usuarios <i class="zmdi zmdi-caret-down pull-right"></i>
                     </a>
                     <ul class="list-unstyled full-box">
                         <li>
-                            <a href="admin.html"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
+                            <a href="/admin"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Admin</a>
                         </li>
                         <li>
-                            <a href="teacher.html"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Teacher</a>
+                            <a href="/tutores"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Tutores</a>
                         </li>
                         <li>
-                            <a href="student.html"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Student</a>
+                            <a href="/estudiantes"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Estudiantes</a>
                         </li>
                     </ul>
                 </li>
@@ -106,100 +138,115 @@
             </div>
             <p class="lead">Bienvenido a la bitácora de auditoría. Aquí se registra toda la actividad del sistema.</p>
         </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="filter-section">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6 col-md-3">
-                                <div class="form-group label-floating">
-                                    <label class="control-label" for="filterStartDate">Fecha Inicio</label>
-                                    <input class="form-control" type="date" id="filterStartDate">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-3">
-                                <div class="form-group label-floating">
-                                    <label class="control-label" for="filterEndDate">Fecha Fin</label>
-                                    <input class="form-control" type="date" id="filterEndDate">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-3">
-                                <div class="form-group label-floating">
-                                    <label class="control-label" for="filterUser">Usuario</label>
-                                    <input class="form-control" type="text" id="filterUser">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-3">
-                                <div class="form-group label-floating">
-                                    <label class="control-label" for="filterModule">Módulo</label>
-                                    <select class="form-control" id="filterModule">
-                                        <option value="">Todos</option>
-                                        <option value="Servicio Comunitario">Servicio Comunitario</option>
-                                        <option value="Trabajo de Grado">Trabajo de Grado</option>
-                                        <option value="Proyectos de Investigación">Proyectos de Investigación</option>
-                                        <option value="Pasantías">Pasantías</option>
-                                        <option value="Usuarios">Usuarios</option>
-                                        <!-- Más opciones según los módulos que tengas -->
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-3">
-                                <div class="form-group label-floating">
-                                    <label class="control-label" for="filterAction">Acción</label>
-                                    <select class="form-control" id="filterAction">
-                                        <option value="">Todas</option>
-                                        <option value="Agregar">Agregar</option>
-                                        <option value="Modificar">Modificar</option>
-                                        <option value="Eliminar">Eliminar</option>
-                                        <option value="Iniciar Sesión">Iniciar Sesión</option>
-                                        <option value="Cerrar Sesión">Cerrar Sesión</option>
-                                        <option value="Descargar PDF">Descargar PDF</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-3">
-                                <div class="form-group label-floating">
-                                    <label class="control-label" for="searchLog">Buscar</label>
-                                    <input class="form-control" type="text" id="searchLog" onkeyup="filterLogs()">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 text-center">
-                                <button class="btn btn-primary btn-raised" onclick="applyFilters()">
-                                    <i class="zmdi zmdi-filter-list"></i> Aplicar Filtros
-                                </button>
-                                <button class="btn btn-default btn-raised" onclick="clearFilters()">
-                                    <i class="zmdi zmdi-delete"></i> Limpiar Filtros
-                                </button>
-                            </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="filter-section">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label class="control-label" for="filterStartDate">Fecha Inicio</label>
+                            <input class="form-control" type="date" id="filterStartDate">
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover text-center table-audit-logs" id="auditLogTable">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">N°</th>
-                                    <th class="text-center">Fecha y Hora</th>
-                                    <th class="text-center">Usuario</th>
-                                    <th class="text-center">Módulo Afectado</th>
-                                    <th class="text-center">Acción Realizada</th>
-                                    <th class="text-center">ID Registro Afectado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Los datos de la bitácora se cargarán dinámicamente aquí -->
-                            </tbody>
-                        </table>
-                        <ul class="pagination pagination-sm" id="pagination">
-                            <!-- Paginación se generará aquí -->
-                        </ul>
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label class="control-label" for="filterEndDate">Fecha Fin</label>
+                            <input class="form-control" type="date" id="filterEndDate">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label class="control-label" for="filterUser">Usuario</label>
+                            <input class="form-control" type="text" id="filterUser">
+                        </div>
+                    </div>
+                    
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Módulo</label>
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle custom-dropdown" type="button" id="filterModuleDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <span id="filterModuleSelectedText">Todos</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="filterModuleDropdown" id="filterModuleList">
+                                    <li><a href="#" data-value="">Todos</a></li>
+                                    <li><a href="#" data-value="Servicio Comunitario">Servicio Comunitario</a></li>
+                                    <li><a href="#" data-value="Trabajo de Grado">Trabajo de Grado</a></li>
+                                    <li><a href="#" data-value="Proyectos de Investigación">Proyectos de Investigación</a></li>
+                                    <li><a href="#" data-value="Pasantías">Pasantías</a></li>
+                                    <li><a href="#" data-value="Usuarios">Usuarios</a></li>
+                                </ul>
+                            </div>
+                            <input type="hidden" id="filterModule" value="">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Acción</label>
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle custom-dropdown" type="button" id="filterActionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <span id="filterActionSelectedText">Todas</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="filterActionDropdown" id="filterActionList">
+                                    <li><a href="#" data-value="">Todas</a></li>
+                                    <li><a href="#" data-value="Agregar">Agregar</a></li>
+                                    <li><a href="#" data-value="Modificar">Modificar</a></li>
+                                    <li><a href="#" data-value="Eliminar">Eliminar</a></li>
+                                    <li><a href="#" data-value="Iniciar Sesión">Iniciar Sesión</a></li>
+                                    <li><a href="#" data-value="Cerrar Sesión">Cerrar Sesión</a></li>
+                                    <li><a href="#" data-value="Descargar PDF">Descargar PDF</a></li>
+                                </ul>
+                            </div>
+                            <input type="hidden" id="filterAction" value="">
+                        </div>
+                    </div>
+                    
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label class="control-label" for="searchLog">Buscar</label>
+                            <input class="form-control" type="text" id="searchLog" onkeyup="filterLogs()">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 text-center">
+                        <button class="btn btn-primary btn-raised" onclick="applyFilters()">
+                            <i class="zmdi zmdi-filter-list"></i> Aplicar Filtros
+                        </button>
+                        <button class="btn btn-default btn-raised" onclick="clearFilters()">
+                            <i class="zmdi zmdi-delete"></i> Limpiar Filtros
+                        </button>
                     </div>
                 </div>
             </div>
+            <div class="table-responsive">
+                <table class="table table-hover text-center table-audit-logs" id="auditLogTable">
+                    <thead>
+                        <tr>
+                            <th class="text-center">N°</th>
+                            <th class="text-center">Fecha y Hora</th>
+                            <th class="text-center">Usuario</th>
+                            <th class="text-center">Módulo Afectado</th>
+                            <th class="text-center">Acción Realizada</th>
+                            <th class="text-center">ID Registro Afectado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+                <ul class="pagination pagination-sm" id="pagination">
+                    </ul>
+            </div>
         </div>
+    </div>
+</div>
     </section>
 
     <!-- Modal para alertas personalizadas (si se utiliza) -->
-    <div id="customAlertModal" class="custom-modal-overlay">
+    <div id="customAlertModal" class="custom-modal-overlay" style="display: none;">
         <div class="custom-modal-content">
             <div class="custom-modal-header">
                 <span id="customAlertTitle"></span>
@@ -254,6 +301,14 @@
         let currentPage = 1;
         let allAuditLogs = []; // Almacenará todos los registros de la bitácora
         let filteredAuditLogs = []; // Almacenará los registros después de aplicar filtros
+
+            $(document).ready(function() {
+            // Inicializar Select2 en tu select
+            $('#filterModule').select2({
+                placeholder: "Selecciona un módulo",
+                width: '100%' // se ajusta al contenedor
+            });
+        });
 
         // Función para mostrar la alerta personalizada
         function showCustomAlert(title, message) {
@@ -406,6 +461,7 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
             const moduleFilter = filterModuleSelect.value.toLowerCase();
             const actionFilter = filterActionSelect.value.toLowerCase();
             const searchGeneral = searchLogInput.value.toLowerCase();
+
 
             filteredAuditLogs = allAuditLogs.filter(log => {
                 const logDate = new Date(log.fecha_hora); // Usar log.fecha_hora de la API
@@ -562,7 +618,43 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
         // Cargar los logs de auditoría al iniciar la página
         $(document).ready(function() {
             loadAuthenticatedUserName();
-            // Asegura que Material Design se inicialice después de que todo el DOM esté listo
+                // Lógica para el dropdown de "Módulo"
+    $('#filterModuleList a').on('click', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+        const selectedText = $(this).text();
+
+        $('#filterModuleSelectedText').text(selectedText);
+        $('#filterModule').val(selectedValue);
+    });
+
+    // Lógica para el dropdown de "Acción"
+    $('#filterActionList a').on('click', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+        const selectedText = $(this).text();
+
+        $('#filterActionSelectedText').text(selectedText);
+        $('#filterAction').val(selectedValue);
+    });
+
+    // Lógica para la función clearFilters()
+    // Asegúrate de que esta función también resetee los dropdowns
+    window.clearFilters = function() {
+        // ... (Tu código actual para limpiar los otros campos)
+
+        // Resetear el dropdown de Módulo
+        $('#filterModuleSelectedText').text('Todos');
+        $('#filterModule').val('');
+        
+        // Resetear el dropdown de Acción
+        $('#filterActionSelectedText').text('Todas');
+        $('#filterAction').val('');
+
+        // Vuelve a aplicar los filtros para refrescar la tabla
+        applyFilters();
+    };
+        
             $.material.init(); 
             loadAuditLogs();
         });
