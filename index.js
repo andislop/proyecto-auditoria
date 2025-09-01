@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bcrypt from "bcryptjs";
-import path from "path";
+import path, { parse } from "path";
 import { fileURLToPath } from "url";
 import jsonwebtoken from 'jsonwebtoken'; // Importamos jsonwebtoken
 import auditoriaRoutes, { registrarAuditoria } from './server/rutas/bitacora.js'

@@ -738,10 +738,14 @@ pendingList.addEventListener('click', (event) => {
 });
 
 // Manejador de eventos para los botones del modal
+// Manejador de eventos para los botones del modal
 acceptBtn.addEventListener('click', async () => {
     if (selectedUserId) {
         try {
-            // Llama a la API para aceptar el usuario usando la nueva ruta
+            // Obtenemos el correo del modal antes de cerrarlo
+            const correo = modalContentData.querySelector('.text-gray-600').textContent;
+
+            // Llama a la API para aceptar el usuario
             const response = await fetch(`/api/accept_user/${selectedUserId}`, {
                 method: 'POST',
                 headers: {
@@ -751,6 +755,23 @@ acceptBtn.addEventListener('click', async () => {
             
             if (response.ok) {
                 console.log(`Usuario con ID ${selectedUserId} aceptado correctamente.`);
+                
+                // Si la activación en la DB fue exitosa, ahora envía el correo
+                const emailResponse = await fetch('/api/enviar-correo-activacion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ correo: correo })
+                });
+
+                if (emailResponse.ok) {
+                    console.log('Correo de activación enviado con éxito.');
+                    // Muestra una notificación de éxito
+                } else {
+                    console.error('Error al enviar el correo de activación.');
+                }
+                
                 fetchAndRenderAllUsers(); // Vuelve a cargar todas las listas
             } else {
                 console.error('Error al aceptar usuario.');
@@ -822,6 +843,9 @@ rejectedList.addEventListener('click', (event) => {
 confirmReactivationBtn.addEventListener('click', async () => {
     if (selectedUserId) {
         try {
+            // Obtenemos el correo y nombre del modal antes de cerrarlo
+            const correo = reactivationModalContent.querySelector('.text-gray-600').textContent;
+
             // Usa la misma API de aceptar para reactivar
             const response = await fetch(`/api/accept_user/${selectedUserId}`, {
                 method: 'POST',
@@ -832,6 +856,22 @@ confirmReactivationBtn.addEventListener('click', async () => {
 
             if (response.ok) {
                 console.log(`Usuario con ID ${selectedUserId} reactivado correctamente.`);
+
+                // Si la reactivación en la DB fue exitosa, ahora envía el correo
+                const emailResponse = await fetch('/api/enviar-correo-activacion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ correo: correo })
+                });
+
+                if (emailResponse.ok) {
+                    console.log('Correo de reactivación enviado con éxito.');
+                } else {
+                    console.error('Error al enviar el correo de reactivación.');
+                }
+                
                 fetchAndRenderAllUsers(); // Refresca las listas
             } else {
                 console.error('Error al reactivar usuario.');

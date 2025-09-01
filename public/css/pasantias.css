@@ -221,6 +221,12 @@
                 word-break: break-word; /* Permite romper palabras largas */
                 overflow-x: auto;
             }
+            .table-projects td[data-label="Título"] { 
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+                overflow-x: auto;
+            }
             .table-internships td[data-label="Estudiante"]::before { 
                 top: 10px;
                 transform: translateY(0);

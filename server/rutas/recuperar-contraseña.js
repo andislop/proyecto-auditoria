@@ -201,4 +201,60 @@ router.post('/resetear-password', async (req, res) => {
     }
 });
 
+
+router.post('/enviar-correo-activacion', async (req, res) => {
+    try {
+        const { correo } = req.body;
+
+        if (!correo) {
+            return res.status(400).json({ error: 'El campo de correo electrónico es obligatorio.' });
+        }
+                // 1. Verificar si el correo existe en la tabla de login
+        const { data: user, error: userError } = await supabase
+            .from('login') // Utiliza la tabla 'login' como indicaste
+            .select('id_login, correo')
+            .eq('correo', correo)
+            .single();
+
+        if (userError || !user) {
+            // No se debe indicar al atacante si el correo existe o no por seguridad
+            console.warn(`Intento de recuperación de contraseña para correo no registrado: ${correo}`);
+            return res.status(200).json({ message: 'Si el correo electrónico está registrado, se enviará un código de recuperación.' });
+        }
+
+        // 1. Opciones del correo electrónico
+
+        const unefaLogoUrl = 'https://images.seeklogo.com/logo-png/14/2/unefa-logo-png_seeklogo-144842.png';
+        // Usamos el mismo estilo HTML que creamos antes, adaptándolo para este nuevo mensaje.
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: user.correo,
+            subject: 'Cuenta Activada en Sistema de Gestión de Proyectos',
+            html: `
+                <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; padding: 20px; text-align: center;">
+                    <div style="max-width: 600px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                        <img src="${unefaLogoUrl}" alt="Logo de UNEFA" style="max-width: 150px; margin-bottom: 20px;">
+                        <h2 style="color: #0d6efd;">¡Tu cuenta ha sido activada!</h2>
+                        <p>Te informamos que tu solicitud para acceder al sistema de <strong>Gestión de Proyectos</strong> ha sido aprobada.</p>
+                        <p>Ahora puedes iniciar sesión con tu correo y contraseña.</p>
+                        <a href="https://proyecto-auditoria.vercel.app/" style="display: inline-block; padding: 10px 20px; margin-top: 20px; background-color: #0d6efd; color: #fff; text-decoration: none; border-radius: 5px;">Ir al sistema</a>
+                        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                        <p style="font-size: 12px; color: #aaa;">Si tienes alguna pregunta, por favor contacta al administrador.</p>
+                    </div>
+                </div>
+            `,
+        };
+
+        // 2. Enviar el correo electrónico
+        await transporter.sendMail(mailOptions);
+        
+        console.log(`Correo de activación enviado a: ${correo}`);
+        return res.status(200).json({ message: 'Correo de activación enviado exitosamente.' });
+
+    } catch (error) {
+        console.error('Error en la API de envío de correo de activación:', error);
+        return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+});
+
 export default router;

@@ -257,3 +257,9 @@
             word-break: break-word; 
             min-width: 180px; 
         }
+        .table-projects td[data-label="Nombre del Proyecto"] {
+            white-space: normal;
+            text-align: left;
+            word-break: break-word;
+            overflow-x: auto;
+        }

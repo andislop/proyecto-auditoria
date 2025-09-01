@@ -228,6 +228,18 @@
                 word-break: break-word; /* Permite romper palabras largas */
                 overflow-x: auto;
             }
+            .table-projects td[data-label="Nombre del Proyecto"] { 
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+                overflow-x: auto;
+            }
+            .table-projects td[data-label="Comunidad"] { 
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+                overflow-x: auto;
+            }
             .table-projects td[data-label="Integrantes"]::before { 
                 top: 10px;
                 transform: translateY(0);

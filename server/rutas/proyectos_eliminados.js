@@ -191,6 +191,64 @@ router.get('/proyectos-eliminados/pasantias', async (req, res) => {
     }
 });
 
+//Api para obtener Admins eliminados
+router.get('/proyectos-eliminados/administradores', async (req, res) => {
+    try {
+        let { data: administradores, error: adminError } = await supabase
+            .from('administrador')
+            .select(`
+                id_administrador,
+                nombre_completo,
+                activo,
+                eliminacion,
+                mensaje_eliminacion
+            `)
+            .eq('eliminacion', true);
+
+        if (adminError) {
+            console.error('Error al obtener administradores eliminados:', adminError.message);
+            throw new Error('Error al obtener administradores eliminados.');
+        }
+
+        const formattedAdmin = administradores.map(admin => ({
+            id: admin.id_administrador,
+            nombre_completo: admin.nombre_completo,
+            activo: admin.activo,
+            eliminacion: admin.eliminacion,
+            mensaje_eliminacion: admin.mensaje_eliminacion
+        }));
+
+        res.status(200).json(formattedAdmin);
+
+    } catch (error) {
+        console.error('Error en la ruta /api/proyectos-eliminados/administradores:', error.message);
+        res.status(500).json({ error: error.message || 'Error interno del servidor al obtener administradores eliminados.' });
+    }
+});
+
+router.put('/proyectos-eliminados/restaurar/administradores/:id', async (req, res) => {
+     const { id } = req.params;
+
+    try {
+        const { data, error } = await supabase
+            .from('administrador')
+            .update({
+                eliminacion: false,
+                mensaje_eliminacion: null,
+            })
+            .eq('id_administrador', id);
+
+        if (error) {
+            console.error('Error al restaurar administrador:', error.message);
+            return res.status(500).json({ error: 'Error interno del servidor al restaurar administrador.' });
+        }
+        res.status(200).json({ message: 'Administrador restaurado exitosamente.' });
+    } catch (error) {
+        console.error('Error en la ruta PUT /proyectos-eliminados/restaurar/administradores:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+});
+
 // APIs para Restaurar proyectos (estos se mantienen igual, ya que funcionan por ID y tipo)
 router.put('/proyectos-comunitarios/restaurar/:id', async (req, res) => {
     const { id } = req.params;

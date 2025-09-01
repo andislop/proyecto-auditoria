@@ -200,7 +200,6 @@
 	<script src="./js/ripples.min.js"></script>
 	<script src="./js/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="./js/main.js"></script>
-    <script src="../js/obtener-user.js"></script>
 <script>
         // Referencias a los elementos de la modal personalizada
         const customAlertModal = document.getElementById('customAlertModal');
@@ -368,12 +367,14 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
                     servicioComunitarioProjects,
                     trabajoGradoProjects,
                     proyectosInvestigacion,
-                    pasantiasProjects
+                    pasantiasProjects,
+                    administradoresProjects
                 ] = await Promise.all([
                     fetchWithExponentialBackoff('/api/proyectos-eliminados/servicio-comunitario', { method: 'GET' }),
                     fetchWithExponentialBackoff('/api/proyectos-eliminados/trabajo-de-grado', { method: 'GET' }),
                     fetchWithExponentialBackoff('/api/proyectos-eliminados/proyectos-investigacion', { method: 'GET' }),
-                    fetchWithExponentialBackoff('/api/proyectos-eliminados/pasantias', { method: 'GET' })
+                    fetchWithExponentialBackoff('/api/proyectos-eliminados/pasantias', { method: 'GET' }),
+                    fetchWithExponentialBackoff('/api/proyectos-eliminados/administradores', { method: 'GET' })
                 ]);
 
                 // Combinar todos los resultados, filtrando los nulos si alguna API falla
@@ -382,6 +383,7 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
                 if (trabajoGradoProjects) combinedProjects = combinedProjects.concat(trabajoGradoProjects);
                 if (proyectosInvestigacion) combinedProjects = combinedProjects.concat(proyectosInvestigacion);
                 if (pasantiasProjects) combinedProjects = combinedProjects.concat(pasantiasProjects);
+                if (administradoresProjects) combinedProjects = combinedProjects.concat(administradoresProjects);
 
                 const tableBody = document.getElementById('deletedProjectsTable').getElementsByTagName('tbody')[0];
                 tableBody.innerHTML = ''; 
@@ -452,6 +454,8 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
                 $('.filter-buttons .btn:contains("Investigación")').removeClass('btn-info').addClass('btn-primary');
             } else if (type === 'Pasantía') {
                 $('.filter-buttons .btn:contains("Pasantías")').removeClass('btn-info').addClass('btn-primary');
+            } else if (type === 'Administradores') {
+                $('.filter-buttons .btn:contains("Administradores")').removeClass('btn-info').addClass('btn-primary');
             }
         }
 
@@ -673,6 +677,8 @@ async function loadAuthenticatedUserName(elementId = 'sidebarUserName') {
                         endpoint = `/api/proyectos-investigacion/restaurar/${projectId}`;
                     } else if (projectType === 'Pasantía') { 
                         endpoint = `/api/pasantias/restaurar/${projectId}`;
+                    } else if (projectType === 'Administrador') {
+                        endpoint = `/api/administradores/restaurar/${projectId}`;
                     } else {
                         await showCustomAlert('Error', 'Tipo de proyecto desconocido para restaurar.');
                         return;

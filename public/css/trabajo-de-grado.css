@@ -220,6 +220,12 @@
                 word-break: break-word; /* Permite romper palabras largas */
                 overflow-x: auto;
             }
+            .table-projects td[data-label="Nombre del Trabajo"] { 
+                white-space: normal;
+                text-align: left;
+                word-break: break-word; /* Permite romper palabras largas */
+                overflow-x: auto;
+            }
             .table-projects td[data-label="Estudiante"]::before { /* Cambiado de "Integrantes" a "Estudiante" */
                 top: 10px;
                 transform: translateY(0);

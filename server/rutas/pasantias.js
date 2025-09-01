@@ -47,7 +47,8 @@ router.get('/pasantias', async (req, res) => {
                 tutores:id_tutor(id_tutor, cedula, nombre_completo),
                 estudiantes:id_estudiante(id_estudiante, cedula, nombre_completo, carreras:id_carrera(carrera))
             `)
-            .eq('eliminado', false); // Solo pasantías no eliminadas lógicamente
+            .eq('eliminado', false) // Solo pasantías no eliminadas lógicamente
+            .order('id_pasantia', { ascending: true });
 
         if (error) {
             console.error('Error al obtener pasantías:', error.message);
